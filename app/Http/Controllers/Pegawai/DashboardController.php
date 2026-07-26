@@ -14,76 +14,117 @@ class DashboardController extends Controller
     {
         $today = today();
 
-        // --- Kartu statistik ---
-        $totalPelanggan = Pelanggan::count();
-        $belumBayarCount = Pembayaran::where('status', 'belum_bayar')->count();
+        // --- Kartu statistik (4 card) ---
+        $totalPelanggan    = Pelanggan::count();
+        $belumBayarCount   = Pembayaran::where('status', 'belum_bayar')->count();
         $pembayaranHariIni = Pembayaran::where('status', 'lunas')
             ->whereDate('dibayar_at', $today)
             ->count();
-        $gangguanHariIni = 0; // placeholder untuk modul gangguan
+        $gangguanHariIni   = 0; // placeholder
 
-        // --- Scan terakhir ---
-        $scanTerakhir = Kunjungan::with('pelanggan')
-            ->latest('waktu_kunjungan')
-            ->take(5)
-            ->get();
-
-        // --- Daftar belum bayar (untuk tabel) ---
+        // --- Section 1: Daftar Pelanggan Belum Bayar ---
         $daftarBelumBayar = Pembayaran::with('pelanggan')
             ->where('status', 'belum_bayar')
             ->latest()
             ->take(5)
             ->get();
 
-        // --- Aktivitas terbaru ---
-        $aktivitasTerbaru = collect();
+        // --- Section 2: Pengaduan Gangguan Terbaru (placeholder) ---
+        $gangguanTerbaru = collect([
+            (object) [
+                'pelanggan_nama' => 'Budi Santoso',
+                'pelanggan_kode' => 'CS-0012',
+                'keluhan'        => 'Jaringan sering putus nyambung sejak 2 hari lalu',
+                'waktu_laporan'  => now()->subHours(2),
+                'status'         => 'menunggu',
+            ],
+            (object) [
+                'pelanggan_nama' => 'Siti Rahmawati',
+                'pelanggan_kode' => 'CS-0045',
+                'keluhan'        => 'Kecepatan internet tidak sesuai paket 20 Mbps',
+                'waktu_laporan'  => now()->subHours(5),
+                'status'         => 'diproses',
+            ],
+            (object) [
+                'pelanggan_nama' => 'Ahmad Hidayat',
+                'pelanggan_kode' => 'CS-0023',
+                'keluhan'        => 'Tidak bisa konek internet sejak pagi',
+                'waktu_laporan'  => now()->subDay(),
+                'status'         => 'selesai',
+            ],
+        ]);
 
-        // Ambil pembayaran lunas terbaru
+        // --- Section 3: Aktivitas Hari Ini ---
+        $aktivitasHariIni = collect();
+
+        // Pembayaran berhasil hari ini
         $pembayaranLunas = Pembayaran::with('pelanggan')
             ->where('status', 'lunas')
+            ->whereDate('dibayar_at', $today)
             ->latest('dibayar_at')
-            ->take(3)
+            ->take(5)
             ->get()
             ->map(function ($item) {
                 return (object) [
-                    'type' => 'pembayaran',
-                    'icon' => 'credit-card',
-                    'icon_bg' => 'bg-emerald-100',
-                    'icon_color' => 'text-emerald-600',
-                    'title' => 'Pembayaran dari ' . ($item->pelanggan->nama ?? 'Pelanggan'),
-                    'desc' => 'Periode ' . $item->periode . ' - Rp ' . number_format($item->jumlah, 0, ',', '.'),
-                    'time' => $item->dibayar_at ? $item->dibayar_at->diffForHumans() : '-',
+                    'icon'  => 'credit-card',
+                    'color' => 'emerald',
+                    'text'  => 'Pembayaran berhasil dikonfirmasi — <strong>' . ($item->pelanggan->nama ?? '-') . '</strong> (Rp ' . number_format($item->jumlah, 0, ',', '.') . ')',
+                    'time'  => $item->dibayar_at ? $item->dibayar_at->diffForHumans() : '-',
                 ];
             });
 
-        // Ambil kunjungan terbaru (aktivitas scan)
-        $kunjunganAktivitas = Kunjungan::with('pelanggan')
+        $aktivitasHariIni = $aktivitasHariIni->concat($pembayaranLunas);
+
+        // Kunjungan hari ini
+        $kunjunganHariIni = Kunjungan::with('pelanggan')
+            ->whereDate('waktu_kunjungan', $today)
             ->latest('waktu_kunjungan')
-            ->take(3)
+            ->take(5)
             ->get()
             ->map(function ($item) {
-                $status = $item->status === 'tagihan_dibayar' ? 'Tagihan dibayar' : 'Kunjungan - Belum bayar';
+                $statusText = $item->status === 'tagihan_dibayar' ? 'Tagihan dibayar' : 'Kunjungan - Belum bayar';
                 return (object) [
-                    'type' => 'kunjungan',
-                    'icon' => 'user-check',
-                    'icon_bg' => 'bg-blue-100',
-                    'icon_color' => 'text-blue-600',
-                    'title' => ($item->pelanggan->nama ?? 'Pelanggan') . ' - ' . ($item->pelanggan->kode ?? ''),
-                    'desc' => $status,
-                    'time' => $item->waktu_kunjungan->diffForHumans(),
+                    'icon'  => $item->status === 'tagihan_dibayar' ? 'check-circle' : 'map-pin',
+                    'color' => $item->status === 'tagihan_dibayar' ? 'emerald' : 'amber',
+                    'text'  => 'Kunjungan ke pelanggan selesai — <strong>' . ($item->pelanggan->nama ?? '-') . '</strong> (' . $statusText . ')',
+                    'time'  => $item->waktu_kunjungan->diffForHumans(),
                 ];
             });
 
-        $aktivitasTerbaru = $pembayaranLunas->concat($kunjunganAktivitas)->sortByDesc('time')->take(5);
+        $aktivitasHariIni = $aktivitasHariIni->concat($kunjunganHariIni);
+
+        // Tambah placeholder aktivitas jika kosong
+        if ($aktivitasHariIni->isEmpty()) {
+            $aktivitasHariIni = collect([
+                (object) [
+                    'icon'  => 'info',
+                    'color' => 'slate',
+                    'text'  => 'Belum ada aktivitas hari ini.',
+                    'time'  => '-',
+                ],
+            ]);
+        } else {
+            $aktivitasHariIni = $aktivitasHariIni->sortByDesc('time')->take(10);
+        }
+
+        // --- Section 4: Ringkasan Hari Ini ---
+        $totalKunjungan = Kunjungan::whereDate('waktu_kunjungan', $today)->count();
+        $totalPembayaranNominal = Pembayaran::where('status', 'lunas')
+            ->whereDate('dibayar_at', $today)
+            ->sum('jumlah');
+        $gangguanSelesai = 0; // placeholder
 
         return view('pegawai.dashboard', compact(
             'totalPelanggan',
             'belumBayarCount',
             'pembayaranHariIni',
             'gangguanHariIni',
-            'scanTerakhir',
             'daftarBelumBayar',
-            'aktivitasTerbaru',
+            'gangguanTerbaru',
+            'aktivitasHariIni',
+            'totalKunjungan',
+            'totalPembayaranNominal',
+            'gangguanSelesai',
         ));
     }
 }

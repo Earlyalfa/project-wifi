@@ -3,7 +3,7 @@
 @section('title', 'Daftar')
 
 @section('content')
-    <h2 class="text-xl font-bold text-slate-800 mb-6">Daftar</h2>
+    <h2 class="text-xl font-bold text-slate-800 mb-6">Buat Akun</h2>
 
     @if ($errors->any())
         <div class="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">

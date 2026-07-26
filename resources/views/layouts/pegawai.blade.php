@@ -48,8 +48,8 @@
                     ['route' => 'pegawai.scan-barcode', 'icon' => 'scan-qr-code', 'label' => 'Scan QR Code'],
                     ['route' => 'pegawai.pelanggan.index', 'icon' => 'users', 'label' => 'Data Pelanggan'],
                     ['route' => null, 'icon' => 'credit-card', 'label' => 'Pembayaran'],
-                    ['route' => null, 'icon' => 'message-square-warning', 'label' => 'Pengaduan Gangguan'],
-                    ['route' => null, 'icon' => 'map-pin', 'label' => 'Riwayat Kunjungan'],
+                    ['route' => 'pegawai.gangguan.index', 'icon' => 'message-square-warning', 'label' => 'Pengaduan Gangguan'],
+                    ['route' => 'pegawai.kunjungan.index', 'icon' => 'map-pin', 'label' => 'Riwayat Kunjungan'],
                 ];
             @endphp
 
@@ -97,11 +97,61 @@
 
             <div class="flex items-center gap-3 md:gap-5">
 
-                {{-- Notifikasi --}}
-                <button class="relative p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-all">
-                    <i data-lucide="bell" class="w-5 h-5"></i>
-                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white"></span>
-                </button>
+{{-- Notifikasi --}}
+                <div class="relative" x-data="notificationDropdown()" x-init="init()" @click.outside="open = false">
+                    <button @click="toggle()" class="relative p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-all">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span x-show="unreadCount > 0"
+                              x-text="unreadCount"
+                              class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center text-[10px] font-bold text-white bg-rose-500 rounded-full ring-2 ring-white"></span>
+                    </button>
+
+                    {{-- Dropdown Notifikasi --}}
+                    <div x-show="open" x-cloak
+                         class="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-slate-100 z-50 max-h-[500px] flex flex-col">
+                        {{-- Header --}}
+                        <div class="flex items-center justify-between px-4 py-3 border-b border-slate-100 shrink-0">
+                            <h3 class="font-semibold text-slate-800 text-sm">Notifikasi</h3>
+                            <button x-show="unreadCount > 0" @click="markAllRead()"
+                                    class="text-xs text-indigo-600 font-medium hover:underline">
+                                Tandai sudah dibaca
+                            </button>
+                        </div>
+
+                        {{-- Daftar Notifikasi --}}
+                        <div class="overflow-y-auto flex-1 max-h-[350px]">
+                            <template x-if="notifications.length === 0">
+                                <div class="flex flex-col items-center justify-center py-10 text-slate-400">
+                                    <i data-lucide="bell-off" class="w-8 h-8 mb-2"></i>
+                                    <p class="text-sm">Tidak ada notifikasi</p>
+                                </div>
+                            </template>
+                            <template x-for="notif in notifications" :key="notif.id">
+                                <div @click="markRead(notif)"
+                                     :class="{'bg-indigo-50/50': !notif.is_read, 'hover:bg-slate-50': true}"
+                                     class="flex items-start gap-3 px-4 py-3 border-b border-slate-50 cursor-pointer transition-colors">
+                                    {{-- Icon --}}
+                                    <div :class="'w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 ' + (notif.color === 'rose' ? 'bg-rose-100' : notif.color === 'amber' ? 'bg-amber-100' : notif.color === 'emerald' ? 'bg-emerald-100' : 'bg-indigo-100')">
+                                        <i :data-lucide="notif.icon"
+                                           :class="'w-4 h-4 ' + (notif.color === 'rose' ? 'text-rose-600' : notif.color === 'amber' ? 'text-amber-600' : notif.color === 'emerald' ? 'text-emerald-600' : 'text-indigo-600')"></i>
+                                    </div>
+                                    {{-- Content --}}
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm text-slate-700" x-text="notif.message"></p>
+                                        <p class="text-xs text-slate-400 mt-0.5" x-text="notif.time_ago"></p>
+                                    </div>
+                                    {{-- Unread dot --}}
+                                    <span x-show="!notif.is_read" class="w-2 h-2 rounded-full bg-indigo-500 shrink-0 mt-2"></span>
+                                </div>
+                            </template>
+                        </div>
+
+                        {{-- Footer --}}
+                        <div class="px-4 py-2.5 border-t border-slate-100 text-center shrink-0">
+                            <a href="#" class="text-xs text-slate-400 hover:text-slate-600 font-medium">Lihat semua notifikasi</a>
+                        </div>
+                    </div>
+                </div>
 
                 {{-- Profile Dropdown --}}
                 <div class="relative" x-data="{ open: false }" x-on:click.outside="open = false">
@@ -123,11 +173,11 @@
                             <p class="text-sm font-semibold text-slate-800">{{ auth()->user()->name }}</p>
                             <p class="text-xs text-slate-400">{{ auth()->user()->email ?? 'pegawai@wifiPay.id' }}</p>
                         </div>
-                        <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+<a href="{{ route('pegawai.profile.show') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors">
                             <i data-lucide="user" class="w-4 h-4 text-slate-400"></i>
                             Profil Saya
                         </a>
-                        <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+                        <a href="{{ route('pegawai.settings') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors">
                             <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i>
                             Pengaturan
                         </a>
@@ -160,6 +210,77 @@
 
     <script>
         lucide.createIcons();
+
+        function notificationDropdown() {
+            return {
+                open: false,
+                unreadCount: 0,
+                notifications: [],
+                pollingId: null,
+
+                init() {
+                    this.fetchNotifications();
+                    // Auto-poll every 30 seconds
+                    this.pollingId = setInterval(() => {
+                        this.fetchNotifications();
+                    }, 30000);
+                },
+
+                toggle() {
+                    this.open = !this.open;
+                    if (this.open) {
+                        this.fetchNotifications();
+                    }
+                },
+
+                fetchNotifications() {
+                    fetch('/pegawai/notifications')
+                        .then(res => res.json())
+                        .then(data => {
+                            this.unreadCount = data.unread_count;
+                            this.notifications = data.notifications;
+                            // Re-initialize Lucide icons for new DOM elements
+                            this.$nextTick(() => {
+                                if (window.lucide) lucide.createIcons();
+                            });
+                        })
+                        .catch(() => {});
+                },
+
+                markRead(notif) {
+                    if (!notif.is_read) {
+                        fetch('/pegawai/notifications/' + notif.id + '/read', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
+                            .then(res => res.json())
+                            .then(() => {
+                                notif.is_read = true;
+                                this.unreadCount = Math.max(0, this.unreadCount - 1);
+                                // Re-render icons
+                                this.$nextTick(() => {
+                                    if (window.lucide) lucide.createIcons();
+                                });
+                            })
+                            .catch(() => {});
+                    }
+                    // Navigate if there's a URL
+                    if (notif.url) {
+                        window.location.href = notif.url;
+                    }
+                },
+
+                markAllRead() {
+                    fetch('/pegawai/notifications/read-all', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
+                        .then(res => res.json())
+                        .then(() => {
+                            this.notifications.forEach(n => n.is_read = true);
+                            this.unreadCount = 0;
+                            this.$nextTick(() => {
+                                if (window.lucide) lucide.createIcons();
+                            });
+                        })
+                        .catch(() => {});
+                }
+            };
+        }
     </script>
     @stack('scripts')
 </body>

@@ -1,118 +1,163 @@
 @extends('layouts.pegawai')
 
-@section('title', 'Dashboard Pegawai')
-@section('page-title', 'Dashboard Pegawai')
+@section('title', 'Scan Barcode')
+@section('page-title', 'Scan QR / Barcode Pelanggan')
 
 @section('content')
+<div class="max-w-lg mx-auto">
 
-    {{-- KARTU STATISTIK --}}
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    {{-- Form Input Manual Kode --}}
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-5">
+        <h3 class="font-semibold text-slate-800 mb-4">Cari Berdasarkan Kode Pelanggan</h3>
 
-        <div class="bg-white rounded-xl p-4 shadow-sm">
-            <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center mb-3">
-                <i data-lucide="scan-line" class="w-4 h-4 text-indigo-600"></i>
-            </div>
-            <p class="text-xs text-slate-400">Scan Hari ini</p>
-            <p class="text-2xl font-bold text-slate-800">{{ $scanHariIni }}</p>
-            <p class="text-xs text-emerald-600 mt-1">+{{ $scanKemarin }} dari kemarin</p>
-        </div>
-
-        <div class="bg-white rounded-xl p-4 shadow-sm">
-            <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center mb-3">
-                <i data-lucide="clipboard-list" class="w-4 h-4 text-amber-600"></i>
-            </div>
-            <p class="text-xs text-slate-400">Belum Bayar</p>
-            <p class="text-2xl font-bold text-slate-800">{{ $belumBayarCount }}</p>
-            <p class="text-xs text-slate-400 mt-1">Pelanggan</p>
-        </div>
-
-        <div class="bg-white rounded-xl p-4 shadow-sm">
-            <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center mb-3">
-                <i data-lucide="credit-card" class="w-4 h-4 text-emerald-600"></i>
-            </div>
-            <p class="text-xs text-slate-400">Pembayaran</p>
-            <p class="text-2xl font-bold text-slate-800">{{ $pembayaranHariIni }}</p>
-            <p class="text-xs text-slate-400 mt-1">Hari ini</p>
-        </div>
-
-        <div class="bg-white rounded-xl p-4 shadow-sm">
-            <div class="w-8 h-8 rounded-lg bg-rose-100 flex items-center justify-center mb-3">
-                <i data-lucide="triangle-alert" class="w-4 h-4 text-rose-600"></i>
-            </div>
-            <p class="text-xs text-slate-400">Gangguan</p>
-            <p class="text-2xl font-bold text-slate-800">{{ $gangguanMenunggu }}</p>
-            <p class="text-xs text-slate-400 mt-1">Menunggu</p>
-        </div>
-    </div>
-
-    {{-- SCAN TERAKHIR & DAFTAR BELUM BAYAR --}}
-    <div class="grid md:grid-cols-2 gap-4 mb-6">
-
-        <div class="bg-white rounded-xl p-5 shadow-sm">
-            <h3 class="font-semibold text-slate-800 mb-4">Scan Terakhir</h3>
-            <div class="space-y-3">
-                @forelse ($scanTerakhir as $item)
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
-                                <i data-lucide="user" class="w-4 h-4 text-slate-500"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-semibold text-slate-800">{{ $item->pelanggan->kode }}</p>
-                                <p class="text-xs text-slate-400">{{ $item->pelanggan->nama }}</p>
-                            </div>
-                        </div>
-                        <span class="text-xs text-slate-400">{{ $item->waktu_kunjungan->format('H:i') }} WIB</span>
-                    </div>
-                @empty
-                    <p class="text-sm text-slate-400">Belum ada scan hari ini.</p>
-                @endforelse
-            </div>
-            <a href="{{ route('pegawai.pelanggan.index') }}" class="text-xs text-emerald-600 font-medium hover:underline mt-4 inline-block">Lihat semua</a>
-        </div>
-
-        <div class="bg-white rounded-xl p-5 shadow-sm">
-            <h3 class="font-semibold text-slate-800 mb-4">Daftar Belum Bayar</h3>
-            <div class="space-y-3">
-                @forelse ($daftarBelumBayar as $tagihan)
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
-                                <i data-lucide="user" class="w-4 h-4 text-slate-500"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-semibold text-slate-800">{{ $tagihan->pelanggan->nama }}</p>
-                                <p class="text-xs text-slate-400">{{ $tagihan->pelanggan->kode }}</p>
-                            </div>
-                        </div>
-                        <span class="text-sm font-semibold text-slate-800">Rp {{ number_format($tagihan->jumlah, 0, ',', '.') }}</span>
-                    </div>
-                @empty
-                    <p class="text-sm text-slate-400">Tidak ada tagihan yang belum dibayar.</p>
-                @endforelse
-            </div>
-            <a href="#" class="text-xs text-emerald-600 font-medium hover:underline mt-4 inline-block">Lihat semua</a>
-        </div>
-    </div>
-
-    {{-- KUNJUNGAN TERAKHIR --}}
-    <div class="bg-white rounded-xl p-5 shadow-sm">
-        <h3 class="font-semibold text-slate-800 mb-4">Kunjungan Terakhir</h3>
-        <div class="space-y-3">
-            @forelse ($kunjunganTerakhir as $kunjungan)
-                <div class="flex items-center justify-between text-sm">
-                    <span class="text-slate-400 w-14">{{ $kunjungan->waktu_kunjungan->format('H:i') }}</span>
-                    <span class="flex-1 font-medium text-slate-800">{{ $kunjungan->pelanggan->nama }}</span>
-                    @if ($kunjungan->status === 'tagihan_dibayar')
-                        <span class="text-emerald-600">Tagihan dibayar</span>
-                    @else
-                        <span class="text-rose-500 bg-rose-50 px-2 py-0.5 rounded-full text-xs font-semibold">Belum bayar</span>
-                    @endif
+        <form action="{{ route('pegawai.scan-barcode.store') }}" method="POST">
+            @csrf
+            <div class="flex gap-3">
+                <div class="flex-1">
+                    <input type="text" name="kode" placeholder="Masukkan kode pelanggan (contoh: CS-1248)"
+                           class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                           value="{{ old('kode') }}">
+                    @error('kode')
+                        <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
-            @empty
-                <p class="text-sm text-slate-400">Belum ada kunjungan tercatat.</p>
-            @endforelse
-        </div>
+                <button type="submit"
+                        class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded-lg text-sm transition-colors">
+                    Cari
+                </button>
+            </div>
+        </form>
     </div>
 
+    {{-- Panduan --}}
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 text-center">
+        <div class="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="scan-qr-code" class="w-8 h-8 text-emerald-600"></i>
+        </div>
+        <h3 class="font-semibold text-slate-800 mb-2">Scan QR Code</h3>
+        <p class="text-sm text-slate-400 mb-4">
+            Gunakan kamera untuk memindai QR code pelanggan, atau masukkan kode pelanggan secara manual di atas.
+        </p>
+
+        {{-- Kamera Scanner --}}
+        <div id="scanner-container" class="relative bg-slate-100 rounded-xl overflow-hidden mb-4" style="min-height: 250px;">
+            <video id="scanner-video" class="w-full h-full object-cover" playsinline></video>
+            <div id="scanner-loading" class="absolute inset-0 flex items-center justify-center bg-slate-100">
+                <div class="text-center">
+                    <div class="w-10 h-10 border-4 border-emerald-100 border-t-emerald-500 rounded-full animate-spin mx-auto mb-3"></div>
+                    <p class="text-sm text-slate-400">Mengaktifkan kamera...</p>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" id="btn-start-scan"
+                class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-lg text-sm transition-colors">
+            Mulai Scan
+        </button>
+        <button type="button" id="btn-stop-scan" style="display:none;"
+                class="bg-rose-500 hover:bg-rose-600 text-white font-semibold px-6 py-2.5 rounded-lg text-sm transition-colors">
+            Hentikan Scan
+        </button>
+
+        <div id="scan-result" class="mt-4 hidden">
+            <div class="bg-emerald-50 text-emerald-700 rounded-lg px-4 py-3 text-sm font-medium">
+                Kode terdeteksi: <span id="scanned-code" class="font-bold"></span>
+            </div>
+            <form id="scan-form-auto" method="POST" action="{{ route('pegawai.scan-barcode.store') }}" class="mt-3">
+                @csrf
+                <input type="hidden" name="kode" id="hidden-kode">
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors">
+                    Lanjut ke Detail Pelanggan
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('scripts')
+{{-- Gunakan jsQR untuk membaca QR code dari video --}}
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const video = document.getElementById('scanner-video');
+    const loading = document.getElementById('scanner-loading');
+    const btnStart = document.getElementById('btn-start-scan');
+    const btnStop = document.getElementById('btn-stop-scan');
+    const scanResult = document.getElementById('scan-result');
+    const scannedCode = document.getElementById('scanned-code');
+    const hiddenKode = document.getElementById('hidden-kode');
+
+    let stream = null;
+    let scanning = false;
+    let animationId = null;
+
+    function startCamera() {
+        loading.style.display = 'flex';
+        navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'environment', width: 640, height: 480 }
+        }).then(function (s) {
+            stream = s;
+            video.srcObject = s;
+            video.play();
+            loading.style.display = 'none';
+            scanning = true;
+            btnStart.style.display = 'none';
+            btnStop.style.display = 'inline-block';
+            scanLoop();
+        }).catch(function (err) {
+            loading.innerHTML = '<p class="text-sm text-rose-500">Tidak dapat mengakses kamera: ' + err.message + '</p>';
+        });
+    }
+
+    function stopCamera() {
+        scanning = false;
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = null;
+        }
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+        }
+        video.srcObject = null;
+        btnStart.style.display = 'inline-block';
+        btnStop.style.display = 'none';
+        loading.style.display = 'none';
+    }
+
+    function scanLoop() {
+        if (!scanning) return;
+
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                inversionAttempts: 'dontInvert',
+            });
+
+            if (code && code.data) {
+                // QR code terdeteksi
+                scanning = false;
+                stopCamera();
+                scanResult.classList.remove('hidden');
+                scannedCode.textContent = code.data;
+                hiddenKode.value = code.data;
+                return;
+            }
+        }
+
+        animationId = requestAnimationFrame(scanLoop);
+    }
+
+    btnStart.addEventListener('click', startCamera);
+    btnStop.addEventListener('click', stopCamera);
+});
+</script>
+@endpush
+
