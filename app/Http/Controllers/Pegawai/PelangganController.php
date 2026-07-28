@@ -95,7 +95,17 @@ class PelangganController extends Controller
             $validated['foto_rumah'] = $request->file('foto_rumah')->store('foto-rumah', 'public');
         }
 
-        Pelanggan::create($validated);
+        $pelanggan = Pelanggan::create($validated);
+
+        // Notifikasi untuk admin
+        Notification::create([
+            'user_id' => 1, // admin (user_id=1)
+            'type'    => 'pelanggan',
+            'icon'    => 'user-plus',
+            'color'   => 'emerald',
+            'message' => 'Pelanggan baru: ' . $pelanggan->nama . ' (' . $pelanggan->kode . ')',
+            'url'     => route('pegawai.pelanggan.show', $pelanggan),
+        ]);
 
         return redirect()->route('pegawai.pelanggan.index')
             ->with('status', 'Pelanggan berhasil ditambahkan.');
@@ -126,6 +136,16 @@ class PelangganController extends Controller
         }
 
         $pelanggan->update($validated);
+
+        // Notifikasi untuk admin
+        Notification::create([
+            'user_id' => 1,
+            'type'    => 'pelanggan',
+            'icon'    => 'pencil',
+            'color'   => 'indigo',
+            'message' => 'Data pelanggan diubah: ' . $pelanggan->nama . ' (' . $pelanggan->kode . ')',
+            'url'     => route('pegawai.pelanggan.show', $pelanggan),
+        ]);
 
         return redirect()->route('pegawai.pelanggan.index')
             ->with('status', 'Pelanggan berhasil diperbarui.');
@@ -179,12 +199,22 @@ class PelangganController extends Controller
             'catatan' => ['nullable', 'string'],
         ]);
 
-        Kunjungan::create([
+Kunjungan::create([
             'pelanggan_id' => $pelanggan->id,
             'pegawai_id' => $request->user()->id,
             'status' => $request->status,
             'catatan' => $request->catatan,
             'waktu_kunjungan' => now(),
+        ]);
+
+        // Notifikasi untuk admin
+        Notification::create([
+            'user_id' => 1,
+            'type'    => 'kunjungan',
+            'icon'    => 'user-check',
+            'color'   => 'blue',
+            'message' => 'Kunjungan ke ' . $pelanggan->nama . ' (' . ($request->status === 'tagihan_dibayar' ? 'Lunas' : 'Belum bayar') . ')',
+            'url'     => route('pegawai.pelanggan.show', $pelanggan),
         ]);
 
         return back()->with('status', 'Kunjungan berhasil dicatat.');
@@ -201,6 +231,16 @@ class PelangganController extends Controller
             $tagihan->update([
                 'status' => 'lunas',
                 'dibayar_at' => now(),
+            ]);
+
+            // Notifikasi untuk admin
+            Notification::create([
+                'user_id' => 1,
+                'type'    => 'pembayaran',
+                'icon'    => 'credit-card',
+                'color'   => 'emerald',
+                'message' => 'Pembayaran dikonfirmasi: ' . $pelanggan->nama . ' - Rp ' . number_format($tagihan->jumlah, 0, ',', '.'),
+                'url'     => route('pegawai.pelanggan.show', $pelanggan),
             ]);
         }
 

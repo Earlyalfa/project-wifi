@@ -31,6 +31,7 @@ class RegisterController extends \App\Http\Controllers\Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'email_verified_at' => now(), // Auto-verify: langsung terverifikasi
         ]);
 
         event(new Registered($user));

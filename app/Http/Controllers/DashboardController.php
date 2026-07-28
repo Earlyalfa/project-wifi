@@ -16,10 +16,11 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
-        return match ($user->role) {
-            'admin'   => view('dashboard.admin', ['user' => $user]),
-            'pegawai' => redirect()->route('pegawai.dashboard'),
-            default   => view('dashboard.pelanggan', ['user' => $user]),
+return match ($user->role) {
+            'admin'     => redirect()->route('admin.dashboard'),
+            'pegawai'   => redirect()->route('pegawai.dashboard'),
+            'pelanggan' => redirect()->route('pelanggan.dashboard'),
+            default     => view('dashboard.pelanggan', ['user' => $user]),
         };
     }
 }

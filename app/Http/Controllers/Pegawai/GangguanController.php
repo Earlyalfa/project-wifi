@@ -85,13 +85,26 @@ $gangguan = Gangguan::create($validated);
         return view('pegawai.gangguan.show', compact('gangguan'));
     }
 
-    public function updateStatus(Request $request, Gangguan $gangguan)
+public function updateStatus(Request $request, Gangguan $gangguan)
     {
         $request->validate([
             'status' => ['required', 'in:menunggu,diproses,selesai'],
         ]);
 
         $gangguan->update(['status' => $request->status]);
+
+        // Notifikasi untuk admin
+        $pelanggan = $gangguan->pelanggan;
+        if (! $pelanggan) $pelanggan = Pelanggan::find($gangguan->pelanggan_id);
+
+        Notification::create([
+            'user_id' => 1,
+            'type'    => 'gangguan',
+            'icon'    => 'message-square-warning',
+            'color'   => ($request->status === 'selesai' ? 'emerald' : ($request->status === 'diproses' ? 'blue' : 'amber')),
+            'message' => 'Status pengaduan ' . ($pelanggan->nama ?? '#'.$gangguan->id) . ' → ' . ucfirst($request->status),
+            'url'     => route('pegawai.gangguan.show', $gangguan),
+        ]);
 
         return redirect()->route('pegawai.gangguan.index')
             ->with('status', 'Status pengaduan berhasil diperbarui.');

@@ -13,6 +13,14 @@ use App\Http\Controllers\Pegawai\PelangganController as PegawaiPelangganControll
 use App\Http\Controllers\Pegawai\ProfileController as PegawaiProfileController;
 use App\Http\Controllers\Pegawai\ScanBarcodeController;
 use App\Http\Controllers\Pegawai\SettingsController as PegawaiSettingsController;
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
+use App\Http\Controllers\Admin\PaketController as AdminPaketController;
+use App\Http\Controllers\Pelanggan\DashboardController as PelangganDashboardController;
+use App\Http\Controllers\Pelanggan\PembayaranController as PelangganPembayaranController;
+use App\Http\Controllers\Pelanggan\PengaduanController as PelangganPengaduanController;
+use App\Http\Controllers\Pelanggan\ProfileController as PelangganProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Halaman Selamat Datang
@@ -50,10 +58,55 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Admin
-    Route::middleware('role:admin')->prefix('admin')->group(function () {
-        Route::get('/kelola-pengguna', function () {
-            return 'Halaman kelola pengguna (khusus admin)';
-        })->name('admin.users');
+    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::post('/logout', [AdminAuthController::class, 'destroy'])->name('logout');
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/settings', function () { return view('admin.settings'); })->name('settings');
+
+        // Admin Notifications
+        Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('notifications.index');
+        Route::post('/notifications/{notification}/read', [AdminNotificationController::class, 'markRead'])->name('notifications.read');
+        Route::post('/notifications/read-all', [AdminNotificationController::class, 'markAllRead'])->name('notifications.read-all');
+
+        Route::get('/kelola-pengguna', [AdminDashboardController::class, 'users'])->name('users');
+        Route::get('/kelola-pengguna/create', [AdminDashboardController::class, 'create'])->name('users.create');
+        Route::post('/kelola-pengguna', [AdminDashboardController::class, 'store'])->name('users.store');
+        Route::get('/kelola-pengguna/{user}', [AdminDashboardController::class, 'show'])->name('users.show');
+        Route::get('/kelola-pengguna/{user}/edit', [AdminDashboardController::class, 'edit'])->name('users.edit');
+        Route::put('/kelola-pengguna/{user}', [AdminDashboardController::class, 'updateUser'])->name('users.update');
+        Route::patch('/users/{user}/role', [AdminDashboardController::class, 'updateRole'])->name('users.role');
+        Route::patch('/users/{user}/status', [AdminDashboardController::class, 'updateStatus'])->name('users.status');
+
+        // Paket WiFi CRUD
+        Route::get('/paket', [AdminPaketController::class, 'index'])->name('paket.index');
+        Route::get('/paket/create', [AdminPaketController::class, 'create'])->name('paket.create');
+        Route::post('/paket', [AdminPaketController::class, 'store'])->name('paket.store');
+        Route::get('/paket/{paket}/edit', [AdminPaketController::class, 'edit'])->name('paket.edit');
+        Route::put('/paket/{paket}', [AdminPaketController::class, 'update'])->name('paket.update');
+        Route::delete('/paket/{paket}', [AdminPaketController::class, 'destroy'])->name('paket.destroy');
+    });
+
+// Area Pelanggan
+    Route::prefix('pelanggan')->name('pelanggan.')->middleware('auth')->group(function () {
+        Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
+
+        Route::middleware('role:pelanggan')->group(function () {
+            Route::get('/dashboard', [PelangganDashboardController::class, 'index'])->name('dashboard');
+            Route::get('/pembayaran', [PelangganPembayaranController::class, 'index'])->name('pembayaran');
+            Route::get('/pengaduan', [PelangganPengaduanController::class, 'index'])->name('pengaduan');
+            Route::post('/pengaduan', [PelangganPengaduanController::class, 'store'])->name('pengaduan.store');
+            Route::get('/pengaduan/{pengaduan}', [PelangganPengaduanController::class, 'show'])->name('pengaduan.show');
+
+            // Profile
+            Route::get('/profile', [PelangganProfileController::class, 'show'])->name('profile');
+            Route::patch('/profile', [PelangganProfileController::class, 'update'])->name('profile.update');
+            Route::patch('/profile/password', [PelangganProfileController::class, 'updatePassword'])->name('profile.password');
+
+            // Notifications (AJAX)
+            Route::get('/notifications', [PelangganPengaduanController::class, 'notifications'])->name('notifications');
+            Route::post('/notifications/{id}/read', [PelangganPengaduanController::class, 'markRead'])->name('notifications.read');
+            Route::post('/notifications/read-all', [PelangganPengaduanController::class, 'markAllRead'])->name('notifications.read-all');
+        });
     });
 
     // Area Pegawai (auth)
@@ -79,7 +132,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/pelanggan/{pelanggan}/kunjungan', [PegawaiPelangganController::class, 'catatKunjungan'])->name('pelanggan.kunjungan');
             Route::post('/pelanggan/{pelanggan}/konfirmasi-pembayaran', [PegawaiPelangganController::class, 'konfirmasiPembayaran'])->name('pelanggan.konfirmasi-pembayaran');
 
-// Notifications (AJAX)
+            // Notifications (AJAX)
             Route::get('/notifications', [PegawaiNotificationController::class, 'index'])->name('notifications.index');
             Route::post('/notifications/{notification}/read', [PegawaiNotificationController::class, 'markRead'])->name('notifications.read');
             Route::post('/notifications/read-all', [PegawaiNotificationController::class, 'markAllRead'])->name('notifications.read-all');
@@ -107,4 +160,3 @@ Route::middleware('auth')->group(function () {
         });
     });
 });
-

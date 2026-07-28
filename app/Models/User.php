@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'provider',
         'provider_id',
+        'status',
     ];
 
     protected $hidden = [
@@ -51,5 +52,10 @@ class User extends Authenticatable
     public function isPelanggan(): bool
     {
         return $this->role === 'pelanggan';
+    }
+
+    public function isAktif(): bool
+    {
+        return $this->status === 'aktif';
     }
 }

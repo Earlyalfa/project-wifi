@@ -10,8 +10,13 @@ class Pelanggan extends Model
     use HasFactory;
 
     protected $fillable = [
-        'kode', 'nama', 'paket', 'alamat', 'no_hp', 'foto_rumah', 'status',
+        'user_id', 'kode', 'nama', 'paket', 'alamat', 'no_hp', 'foto_rumah', 'foto_profil', 'status',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function pembayarans()
     {
