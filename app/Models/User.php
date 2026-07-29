@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-//use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,14 +12,15 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * PENTING: "role" TIDAK dimasukkan ke $fillable.
-     * User tidak bisa mengubah role-nya sendiri lewat form register.
-     * Role hanya bisa diubah manual oleh admin lewat phpMyAdmin (atau dashboard admin).
+     * Role ada di $fillable agar admin bisa mengubah role user.
+     * Route updateRole sudah dilindungi middleware 'role:admin'.
+     * RegisterController tidak mengirim input role, jadi user biasa tidak bisa mengubah role sendiri.
      */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role',
         'provider',
         'provider_id',
         'status',
@@ -59,3 +59,4 @@ class User extends Authenticatable
         return $this->status === 'aktif';
     }
 }
+

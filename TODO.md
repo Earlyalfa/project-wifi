@@ -1,14 +1,19 @@
-# TODO: Halaman Profil Pelanggan
+# TODO: Ubah Scan QR Code → Scan QR ID Pelanggan + Pembayaran Tunai
 
-## Steps:
+## Step 1: Update `app/Http/Controllers/Pegawai/ScanBarcodeController.php`
+- [x] Ganti logic controller:
+  - Method `create()` — tetap tampilkan halaman scan
+  - Method `cariPelanggan(Request)` — AJAX JSON: cari pelanggan by kode, return data + tagihan
+  - Method `konfirmasiBayar(Request)` — AJAX POST: update status jadi lunas, catat kunjungan
 
-- [x] **Step 1:** Membuat migration untuk menambahkan kolom `foto_profil` ke tabel `pelanggans` ✅
-- [x] **Step 2:** Update Model `Pelanggan.php` - tambahkan `foto_profil` ke `$fillable` ✅
-- [x] **Step 3:** Buat Controller `app/Http/Controllers/Pelanggan/ProfileController.php` ✅
-- [x] **Step 4:** Buat View `resources/views/pelanggan/profile.blade.php` ✅
-- [x] **Step 5:** Update routes di `routes/web.php` ✅
-- [x] **Step 6:** Update sidebar & dropdown di `resources/views/layouts/pelanggan.blade.php` ✅
-- [x] **Step 7:** Jalankan `php artisan migrate` ✅
+## Step 2: Update `resources/views/pegawai/scan-barcode.blade.php`
+- [x] Layout baru: Kolom kiri (Scanner QR + Upload Gambar), Kolom kanan (Data Pelanggan + Tagihan + Form Pembayaran Tunai)
+- [x] Scanner QR menggunakan jsQR (sudah ada)
+- [x] Upload gambar QR + auto-detect dengan jsQR dari canvas
+- [x] Form konfirmasi pembayaran: nominal diterima, catatan, tombol konfirmasi
+- [x] AJAX flow tanpa reload halaman
 
-## ✅ Selesai!
-
+## Step 3: Update `routes/web.php`
+- [x] Tambah route POST `/pegawai/scan-barcode/cari` → `cariPelanggan`
+- [x] Tambah route POST `/pegawai/scan-barcode/konfirmasi` → `konfirmasiBayar`
+</create_file>

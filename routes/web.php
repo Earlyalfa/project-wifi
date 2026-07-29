@@ -86,13 +86,14 @@ Route::middleware('auth')->group(function () {
         Route::delete('/paket/{paket}', [AdminPaketController::class, 'destroy'])->name('paket.destroy');
     });
 
-// Area Pelanggan
+    // Area Pelanggan
     Route::prefix('pelanggan')->name('pelanggan.')->middleware('auth')->group(function () {
         Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
         Route::middleware('role:pelanggan')->group(function () {
             Route::get('/dashboard', [PelangganDashboardController::class, 'index'])->name('dashboard');
             Route::get('/pembayaran', [PelangganPembayaranController::class, 'index'])->name('pembayaran');
+            Route::post('/pembayaran', [PelangganPembayaranController::class, 'store'])->name('pembayaran.store');
             Route::get('/pengaduan', [PelangganPengaduanController::class, 'index'])->name('pengaduan');
             Route::post('/pengaduan', [PelangganPengaduanController::class, 'store'])->name('pengaduan.store');
             Route::get('/pengaduan/{pengaduan}', [PelangganPengaduanController::class, 'show'])->name('pengaduan.show');
@@ -118,7 +119,8 @@ Route::middleware('auth')->group(function () {
         Route::middleware('role:pegawai,admin')->group(function () {
             Route::get('/dashboard', [PegawaiDashboardController::class, 'index'])->name('dashboard');
             Route::get('/scan-barcode', [ScanBarcodeController::class, 'create'])->name('scan-barcode');
-            Route::post('/scan-barcode', [ScanBarcodeController::class, 'store'])->name('scan-barcode.store');
+            Route::post('/scan-barcode/cari', [ScanBarcodeController::class, 'cariPelanggan'])->name('scan-barcode.cari');
+            Route::post('/scan-barcode/konfirmasi', [ScanBarcodeController::class, 'konfirmasiBayar'])->name('scan-barcode.konfirmasi');
 
             // CRUD Pelanggan
             Route::get('/pelanggan', [PegawaiPelangganController::class, 'index'])->name('pelanggan.index');
