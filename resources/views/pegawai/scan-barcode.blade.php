@@ -30,11 +30,11 @@
                     </div>
                     <input type="text" id="manual-kode"
                            placeholder="Masukkan kode pelanggan — contoh: CS-0001"
-                           class="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition placeholder:text-slate-400"
+                           class="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-600 transition placeholder:text-slate-400"
                            onkeydown="if(event.key==='Enter') cariPelanggan(this.value)">
                 </div>
                 <button type="button" onclick="cariPelanggan(document.getElementById('manual-kode').value)"
-                        class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition shadow-sm hover:shadow-md active:scale-[0.98]">
+                        class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium rounded-lg transition shadow-sm hover:shadow-md active:scale-[0.98]">
                     Cari
                 </button>
             </div>
@@ -137,7 +137,7 @@
 
             {{-- Loading State --}}
             <div id="loading-data" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-10 text-center">
-                <div class="w-12 h-12 border-[3px] border-indigo-100 border-t-indigo-500 rounded-full animate-spin mx-auto mb-4"></div>
+                <div class="w-12 h-12 border-[3px] border-violet-100 border-t-indigo-500 rounded-full animate-spin mx-auto mb-4"></div>
                 <p class="text-sm font-medium text-slate-500">Memuat data pelanggan...</p>
             </div>
 
@@ -150,7 +150,7 @@
                 </div>
                 <h4 class="text-base font-semibold text-slate-800 mb-1">Data Tidak Ditemukan</h4>
                 <p id="error-message" class="text-sm text-slate-500"></p>
-                <button onclick="resetScan()" class="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium underline underline-offset-2">
+                <button onclick="resetScan()" class="mt-4 text-sm text-violet-600 hover:text-violet-700 font-medium underline underline-offset-2">
                     Coba lagi
                 </button>
             </div>
@@ -179,7 +179,7 @@
                             </div>
                             <div class="px-5 py-3.5">
                                 <p class="text-xs text-slate-400 mb-0.5">ID Pelanggan</p>
-                                <p id="data-kode" class="text-sm font-mono font-bold text-indigo-600">-</p>
+                                <p id="data-kode" class="text-sm font-mono font-bold text-violet-600">-</p>
                             </div>
                         </div>
                         <div class="px-5 py-3.5">
@@ -228,9 +228,9 @@
                                     <p id="tagihan-jatuh-tempo" class="text-sm font-semibold text-slate-800">-</p>
                                 </div>
                             </div>
-                            <div class="bg-indigo-50 rounded-lg p-4 border border-indigo-100 mb-4">
-                                <p class="text-xs text-indigo-500 font-medium mb-1">Total Tagihan</p>
-                                <p id="tagihan-nominal" class="text-xl font-bold text-indigo-700">-</p>
+                            <div class="bg-violet-50 rounded-lg p-4 border border-violet-100 mb-4">
+                                <p class="text-xs text-violet-500 font-medium mb-1">Total Tagihan</p>
+                                <p id="tagihan-nominal" class="text-xl font-bold text-violet-700">-</p>
                             </div>
 
                             {{-- Payment Confirmation Form --}}
@@ -271,7 +271,7 @@
                                               class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition"></textarea>
                                 </div>
                                 <button type="button" onclick="konfirmasiPembayaran()"
-                                        class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition shadow-sm hover:shadow active:scale-[0.98]">
+                                        class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-violet-600 hover:bg-violet-700 text-white text-sm font-semibold rounded-lg transition shadow-sm hover:shadow active:scale-[0.98]">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                     </svg>

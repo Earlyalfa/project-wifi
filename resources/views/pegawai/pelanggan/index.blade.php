@@ -7,8 +7,8 @@
     {{-- Card Ringkasan --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-            <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center mb-3">
-                <i data-lucide="users" class="w-5 h-5 text-indigo-600"></i>
+            <div class="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center mb-3">
+                <i data-lucide="users" class="w-5 h-5 text-violet-600"></i>
             </div>
             <p class="text-xs text-slate-400 font-medium">Total Pelanggan</p>
             <p class="text-2xl font-bold text-slate-800 mt-1">{{ $totalPelanggan }}</p>
@@ -45,10 +45,10 @@
                     <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
                     <input type="text" name="search" value="{{ request('search') }}"
                            placeholder="Cari nama / kode / alamat..."
-                           class="w-full sm:w-56 rounded-lg border border-slate-200 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                           class="w-full sm:w-56 rounded-lg border border-slate-200 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400">
                 </div>
                 <select name="paket" onchange="this.form.submit()"
-                        class="rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                        class="rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400">
                     <option value="">Semua Paket</option>
                     @foreach ($paketList as $p)
                         <option value="{{ $p }}" {{ request('paket') === $p ? 'selected' : '' }}>{{ $p }}</option>
@@ -77,7 +77,7 @@
                                     $gangguan = $gangguanStatuses->get($p->id);
                                 @endphp
                                 <tr class="hover:bg-slate-50 transition-colors">
-                                    <td class="px-5 py-3 font-mono font-semibold text-indigo-600">{{ $p->kode }}</td>
+                                    <td class="px-5 py-3 font-mono font-semibold text-violet-600">{{ $p->kode }}</td>
                                     <td class="px-5 py-3">
                                         <p class="font-medium text-slate-800">{{ $p->nama }}</p>
                                         <p class="text-xs text-slate-400">{{ $p->no_hp ?? '-' }}</p>
@@ -130,7 +130,7 @@
                             <td class="px-5 py-3">
                                 <div class="flex items-center gap-1.5">
                                     <a href="{{ route('pegawai.pelanggan.show', $p) }}"
-                                       class="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
+                                       class="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 transition-colors"
                                        title="Detail">
                                         <i data-lucide="eye" class="w-4 h-4"></i>
                                     </a>

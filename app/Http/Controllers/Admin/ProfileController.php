@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Pegawai;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -12,10 +12,10 @@ class ProfileController extends Controller
     public function show(Request $request)
     {
         $user = $request->user();
-        return view('pegawai.profile.show', compact('user'));
+        return view('admin.profile.show', compact('user'));
     }
 
-public function update(Request $request)
+    public function update(Request $request)
     {
         $user = $request->user();
 
@@ -39,11 +39,11 @@ public function update(Request $request)
                 Storage::disk('public')->delete($user->foto_profil);
             }
 
-            $path = $request->file('foto_profil')->store('foto_profil_pegawai', 'public');
+            $path = $request->file('foto_profil')->store('foto_profil_admin', 'public');
             $user->update(['foto_profil' => $path]);
         }
 
-        return redirect()->route('pegawai.profile.show')
+        return redirect()->route('admin.profile.show')
             ->with('status', 'Profil berhasil diperbarui.');
     }
 
@@ -60,7 +60,7 @@ public function update(Request $request)
             'password' => Hash::make($validated['password']),
         ]);
 
-        return redirect()->route('pegawai.profile.show')
+        return redirect()->route('admin.profile.show')
             ->with('status', 'Kata sandi berhasil diperbarui.');
     }
 }

@@ -16,7 +16,7 @@ class User extends Authenticatable
      * Route updateRole sudah dilindungi middleware 'role:admin'.
      * RegisterController tidak mengirim input role, jadi user biasa tidak bisa mengubah role sendiri.
      */
-    protected $fillable = [
+protected $fillable = [
         'name',
         'email',
         'password',
@@ -24,6 +24,9 @@ class User extends Authenticatable
         'provider',
         'provider_id',
         'status',
+        'foto_profil',
+        'no_hp',
+        'alamat',
     ];
 
     protected $hidden = [

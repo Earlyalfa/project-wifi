@@ -168,8 +168,8 @@
         {{-- === SECTION 3: AKTIVITAS HARI INI === --}}
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
             <div class="flex items-center gap-2 mb-5">
-                <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
-                    <i data-lucide="activity" class="w-4 h-4 text-indigo-600"></i>
+                <div class="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
+                    <i data-lucide="activity" class="w-4 h-4 text-violet-600"></i>
                 </div>
                 <h3 class="font-semibold text-slate-800">Aktivitas Hari Ini</h3>
             </div>
@@ -181,14 +181,14 @@
                             'amber'   => 'bg-amber-500',
                             'blue'    => 'bg-blue-500',
                             'slate'   => 'bg-slate-300',
-                            default   => 'bg-indigo-500',
+                            default   => 'bg-violet-600',
                         };
                         $iconColor = match($aktivitas->color) {
                             'emerald' => 'text-emerald-600',
                             'amber'   => 'text-amber-600',
                             'blue'    => 'text-blue-600',
                             'slate'   => 'text-slate-400',
-                            default   => 'text-indigo-600',
+                            default   => 'text-violet-600',
                         };
                     @endphp
                     <div class="relative">
@@ -212,7 +212,7 @@
         </div>
 
         {{-- === SECTION 4: RINGKASAN HARI INI === --}}
-        <div class="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-2xl shadow-sm p-5 text-white relative overflow-hidden">
+        <div class="bg-gradient-to-br from-violet-700 to-violet-900 rounded-2xl shadow-sm p-5 text-white relative overflow-hidden">
             {{-- Ilustrasi --}}
             <div class="absolute right-0 top-0 w-40 h-40 opacity-10">
                 <svg viewBox="0 0 200 200" fill="white" xmlns="http://www.w3.org/2000/svg">
@@ -241,27 +241,27 @@
 
             <div class="grid grid-cols-2 gap-3 relative">
                 <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3">
-                    <p class="text-xs text-indigo-200">Total Kunjungan</p>
+                    <p class="text-xs text-violet-200">Total Kunjungan</p>
                     <p class="text-xl font-bold mt-0.5">{{ $totalKunjungan }}</p>
                 </div>
                 <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3">
-                    <p class="text-xs text-indigo-200">Pelanggan Belum Bayar</p>
+                    <p class="text-xs text-violet-200">Pelanggan Belum Bayar</p>
                     <p class="text-xl font-bold mt-0.5">{{ $belumBayarCount }}</p>
                 </div>
                 <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3">
-                    <p class="text-xs text-indigo-200">Pembayaran Berhasil</p>
+                    <p class="text-xs text-violet-200">Pembayaran Berhasil</p>
                     <p class="text-xl font-bold mt-0.5">{{ $pembayaranHariIni }}</p>
                 </div>
                 <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3">
-                    <p class="text-xs text-indigo-200">Total Pembayaran</p>
+                    <p class="text-xs text-violet-200">Total Pembayaran</p>
                     <p class="text-xl font-bold mt-0.5">Rp {{ number_format($totalPembayaranNominal, 0, ',', '.') }}</p>
                 </div>
                 <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3">
-                    <p class="text-xs text-indigo-200">Gangguan Baru</p>
+                    <p class="text-xs text-violet-200">Gangguan Baru</p>
                     <p class="text-xl font-bold mt-0.5">{{ $gangguanHariIni }}</p>
                 </div>
                 <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3">
-                    <p class="text-xs text-indigo-200">Gangguan Diselesaikan</p>
+                    <p class="text-xs text-violet-200">Gangguan Diselesaikan</p>
                     <p class="text-xl font-bold mt-0.5">{{ $gangguanSelesai }}</p>
                 </div>
             </div>
@@ -306,11 +306,11 @@
 
             {{-- Riwayat Kunjungan --}}
             <a href="#"
-               class="flex flex-col items-center gap-2 p-5 rounded-xl border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/50 transition-all duration-200 group">
-                <div class="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
-                    <i data-lucide="map-pin" class="w-6 h-6 text-indigo-600"></i>
+               class="flex flex-col items-center gap-2 p-5 rounded-xl border border-slate-100 hover:border-violet-200 hover:bg-violet-50/50 transition-all duration-200 group">
+                <div class="w-12 h-12 rounded-xl bg-violet-100 flex items-center justify-center group-hover:bg-violet-200 transition-colors">
+                    <i data-lucide="map-pin" class="w-6 h-6 text-violet-600"></i>
                 </div>
-                <span class="text-sm font-semibold text-slate-700 group-hover:text-indigo-700">Riwayat Kunjungan</span>
+                <span class="text-sm font-semibold text-slate-700 group-hover:text-violet-700">Riwayat Kunjungan</span>
             </a>
         </div>
     </div>

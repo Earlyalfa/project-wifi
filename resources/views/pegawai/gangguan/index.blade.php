@@ -7,8 +7,8 @@
     {{-- Card Ringkasan --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-            <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center mb-3">
-                <i data-lucide="list" class="w-5 h-5 text-indigo-600"></i>
+            <div class="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center mb-3">
+                <i data-lucide="list" class="w-5 h-5 text-violet-600"></i>
             </div>
             <p class="text-xs text-slate-400 font-medium">Total Pengaduan</p>
             <p class="text-2xl font-bold text-slate-800 mt-1">{{ $totalSemua }}</p>
@@ -45,10 +45,10 @@
                     <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
                     <input type="text" name="search" value="{{ request('search') }}"
                            placeholder="Cari tiket / pelanggan / keluhan..."
-                           class="w-full sm:w-64 rounded-lg border border-slate-200 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                           class="w-full sm:w-64 rounded-lg border border-slate-200 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400">
                 </div>
                 <select name="status" onchange="this.form.submit()"
-                        class="rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                        class="rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400">
                     <option value="">Semua Status</option>
                     <option value="menunggu" {{ request('status') === 'menunggu' ? 'selected' : '' }}>Menunggu</option>
                     <option value="diproses" {{ request('status') === 'diproses' ? 'selected' : '' }}>Diproses</option>
@@ -56,7 +56,7 @@
                 </select>
             </form>
             <a href="{{ route('pegawai.gangguan.create') }}"
-               class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors shrink-0">
+               class="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors shrink-0">
                 <i data-lucide="plus" class="w-4 h-4"></i>
                 Tambah Pengaduan
             </a>
@@ -79,7 +79,7 @@
                     @forelse ($gangguans as $g)
                         <tr class="hover:bg-slate-50 transition-colors">
                             <td class="px-5 py-3">
-                                <span class="font-mono font-semibold text-indigo-600">{{ $g->no_tiket }}</span>
+                                <span class="font-mono font-semibold text-violet-600">{{ $g->no_tiket }}</span>
                             </td>
                             <td class="px-5 py-3">
                                 <p class="font-medium text-slate-800">{{ $g->pelanggan->nama }}</p>
@@ -111,7 +111,7 @@
                             <td class="px-5 py-3">
                                 <div class="flex items-center gap-1.5">
                                     <a href="{{ route('pegawai.gangguan.show', $g) }}"
-                                       class="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
+                                       class="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 transition-colors"
                                        title="Detail">
                                         <i data-lucide="eye" class="w-4 h-4"></i>
                                     </a>

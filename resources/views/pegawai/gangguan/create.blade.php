@@ -17,7 +17,7 @@
             </div>
             <div>
                 <h2 class="font-semibold text-slate-800">Form Pengaduan Gangguan</h2>
-                <p class="text-xs text-slate-400">No Tiket: <span class="font-mono font-semibold text-indigo-600">{{ $noTiket }}</span></p>
+                <p class="text-xs text-slate-400">No Tiket: <span class="font-mono font-semibold text-violet-600">{{ $noTiket }}</span></p>
             </div>
         </div>
 
@@ -27,7 +27,7 @@
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-1">Pelanggan</label>
                 <select name="pelanggan_id" required
-                        class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                        class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400">
                     <option value="">-- Pilih Pelanggan --</option>
                     @foreach ($pelanggans as $p)
                         <option value="{{ $p->id }}" {{ old('pelanggan_id') == $p->id ? 'selected' : '' }}>
@@ -42,13 +42,13 @@
                 <label class="block text-sm font-semibold text-slate-700 mb-1">Keluhan</label>
                 <textarea name="keluhan" rows="4" required
                           placeholder="Jelaskan keluhan yang dialami pelanggan..."
-                          class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">{{ old('keluhan') }}</textarea>
+                          class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400">{{ old('keluhan') }}</textarea>
                 @error('keluhan') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
             </div>
 
             <div class="flex items-center gap-3 pt-2">
                 <button type="submit"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-lg text-sm transition-colors">
+                        class="bg-violet-600 hover:bg-violet-700 text-white font-semibold px-6 py-2.5 rounded-lg text-sm transition-colors">
                     Simpan Pengaduan
                 </button>
                 <a href="{{ route('pegawai.gangguan.index') }}"

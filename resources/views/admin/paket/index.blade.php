@@ -8,7 +8,7 @@
     <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-semibold text-slate-800">Daftar Paket WiFi</h2>
         <a href="{{ route('admin.paket.create') }}"
-           class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors">
+           class="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors">
             <i data-lucide="plus" class="w-4 h-4"></i>
             Tambah Paket
         </a>
@@ -77,7 +77,7 @@
                                 <i data-lucide="signal" class="w-10 h-10 text-slate-300"></i>
                                 <p class="text-sm text-slate-400">Belum ada paket WiFi.</p>
                                 <a href="{{ route('admin.paket.create') }}"
-                                   class="text-sm font-semibold text-indigo-600 hover:underline mt-1">
+                                   class="text-sm font-semibold text-violet-600 hover:underline mt-1">
                                     Tambah Paket Baru
                                 </a>
                             </div>

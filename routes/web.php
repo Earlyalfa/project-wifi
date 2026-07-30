@@ -15,8 +15,10 @@ use App\Http\Controllers\Pegawai\ScanBarcodeController;
 use App\Http\Controllers\Pegawai\SettingsController as PegawaiSettingsController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
 use App\Http\Controllers\Admin\PaketController as AdminPaketController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Pelanggan\DashboardController as PelangganDashboardController;
 use App\Http\Controllers\Pelanggan\PembayaranController as PelangganPembayaranController;
 use App\Http\Controllers\Pelanggan\PengaduanController as PelangganPengaduanController;
@@ -61,7 +63,17 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::post('/logout', [AdminAuthController::class, 'destroy'])->name('logout');
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-        Route::get('/settings', function () { return view('admin.settings'); })->name('settings');
+Route::get('/settings', function () { return view('admin.settings'); })->name('settings');
+
+        // Admin Profile
+        Route::get('/profile', [AdminProfileController::class, 'show'])->name('profile.show');
+        Route::patch('/profile', [AdminProfileController::class, 'update'])->name('profile.update');
+        Route::patch('/profile/password', [AdminProfileController::class, 'updatePassword'])->name('profile.password');
+
+        // Admin Laporan
+        Route::get('/laporan', [AdminLaporanController::class, 'index'])->name('laporan');
+        Route::get('/laporan/export-pdf', [AdminLaporanController::class, 'exportPdf'])->name('laporan.export-pdf');
+        Route::get('/laporan/export-excel', [AdminLaporanController::class, 'exportExcel'])->name('laporan.export-excel');
 
         // Admin Notifications
         Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('notifications.index');

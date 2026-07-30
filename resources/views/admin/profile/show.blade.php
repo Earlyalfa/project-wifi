@@ -1,4 +1,4 @@
-@extends('layouts.pegawai')
+@extends('layouts.admin')
 
 @section('title', 'Profil Saya')
 @section('page-title', 'Profil Saya')
@@ -23,7 +23,7 @@
             <div>
                 <h2 class="font-bold text-lg text-slate-800">{{ $user->name }}</h2>
                 <p class="text-sm text-slate-400">{{ $user->email }}</p>
-                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 mt-1">
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-violet-100 text-violet-700 mt-1">
                     {{ ucfirst($user->role) }}
                 </span>
             </div>
@@ -32,7 +32,7 @@
         <hr class="border-slate-100 mb-5">
 
         {{-- Form Update Profil --}}
-        <form action="{{ route('pegawai.profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+        <form action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
             @method('PATCH')
 
@@ -116,7 +116,7 @@
 
     {{-- Card Ganti Kata Sandi --}}
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
-        <form action="{{ route('pegawai.profile.password') }}" method="POST" class="space-y-4">
+        <form action="{{ route('admin.profile.password') }}" method="POST" class="space-y-4">
             @csrf
             @method('PATCH')
 

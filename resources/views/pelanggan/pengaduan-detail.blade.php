@@ -9,13 +9,13 @@
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-6">
             <div class="flex items-center justify-between mb-5">
                 <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
-                        <i data-lucide="file-text" class="w-4 h-4 text-indigo-600"></i>
+                    <div class="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
+                        <i data-lucide="file-text" class="w-4 h-4 text-violet-600"></i>
                     </div>
                     <h3 class="font-semibold text-slate-800">Detail Pengaduan</h3>
                 </div>
                 <a href="{{ route('pelanggan.pengaduan') }}"
-                   class="text-xs font-medium text-indigo-600 hover:underline inline-flex items-center gap-1">
+                   class="text-xs font-medium text-violet-600 hover:underline inline-flex items-center gap-1">
                     <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
                     Kembali
                 </a>

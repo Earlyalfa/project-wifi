@@ -6,7 +6,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-100 min-h-screen">
-    <nav class="bg-indigo-500 text-white px-6 py-4 flex justify-between items-center">
+    <nav class="bg-violet-600 text-white px-6 py-4 flex justify-between items-center">
         <span class="font-semibold">WiFiPay - Dashboard Pelanggan</span>
         <form action="{{ route('logout') }}" method="POST">
             @csrf
@@ -17,7 +17,7 @@
     <div class="max-w-5xl mx-auto p-6">
         <h1 class="text-2xl font-bold text-slate-800 mb-2">Halo, {{ $user->name }} 👋</h1>
         <p class="text-slate-500 mb-6">Selamat datang di dashboard pelanggan. Role akun kamu saat ini:
-            <span class="font-semibold text-indigo-600">{{ $user->role }}</span>
+            <span class="font-semibold text-violet-600">{{ $user->role }}</span>
         </p>
 
         <div class="grid sm:grid-cols-3 gap-4">

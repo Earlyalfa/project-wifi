@@ -1,19 +1,20 @@
-# TODO: Ubah Scan QR Code → Scan QR ID Pelanggan + Pembayaran Tunai
+# Theme Color Adjustment (Completed)
+- [x] All layout files (admin, pegawai, pelanggan, guest)
+- [x] All auth pages (login, register, pegawai login)
+- [x] All dashboard pages (admin, pegawai, pelanggan)
+- [x] All admin feature pages (paket, users, laporan, settings)
+- [x] All pegawai feature pages (pelanggan index, detail, create, scan-barcode, gangguan, settings)
+- [x] All pelanggan feature pages (pembayaran, profile, pengaduan)
 
-## Step 1: Update `app/Http/Controllers/Pegawai/ScanBarcodeController.php`
-- [x] Ganti logic controller:
-  - Method `create()` — tetap tampilkan halaman scan
-  - Method `cariPelanggan(Request)` — AJAX JSON: cari pelanggan by kode, return data + tagihan
-  - Method `konfirmasiBayar(Request)` — AJAX POST: update status jadi lunas, catat kunjungan
+# QR Code ID Pelanggan Feature (Completed)
+- [x] `resources/views/pegawai/pelanggan/create.blade.php` - Added QR code panel on the right side with:
+  - Real-time QR code generation using `qrcodejs` library
+  - Download QR button
+  - Print QR button
+  - Info alert about QR usage
 
-## Step 2: Update `resources/views/pegawai/scan-barcode.blade.php`
-- [x] Layout baru: Kolom kiri (Scanner QR + Upload Gambar), Kolom kanan (Data Pelanggan + Tagihan + Form Pembayaran Tunai)
-- [x] Scanner QR menggunakan jsQR (sudah ada)
-- [x] Upload gambar QR + auto-detect dengan jsQR dari canvas
-- [x] Form konfirmasi pembayaran: nominal diterima, catatan, tombol konfirmasi
-- [x] AJAX flow tanpa reload halaman
-
-## Step 3: Update `routes/web.php`
-- [x] Tambah route POST `/pegawai/scan-barcode/cari` → `cariPelanggan`
-- [x] Tambah route POST `/pegawai/scan-barcode/konfirmasi` → `konfirmasiBayar`
-</create_file>
+- [x] `resources/views/pegawai/pelanggan/detail.blade.php` - Added QR code section in right column with:
+  - QR code display (150x150px)
+  - Download QR button
+  - Print QR button
+  - JavaScript for QR generation, download, and print functions

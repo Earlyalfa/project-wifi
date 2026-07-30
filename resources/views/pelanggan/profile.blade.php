@@ -13,9 +13,9 @@
                 @if ($pelanggan && $pelanggan->foto_profil)
                     <img src="{{ asset('storage/' . $pelanggan->foto_profil) }}"
                          alt="Foto Profil"
-                         class="w-16 h-16 rounded-full object-cover border-2 border-indigo-100">
+                         class="w-16 h-16 rounded-full object-cover border-2 border-violet-100">
                 @else
-                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center shadow-sm">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-violet-400 to-violet-600 flex items-center justify-center shadow-sm">
                         <span class="text-2xl font-bold text-white">{{ substr(auth()->user()->name, 0, 1) }}</span>
                     </div>
                 @endif
@@ -54,7 +54,7 @@
                         @endif
                     </div>
                     <input type="file" name="foto_profil" id="foto_profil"
-                           class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-colors"
+                           class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-600 hover:file:bg-violet-100 transition-colors"
                            accept="image/*"
                            onchange="previewFoto(event)">
                 </div>
@@ -67,7 +67,7 @@
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Nama Lengkap</label>
                 <input type="text" name="name" value="{{ old('name', $user->name) }}"
-                       class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                       class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
                        required>
                 @error('name')
                     <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
@@ -78,7 +78,7 @@
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
                 <input type="email" name="email" value="{{ old('email', $user->email) }}"
-                       class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                       class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
                        required>
                 @error('email')
                     <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
@@ -89,7 +89,7 @@
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Nomor HP</label>
                 <input type="text" name="no_hp" value="{{ old('no_hp', $pelanggan->no_hp ?? '') }}"
-                       class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                       class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
                        placeholder="08xxxxxxxxxx">
                 @error('no_hp')
                     <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
@@ -100,7 +100,7 @@
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Alamat</label>
                 <textarea name="alamat" rows="2"
-                          class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                          class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
                           placeholder="Alamat lengkap">{{ old('alamat', $pelanggan->alamat ?? '') }}</textarea>
                 @error('alamat')
                     <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
@@ -108,7 +108,7 @@
             </div>
 
             <button type="submit"
-                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors">
+                    class="w-full bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors">
                 Simpan Perubahan
             </button>
         </form>
@@ -126,7 +126,7 @@
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Password Lama</label>
                 <input type="password" name="current_password"
-                       class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                       class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
                        required>
                 @error('current_password')
                     <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
@@ -137,7 +137,7 @@
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Password Baru</label>
                 <input type="password" name="password"
-                       class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                       class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
                        required>
                 @error('password')
                     <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
@@ -148,7 +148,7 @@
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Konfirmasi Password Baru</label>
                 <input type="password" name="password_confirmation"
-                       class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                       class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
                        required>
             </div>
 

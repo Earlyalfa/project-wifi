@@ -25,42 +25,45 @@
     </template>
 
     {{-- SIDEBAR --}}
-    <aside class="fixed md:sticky inset-y-0 left-0 z-30 w-64 bg-indigo-950 text-indigo-50 flex flex-col shrink-0 min-h-screen transition-all duration-300 ease-in-out -translate-x-full md:translate-x-0"
+<aside class="fixed md:sticky inset-y-0 left-0 z-30 w-64 bg-[#1a1a2e] text-violet-50 flex flex-col shrink-0 min-h-screen transition-all duration-300 ease-in-out -translate-x-full md:translate-x-0"
            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
            x-cloak>
 
-        {{-- Logo --}}
-        <div class="px-5 py-6 flex items-center gap-3 border-b border-indigo-900/50">
-            <div class="w-9 h-9 rounded-xl bg-indigo-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                <i data-lucide="wifi" class="w-5 h-5 text-white"></i>
-            </div>
-            <div>
-                <span class="font-bold text-lg tracking-tight">WiFiPay</span>
-                <p class="text-[10px] text-indigo-400/60 font-medium -mt-0.5">Admin Panel</p>
-            </div>
+    {{-- Logo --}}
+    <div class="px-5 py-6 flex items-center gap-3 border-b border-[#968CAA]/30">
+        <img src="{{ asset('images/logo-wifipay.png') }}"
+            alt="WiFiPay Logo"
+            class="w-12 h-12 object-contain">
+        <div>
+            <h1 class="text-xl font-bold text-white">
+                WiFiPay
+            </h1>
+            <p class="text-xs text-[#B4AAD2]">
+                Admin 
+            </p>
         </div>
+    </div>
 
         {{-- Menu --}}
         <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto sidebar-scroll">
             @php
-$menu = [
+        $menu = [
                     ['route' => 'admin.dashboard',   'icon' => 'layout-dashboard',     'label' => 'Dashboard'],
                     ['route' => 'admin.users',        'icon' => 'users',                'label' => 'Data Pengguna'],
                     ['route' => 'admin.paket.index', 'icon' => 'signal',               'label' => 'Paket WiFi'],
                     ['route' => null,                'icon' => 'credit-card',          'label' => 'Pembayaran'],
                     ['route' => null,                'icon' => 'message-square-warning', 'label' => 'Pengaduan Gangguan'],
-                    ['route' => null,                'icon' => 'file-text',            'label' => 'Laporan'],
-                    ['route' => 'admin.settings',    'icon' => 'settings',             'label' => 'Pengaturan'],
+                    ['route' => 'admin.laporan',     'icon' => 'file-text',            'label' => 'Laporan'],
                 ];
             @endphp
 
-            <p class="px-3 text-[10px] tracking-widest text-indigo-400/50 font-semibold uppercase pt-2 pb-2">Menu Utama</p>
+            <p class="px-3 text-[10px] tracking-widest text-violet-400/50 font-semibold uppercase pt-2 pb-2">Menu Utama</p>
 
             @foreach ($menu as $item)
-                @php $active = $item['route'] && request()->routeIs($item['route']); @endphp
+                @php $active = $item['route'] && request()->routeIs($item['route'].'*'); @endphp
                 <a href="{{ $item['route'] ? route($item['route']) : '#' }}"
                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200
-                          {{ $active ? 'bg-indigo-600 text-white font-semibold shadow-md shadow-indigo-600/20' : 'text-indigo-100/70 hover:bg-indigo-900/60 hover:text-indigo-100' }}">
+                          {{ $active ? 'bg-violet-600 text-white font-semibold shadow-md shadow-violet-600/20' : 'text-violet-100/70 hover:bg-violet-900/60 hover:text-violet-100' }}">
                     <i data-lucide="{{ $item['icon'] }}" class="w-4 h-4 shrink-0"></i>
                     <span>{{ $item['label'] }}</span>
                     @if ($active)
@@ -71,19 +74,12 @@ $menu = [
         </nav>
 
         {{-- Admin Info --}}
-        <div class="p-3 border-t border-indigo-900/50">
+        <div class="p-3 border-t border-violet-900/50">
             <div class="flex items-center gap-3 px-3 py-2.5 rounded-xl">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center shrink-0 shadow-sm">
-                    <span class="text-xs font-bold text-white">{{ substr(auth()->user()->name, 0, 1) }}</span>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold text-indigo-100 leading-tight truncate">{{ auth()->user()->name }}</p>
-                    <p class="text-[10px] text-indigo-400/60 font-medium">Administrator</p>
-                </div>
             </div>
             <form action="{{ route('admin.logout') }}" method="POST" class="mt-1">
                 @csrf
-                <button class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm text-indigo-100/60 hover:bg-rose-500/10 hover:text-rose-400 transition-all duration-200">
+                <button class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm text-violet-100/60 hover:bg-rose-500/10 hover:text-rose-400 transition-all duration-200">
                     <i data-lucide="log-out" class="w-4 h-4"></i>
                     Logout
                 </button>
@@ -105,7 +101,7 @@ $menu = [
                 <div class="relative hidden sm:block">
                     <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
 <input type="text" placeholder="Cari sesuatu..."
-                           class="w-56 rounded-lg border border-slate-200 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-slate-50">
+                           class="w-56 rounded-lg border border-slate-200 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 bg-slate-50">
                 </div>
             </div>
 
@@ -125,7 +121,7 @@ $menu = [
                         <div class="flex items-center justify-between px-4 py-3 border-b border-slate-100 shrink-0">
                             <h3 class="font-semibold text-slate-800 text-sm">Notifikasi</h3>
                             <button x-show="unread > 0" @click="markAllRead()"
-                                    class="text-xs text-indigo-600 font-medium hover:underline">Tandai sudah dibaca</button>
+class="text-xs text-violet-600 font-medium hover:underline">Tandai sudah dibaca
                         </div>
                         <div class="overflow-y-auto flex-1 max-h-[350px]">
                             <template x-if="items.length === 0">
@@ -136,18 +132,18 @@ $menu = [
                             </template>
                             <template x-for="n in items" :key="n.id">
                                 <div @click="markRead(n)"
-                                     :class="{'bg-indigo-50/50': !n.is_read}"
+                                     :class="{'bg-violet-50/50': !n.is_read}"
                                      class="flex items-start gap-3 px-4 py-3 border-b border-slate-50 cursor-pointer transition-colors hover:bg-slate-50">
                                     <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-                                         :class="n.color === 'rose' ? 'bg-rose-100' : n.color === 'amber' ? 'bg-amber-100' : n.color === 'emerald' ? 'bg-emerald-100' : 'bg-indigo-100'">
+                                         :class="n.color === 'rose' ? 'bg-rose-100' : n.color === 'amber' ? 'bg-amber-100' : n.color === 'emerald' ? 'bg-emerald-100' : 'bg-violet-100'">
                                         <i :data-lucide="n.icon" class="w-4 h-4"
-                                           :class="n.color === 'rose' ? 'text-rose-600' : n.color === 'amber' ? 'text-amber-600' : n.color === 'emerald' ? 'text-emerald-600' : 'text-indigo-600'"></i>
+                                           :class="n.color === 'rose' ? 'text-rose-600' : n.color === 'amber' ? 'text-amber-600' : n.color === 'emerald' ? 'text-emerald-600' : 'text-violet-600'"></i>
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm text-slate-700" x-text="n.message"></p>
                                         <p class="text-xs text-slate-400 mt-0.5" x-text="n.time_ago"></p>
                                     </div>
-                                    <span x-show="!n.is_read" class="w-2 h-2 rounded-full bg-indigo-500 shrink-0 mt-2"></span>
+                                    <span x-show="!n.is_read" class="w-2 h-2 rounded-full bg-violet-600 shrink-0 mt-2"></span>
                                 </div>
                             </template>
                         </div>
@@ -157,14 +153,43 @@ $menu = [
                     </div>
                 </div>
 
-                {{-- Profile --}}
-                <div class="flex items-center gap-2 md:gap-3 p-1.5 rounded-xl">
-                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center shadow-sm">
-                        <span class="text-sm font-bold text-white">{{ substr(auth()->user()->name, 0, 1) }}</span>
-                    </div>
-                    <div class="hidden md:block text-left">
-                        <p class="text-sm font-semibold text-slate-800 leading-tight">{{ auth()->user()->name }}</p>
-                        <p class="text-[11px] text-slate-400 font-medium">Admin</p>
+{{-- Profile Dropdown --}}
+                <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+                    <button @click="open = !open" class="flex items-center gap-2 md:gap-3 p-1.5 rounded-xl hover:bg-slate-100 transition-all">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-violet-400 to-violet-600 flex items-center justify-center shadow-sm">
+                            <span class="text-sm font-bold text-white">{{ substr(auth()->user()->name, 0, 1) }}</span>
+                        </div>
+                        <div class="hidden md:block text-left">
+                            <p class="text-sm font-semibold text-slate-800 leading-tight">{{ auth()->user()->name }}</p>
+                            <p class="text-[11px] text-slate-400 font-medium">Admin</p>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 hidden md:block" :class="open ? 'rotate-180' : ''"></i>
+                    </button>
+
+                    {{-- Dropdown --}}
+                    <div x-show="open" x-cloak
+                         class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 z-50">
+                        <div class="px-4 py-3 border-b border-slate-100">
+                            <p class="text-sm font-semibold text-slate-800">{{ auth()->user()->name }}</p>
+                            <p class="text-xs text-slate-400">{{ auth()->user()->email ?? 'admin@wifiPay.id' }}</p>
+                        </div>
+                        <a href="{{ route('admin.profile.show') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+                            <i data-lucide="user" class="w-4 h-4 text-slate-400"></i>
+                            Profil Saya
+                        </a>
+                        <a href="{{ route('admin.settings') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+                            <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i>
+                            Pengaturan
+                        </a>
+                        <div class="border-t border-slate-100 mt-1 pt-1">
+                            <form action="{{ route('admin.logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50 transition-colors">
+                                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                                    Logout
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -173,8 +198,8 @@ $menu = [
         {{-- CONTENT --}}
         <main class="flex-1 p-4 md:p-6 overflow-x-hidden">
             @if (session('status'))
-<div class="mb-4 text-sm text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-3 flex items-center gap-2">
-                    <i data-lucide="check-circle" class="w-4 h-4 text-indigo-500 shrink-0"></i>
+<div class="mb-4 text-sm text-violet-700 bg-violet-50 border border-violet-200 rounded-xl px-4 py-3 flex items-center gap-2">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-violet-500 shrink-0"></i>
                     {{ session('status') }}
                 </div>
             @endif

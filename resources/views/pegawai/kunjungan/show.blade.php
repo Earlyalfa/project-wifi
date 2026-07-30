@@ -14,8 +14,8 @@
         {{-- Header --}}
         <div class="flex items-start justify-between mb-6">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center">
-                    <i data-lucide="map-pin" class="w-6 h-6 text-indigo-600"></i>
+                <div class="w-12 h-12 rounded-xl bg-violet-100 flex items-center justify-center">
+                    <i data-lucide="map-pin" class="w-6 h-6 text-violet-600"></i>
                 </div>
                 <div>
                     <h2 class="font-semibold text-slate-800">Detail Kunjungan</h2>
@@ -41,14 +41,14 @@
                 <div class="bg-slate-50 rounded-xl p-4">
                     <p class="text-xs text-slate-400 font-semibold uppercase mb-2">Waktu Kunjungan</p>
                     <div class="flex items-center gap-2">
-                        <i data-lucide="calendar" class="w-4 h-4 text-indigo-500"></i>
+                        <i data-lucide="calendar" class="w-4 h-4 text-violet-500"></i>
                         <span class="font-medium text-slate-800">{{ $kunjungan->waktu_kunjungan->format('d F Y H:i') }} WIB</span>
                     </div>
                 </div>
                 <div class="bg-slate-50 rounded-xl p-4">
                     <p class="text-xs text-slate-400 font-semibold uppercase mb-2">Pegawai</p>
                     <div class="flex items-center gap-2">
-                        <i data-lucide="user" class="w-4 h-4 text-indigo-500"></i>
+                        <i data-lucide="user" class="w-4 h-4 text-violet-500"></i>
                         <span class="font-medium text-slate-800">{{ $kunjungan->pegawai->name }}</span>
                     </div>
                 </div>
@@ -57,8 +57,8 @@
             <div class="bg-slate-50 rounded-xl p-4">
                 <p class="text-xs text-slate-400 font-semibold uppercase mb-2">Pelanggan</p>
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                        <i data-lucide="user" class="w-5 h-5 text-indigo-600"></i>
+                    <div class="w-10 h-10 rounded-full bg-violet-100 flex items-center justify-center">
+                        <i data-lucide="user" class="w-5 h-5 text-violet-600"></i>
                     </div>
                     <div>
                         <p class="font-semibold text-slate-800">{{ $kunjungan->pelanggan->nama }}</p>
@@ -84,7 +84,7 @@
             </div>
 
             @if ($kunjungan->catatan)
-                <div class="bg-indigo-50 rounded-xl p-4">
+                <div class="bg-violet-50 rounded-xl p-4">
                     <p class="text-xs text-indigo-400 font-semibold uppercase mb-2">Catatan</p>
                     <p class="text-sm text-indigo-800">{{ $kunjungan->catatan }}</p>
                 </div>

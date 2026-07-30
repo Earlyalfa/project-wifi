@@ -16,7 +16,7 @@
             {{-- CARD INFO USER --}}
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
                 <div class="flex items-start gap-4 mb-5">
-                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center shrink-0 shadow-sm">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-violet-400 to-violet-600 flex items-center justify-center shrink-0 shadow-sm">
                         <i data-lucide="user" class="w-7 h-7 text-white"></i>
                     </div>
                     <div class="flex-1">
@@ -27,9 +27,9 @@
                             </div>
                             <div class="flex items-center gap-2">
                                 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold
-                                    {{ $user->role === 'admin' ? 'bg-indigo-100 text-indigo-700' : ($user->role === 'pegawai' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600') }}">
+                                    {{ $user->role === 'admin' ? 'bg-violet-100 text-violet-700' : ($user->role === 'pegawai' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600') }}">
                                     <span class="w-1.5 h-1.5 rounded-full
-                                        {{ $user->role === 'admin' ? 'bg-indigo-500' : ($user->role === 'pegawai' ? 'bg-emerald-500' : 'bg-slate-400') }}"></span>
+                                        {{ $user->role === 'admin' ? 'bg-violet-600' : ($user->role === 'pegawai' ? 'bg-emerald-500' : 'bg-slate-400') }}"></span>
                                     {{ ucfirst($user->role) }}
                                 </span>
                                 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold
@@ -44,35 +44,35 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="map-pin" class="w-4 h-4 text-indigo-500 mt-0.5 shrink-0"></i>
+                        <i data-lucide="map-pin" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
                         <div>
                             <p class="text-xs text-slate-400 font-medium">Alamat</p>
                             <p class="text-sm text-slate-800 font-medium">{{ $pelanggan->alamat ?? '-' }}</p>
                         </div>
                     </div>
                     <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="wifi" class="w-4 h-4 text-indigo-500 mt-0.5 shrink-0"></i>
+                        <i data-lucide="wifi" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
                         <div>
                             <p class="text-xs text-slate-400 font-medium">Paket WiFi</p>
                             <p class="text-sm text-slate-800 font-medium">{{ $pelanggan->paket ?? '-' }}</p>
                         </div>
                     </div>
                     <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="phone" class="w-4 h-4 text-indigo-500 mt-0.5 shrink-0"></i>
+                        <i data-lucide="phone" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
                         <div>
                             <p class="text-xs text-slate-400 font-medium">No. HP</p>
                             <p class="text-sm text-slate-800 font-medium">{{ $pelanggan->no_hp ?? '-' }}</p>
                         </div>
                     </div>
                     <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="calendar" class="w-4 h-4 text-indigo-500 mt-0.5 shrink-0"></i>
+                        <i data-lucide="calendar" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
                         <div>
                             <p class="text-xs text-slate-400 font-medium">Tanggal Daftar</p>
                             <p class="text-sm text-slate-800 font-medium">{{ $user->created_at->format('d F Y') }}</p>
                         </div>
                     </div>
                     <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="check-circle" class="w-4 h-4 text-indigo-500 mt-0.5 shrink-0"></i>
+                        <i data-lucide="check-circle" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
                         <div>
                             <p class="text-xs text-slate-400 font-medium">Status Akun</p>
                             <p class="text-sm">
@@ -89,7 +89,7 @@
                         </div>
                     </div>
                     <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="tag" class="w-4 h-4 text-indigo-500 mt-0.5 shrink-0"></i>
+                        <i data-lucide="tag" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
                         <div>
                             <p class="text-xs text-slate-400 font-medium">Kode Pelanggan</p>
                             <p class="text-sm text-slate-800 font-medium">{{ $pelanggan->kode ?? '-' }}</p>
@@ -104,8 +104,8 @@
             {{-- Foto Rumah --}}
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
                 <div class="flex items-center gap-2 mb-4">
-                    <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
-                        <i data-lucide="camera" class="w-4 h-4 text-indigo-600"></i>
+                    <div class="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
+                        <i data-lucide="camera" class="w-4 h-4 text-violet-600"></i>
                     </div>
                     <h3 class="font-semibold text-slate-800">Foto Rumah</h3>
                 </div>
@@ -124,7 +124,7 @@
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 space-y-3">
                 <h3 class="font-semibold text-slate-800 mb-2">Aksi</h3>
                 <a href="{{ route('admin.users.edit', $user) }}"
-                   class="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg transition-colors text-sm">
+                   class="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2.5 rounded-lg transition-colors text-sm">
                     <i data-lucide="pencil" class="w-4 h-4"></i>
                     Edit Pengguna
                 </a>

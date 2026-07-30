@@ -14,8 +14,8 @@
             <p class="text-2xl font-bold text-slate-800 mt-1">{{ $totalPengguna }}</p>
         </div>
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-            <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center mb-3">
-                <i data-lucide="user-check" class="w-5 h-5 text-indigo-600"></i>
+            <div class="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center mb-3">
+                <i data-lucide="user-check" class="w-5 h-5 text-violet-600"></i>
             </div>
             <p class="text-xs text-slate-400 font-medium">Pegawai Aktif</p>
             <p class="text-2xl font-bold text-slate-800 mt-1">{{ $pegawaiAktif }}</p>
@@ -73,8 +73,8 @@
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
-                        <i data-lucide="users" class="w-4 h-4 text-indigo-600"></i>
+                    <div class="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
+                        <i data-lucide="users" class="w-4 h-4 text-violet-600"></i>
                     </div>
                     <h3 class="font-semibold text-slate-800">Pengguna Terbaru</h3>
                 </div>
@@ -99,8 +99,8 @@
                                 </td>
                                 <td class="px-5 py-3">
                                     @if ($user->role === 'admin')
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Admin
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-violet-100 text-violet-700">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-violet-600"></span> Admin
                                         </span>
                                     @elseif ($user->role === 'pegawai')
                                         <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">
@@ -129,12 +129,12 @@
                                     @if ($user->id !== auth()->id())
                                     <form action="{{ route('admin.users.role', $user) }}" method="POST" class="flex items-center gap-1">
                                         @csrf @method('PATCH')
-                                        <select name="role" class="text-xs border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                                        <select name="role" class="text-xs border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-violet-400">
                                             <option value="pelanggan" {{ $user->role === 'pelanggan' ? 'selected' : '' }}>Pelanggan</option>
                                             <option value="pegawai" {{ $user->role === 'pegawai' ? 'selected' : '' }}>Pegawai</option>
                                             <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin</option>
                                         </select>
-                                        <button type="submit" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 hover:underline">Simpan</button>
+                                        <button type="submit" class="text-xs font-semibold text-violet-600 hover:text-violet-800 hover:underline">Simpan</button>
                                     </form>
                                     @else
                                         <span class="text-xs text-slate-400">-</span>
@@ -263,11 +263,11 @@
         </div>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <a href="{{ route('admin.users') }}"
-               class="flex flex-col items-center gap-2 p-5 rounded-xl border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/50 transition-all duration-200 group">
-                <div class="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
-                    <i data-lucide="user-plus" class="w-6 h-6 text-indigo-600"></i>
+               class="flex flex-col items-center gap-2 p-5 rounded-xl border border-slate-100 hover:border-violet-200 hover:bg-violet-50/50 transition-all duration-200 group">
+                <div class="w-12 h-12 rounded-xl bg-violet-100 flex items-center justify-center group-hover:bg-violet-200 transition-colors">
+                    <i data-lucide="user-plus" class="w-6 h-6 text-violet-600"></i>
                 </div>
-                <span class="text-sm font-semibold text-slate-700 group-hover:text-indigo-700">Tambah Pengguna</span>
+                <span class="text-sm font-semibold text-slate-700 group-hover:text-violet-700">Tambah Pengguna</span>
             </a>
             <a href="#"
                class="flex flex-col items-center gap-2 p-5 rounded-xl border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/50 transition-all duration-200 group">

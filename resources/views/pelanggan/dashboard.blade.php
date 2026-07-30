@@ -8,8 +8,8 @@
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {{-- Card 1: Paket WiFi --}}
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-            <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center mb-3">
-                <i data-lucide="signal" class="w-5 h-5 text-indigo-600"></i>
+            <div class="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center mb-3">
+                <i data-lucide="signal" class="w-5 h-5 text-violet-600"></i>
             </div>
             <p class="text-xs text-slate-400 font-medium">Paket WiFi</p>
             <p class="text-2xl font-bold text-slate-800 mt-1">{{ $paket ?? '-' }}</p>
@@ -56,8 +56,8 @@
     {{-- ===================== INFORMASI AKUN ===================== --}}
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-6">
         <div class="flex items-center gap-2 mb-5">
-            <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
-                <i data-lucide="info" class="w-4 h-4 text-indigo-600"></i>
+            <div class="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
+                <i data-lucide="info" class="w-4 h-4 text-violet-600"></i>
             </div>
             <h3 class="font-semibold text-slate-800">Informasi Akun</h3>
         </div>
@@ -217,20 +217,20 @@
     {{-- ===================== QUICK ACTION ===================== --}}
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
         <div class="flex items-center gap-2 mb-5">
-            <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
-                <i data-lucide="zap" class="w-4 h-4 text-indigo-600"></i>
+            <div class="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
+                <i data-lucide="zap" class="w-4 h-4 text-violet-600"></i>
             </div>
             <h3 class="font-semibold text-slate-800">Quick Action</h3>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {{-- Lihat Tagihan Saya --}}
             <a href="#"
-               class="flex items-center gap-4 p-5 rounded-xl border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/50 transition-all duration-200 group">
-                <div class="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-200 transition-colors shrink-0">
-                    <i data-lucide="credit-card" class="w-6 h-6 text-indigo-600"></i>
+               class="flex items-center gap-4 p-5 rounded-xl border border-slate-100 hover:border-violet-200 hover:bg-violet-50/50 transition-all duration-200 group">
+                <div class="w-12 h-12 rounded-xl bg-violet-100 flex items-center justify-center group-hover:bg-violet-200 transition-colors shrink-0">
+                    <i data-lucide="credit-card" class="w-6 h-6 text-violet-600"></i>
                 </div>
                 <div>
-                    <p class="text-sm font-semibold text-slate-700 group-hover:text-indigo-700">Lihat Tagihan Saya</p>
+                    <p class="text-sm font-semibold text-slate-700 group-hover:text-violet-700">Lihat Tagihan Saya</p>
                     <p class="text-xs text-slate-400 mt-0.5">Cek dan bayar tagihan WiFi kamu</p>
                 </div>
             </a>

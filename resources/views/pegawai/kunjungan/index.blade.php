@@ -7,8 +7,8 @@
     {{-- Card Ringkasan Statistik --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-            <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center mb-3">
-                <i data-lucide="clipboard-list" class="w-5 h-5 text-indigo-600"></i>
+            <div class="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center mb-3">
+                <i data-lucide="clipboard-list" class="w-5 h-5 text-violet-600"></i>
             </div>
             <p class="text-xs text-slate-400 font-medium">Total Kunjungan</p>
             <p class="text-2xl font-bold text-slate-800 mt-1">{{ $totalSemua }}</p>
@@ -46,13 +46,13 @@
                     <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
                     <input type="text" name="search" value="{{ request('search') }}"
                            placeholder="Nama pelanggan, kode, catatan..."
-                           class="w-full rounded-lg border border-slate-200 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                           class="w-full rounded-lg border border-slate-200 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400">
                 </div>
             </div>
             <div>
                 <label class="block text-xs font-semibold text-slate-500 mb-1">Status</label>
                 <select name="status"
-                        class="rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                        class="rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400">
                     <option value="">Semua Status</option>
                     <option value="tagihan_dibayar" {{ request('status') === 'tagihan_dibayar' ? 'selected' : '' }}>Tagihan Dibayar</option>
                     <option value="belum_bayar" {{ request('status') === 'belum_bayar' ? 'selected' : '' }}>Belum Bayar</option>
@@ -61,16 +61,16 @@
             <div>
                 <label class="block text-xs font-semibold text-slate-500 mb-1">Tanggal Awal</label>
                 <input type="date" name="tanggal_awal" value="{{ request('tanggal_awal') }}"
-                       class="rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                       class="rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400">
             </div>
             <div>
                 <label class="block text-xs font-semibold text-slate-500 mb-1">Tanggal Akhir</label>
                 <input type="date" name="tanggal_akhir" value="{{ request('tanggal_akhir') }}"
-                       class="rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                       class="rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400">
             </div>
             <div class="flex gap-2">
                 <button type="submit"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors">
+                        class="bg-violet-600 hover:bg-violet-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors">
                     <i data-lucide="filter" class="w-4 h-4 inline-block mr-1"></i>
                     Filter
                 </button>
@@ -84,13 +84,13 @@
 
         {{-- Info filter aktif --}}
         @if (request('search') || request('status') || request('tanggal_awal') || request('tanggal_akhir'))
-            <div class="flex flex-wrap items-center gap-2 mb-4 px-4 py-2 bg-indigo-50 rounded-lg text-xs text-indigo-700">
+            <div class="flex flex-wrap items-center gap-2 mb-4 px-4 py-2 bg-violet-50 rounded-lg text-xs text-violet-700">
                 <i data-lucide="info" class="w-3.5 h-3.5"></i>
                 <span>Filter aktif:</span>
-                @if (request('search')) <span class="bg-indigo-100 px-2 py-0.5 rounded-full">Cari: "{{ request('search') }}"</span> @endif
-                @if (request('status')) <span class="bg-indigo-100 px-2 py-0.5 rounded-full">Status: {{ str_replace('_', ' ', request('status')) }}</span> @endif
-                @if (request('tanggal_awal')) <span class="bg-indigo-100 px-2 py-0.5 rounded-full">Dari: {{ request('tanggal_awal') }}</span> @endif
-                @if (request('tanggal_akhir')) <span class="bg-indigo-100 px-2 py-0.5 rounded-full">Sampai: {{ request('tanggal_akhir') }}</span> @endif
+                @if (request('search')) <span class="bg-violet-100 px-2 py-0.5 rounded-full">Cari: "{{ request('search') }}"</span> @endif
+                @if (request('status')) <span class="bg-violet-100 px-2 py-0.5 rounded-full">Status: {{ str_replace('_', ' ', request('status')) }}</span> @endif
+                @if (request('tanggal_awal')) <span class="bg-violet-100 px-2 py-0.5 rounded-full">Dari: {{ request('tanggal_awal') }}</span> @endif
+                @if (request('tanggal_akhir')) <span class="bg-violet-100 px-2 py-0.5 rounded-full">Sampai: {{ request('tanggal_akhir') }}</span> @endif
             </div>
         @endif
 
@@ -139,7 +139,7 @@
                             </td>
                             <td class="px-5 py-3">
                                 <a href="{{ route('pegawai.kunjungan.show', $k) }}"
-                                   class="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors inline-block"
+                                   class="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 transition-colors inline-block"
                                    title="Detail">
                                     <i data-lucide="eye" class="w-4 h-4"></i>
                                 </a>

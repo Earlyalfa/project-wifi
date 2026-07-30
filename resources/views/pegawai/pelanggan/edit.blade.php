@@ -90,7 +90,7 @@
                     Batal
                 </a>
                 <button type="submit"
-                        class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors">
+                        class="flex-1 bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors">
                     Perbarui
                 </button>
             </div>

@@ -6,7 +6,7 @@
     <div class="flex flex-col gap-4 max-w-xs mx-auto w-full">
 
         <a href="{{ route('login') }}"
-           class="w-full text-center bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-3 rounded-full transition">
+           class="w-full text-center bg-violet-600 hover:bg-violet-700 text-white font-semibold py-3 rounded-full transition">
             Masuk
         </a>
 
@@ -17,7 +17,7 @@
         </div>
 
         <a href="{{ route('register') }}"
-           class="w-full text-center bg-white border-2 border-indigo-500 text-indigo-600 font-semibold py-3 rounded-full transition hover:bg-indigo-50">
+           class="w-full text-center bg-white border-2 border-violet-500 text-violet-600 font-semibold py-3 rounded-full transition hover:bg-violet-50">
             Daftar
         </a>
 

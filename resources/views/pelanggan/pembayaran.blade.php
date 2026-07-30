@@ -34,8 +34,8 @@
     {{-- ===================== DETAIL TAGIHAN ===================== --}}
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-6">
         <div class="flex items-center gap-2 mb-5">
-            <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
-                <i data-lucide="file-text" class="w-4 h-4 text-indigo-600"></i>
+            <div class="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
+                <i data-lucide="file-text" class="w-4 h-4 text-violet-600"></i>
             </div>
             <h3 class="font-semibold text-slate-800">Detail Tagihan</h3>
         </div>
@@ -56,11 +56,11 @@
                 </div>
                 <div class="bg-slate-50 rounded-xl p-4">
                     <p class="text-xs text-slate-400 font-medium">Kode Unik</p>
-                    <p class="text-sm font-semibold text-indigo-600 mt-1">{{ $kodeUnik }}</p>
+                    <p class="text-sm font-semibold text-violet-600 mt-1">{{ $kodeUnik }}</p>
                 </div>
-                <div class="bg-indigo-50 rounded-xl p-4 border border-indigo-100">
+                <div class="bg-violet-50 rounded-xl p-4 border border-violet-100">
                     <p class="text-xs text-indigo-400 font-medium">Total Pembayaran</p>
-                    <p class="text-lg font-bold text-indigo-700 mt-1">Rp {{ number_format($totalPembayaran, 0, ',', '.') }}</p>
+                    <p class="text-lg font-bold text-violet-700 mt-1">Rp {{ number_format($totalPembayaran, 0, ',', '.') }}</p>
                 </div>
                 <div class="bg-slate-50 rounded-xl p-4">
                     <p class="text-xs text-slate-400 font-medium">Jatuh Tempo</p>
@@ -136,7 +136,7 @@
                         </div>
                         <p class="text-sm font-semibold text-slate-800">{{ $qrisMerchant }}</p>
                     </div>
-                    <p class="text-2xl font-bold text-indigo-600 mt-2">Rp {{ number_format($totalPembayaran, 0, ',', '.') }}</p>
+                    <p class="text-2xl font-bold text-violet-600 mt-2">Rp {{ number_format($totalPembayaran, 0, ',', '.') }}</p>
                 </div>
 
                 {{-- Cara Pembayaran --}}
@@ -173,7 +173,7 @@
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal Pembayaran <span class="text-rose-500">*</span></label>
                     <input type="date" name="tanggal_bayar" value="{{ old('tanggal_bayar', date('Y-m-d')) }}"
-                           class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                           class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
                            required>
                     @error('tanggal_bayar')
                         <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
@@ -199,7 +199,7 @@
                         </div>
                         <div class="flex-1">
                             <input type="file" name="bukti_bayar" id="bukti_bayar"
-                                   class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-colors"
+                                   class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-600 hover:file:bg-violet-100 transition-colors"
                                    accept=".jpg,.jpeg,.png,.pdf"
                                    onchange="previewBukti(event)"
                                    required>
@@ -215,7 +215,7 @@
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Catatan <span class="text-slate-400">(Opsional)</span></label>
                     <textarea name="catatan" rows="2" placeholder="Catatan tambahan..."
-                              class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">{{ old('catatan') }}</textarea>
+                              class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400">{{ old('catatan') }}</textarea>
                     @error('catatan')
                         <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
                     @enderror
@@ -225,7 +225,7 @@
                 <div class="bg-slate-50 rounded-xl p-4">
                     <label class="flex items-start gap-3 cursor-pointer">
                         <input type="checkbox" name="konfirmasi" value="1"
-                               class="mt-0.5 w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                               class="mt-0.5 w-4 h-4 rounded border-slate-300 text-violet-600 focus:ring-indigo-500"
                                {{ old('konfirmasi') ? 'checked' : '' }}
                                required>
                         <span class="text-sm text-slate-600">
@@ -239,7 +239,7 @@
 
                 {{-- Button --}}
                 <button type="submit"
-                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg text-sm transition-colors flex items-center justify-center gap-2">
+                        class="w-full bg-violet-600 hover:bg-violet-700 text-white font-semibold py-3 rounded-lg text-sm transition-colors flex items-center justify-center gap-2">
                     <i data-lucide="send" class="w-4 h-4"></i>
                     Kirim Konfirmasi
                 </button>

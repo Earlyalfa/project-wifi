@@ -64,35 +64,35 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="map-pin" class="w-4 h-4 text-indigo-500 mt-0.5 shrink-0"></i>
+                        <i data-lucide="map-pin" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
                         <div>
                             <p class="text-xs text-slate-400 font-medium">Alamat</p>
                             <p class="text-sm text-slate-800 font-medium">{{ $pelanggan->alamat ?? '-' }}</p>
                         </div>
                     </div>
                     <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="wifi" class="w-4 h-4 text-indigo-500 mt-0.5 shrink-0"></i>
+                        <i data-lucide="wifi" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
                         <div>
                             <p class="text-xs text-slate-400 font-medium">Paket WiFi</p>
                             <p class="text-sm text-slate-800 font-medium">{{ $pelanggan->paket ?? '-' }}</p>
                         </div>
                     </div>
                     <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="phone" class="w-4 h-4 text-indigo-500 mt-0.5 shrink-0"></i>
+                        <i data-lucide="phone" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
                         <div>
                             <p class="text-xs text-slate-400 font-medium">No. HP</p>
                             <p class="text-sm text-slate-800 font-medium">{{ $pelanggan->no_hp ?? '-' }}</p>
                         </div>
                     </div>
                     <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="calendar" class="w-4 h-4 text-indigo-500 mt-0.5 shrink-0"></i>
+                        <i data-lucide="calendar" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
                         <div>
                             <p class="text-xs text-slate-400 font-medium">Tanggal Daftar</p>
                             <p class="text-sm text-slate-800 font-medium">{{ $pelanggan->created_at->format('d F Y') }}</p>
                         </div>
                     </div>
                     <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="circle-dollar-sign" class="w-4 h-4 text-indigo-500 mt-0.5 shrink-0"></i>
+                        <i data-lucide="circle-dollar-sign" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
                         <div>
                             <p class="text-xs text-slate-400 font-medium">Status Pelanggan</p>
                             <p class="text-sm">
@@ -111,7 +111,7 @@
                         </div>
                     </div>
                     <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="receipt" class="w-4 h-4 text-indigo-500 mt-0.5 shrink-0"></i>
+                        <i data-lucide="receipt" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
                         <div>
                             <p class="text-xs text-slate-400 font-medium">Tagihan Bulan Ini</p>
                             @if ($tagihanTerbaru)
@@ -179,11 +179,39 @@
 
         {{-- KOLOM KANAN: Aksi --}}
         <div class="space-y-4">
+            {{-- QR CODE --}}
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 text-center">
+                <div class="flex items-center gap-2 mb-3 justify-center">
+                    <div class="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
+                        <i data-lucide="qr-code" class="w-4 h-4 text-violet-600"></i>
+                    </div>
+                    <h3 class="font-semibold text-slate-800">QR Code Pelanggan</h3>
+                </div>
+                <div class="inline-block bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                    <div id="qr-detail-container">
+                        <canvas id="qr-detail-canvas"></canvas>
+                    </div>
+                </div>
+                <p class="text-xs text-slate-400 mt-2 font-mono font-bold text-violet-600">{{ $pelanggan->kode }}</p>
+                <div class="mt-3 flex gap-2 justify-center">
+                    <button type="button" onclick="downloadQRDetail()"
+                            class="inline-flex items-center gap-1 px-3 py-1.5 bg-violet-600 hover:bg-violet-700 text-white text-xs font-semibold rounded-lg transition-colors">
+                        <i data-lucide="download" class="w-3 h-3"></i>
+                        Download
+                    </button>
+                    <button type="button" onclick="printQRDetail()"
+                            class="inline-flex items-center gap-1 px-3 py-1.5 border border-slate-200 text-slate-600 text-xs font-semibold rounded-lg hover:bg-slate-50 transition-colors">
+                        <i data-lucide="printer" class="w-3 h-3"></i>
+                        Cetak
+                    </button>
+                </div>
+            </div>
+
             {{-- Status Pembayaran --}}
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
                 <div class="flex items-center gap-2 mb-4">
-                    <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
-                        <i data-lucide="circle-dollar-sign" class="w-4 h-4 text-indigo-600"></i>
+                    <div class="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
+                        <i data-lucide="circle-dollar-sign" class="w-4 h-4 text-violet-600"></i>
                     </div>
                     <h3 class="font-semibold text-slate-800">Status Pembayaran</h3>
                 </div>
@@ -207,7 +235,7 @@
                 <h3 class="font-semibold text-slate-800 mb-2">Aksi</h3>
 
                 <button type="button" @click="openFoto()"
-                        class="w-full flex items-center justify-center gap-2 border border-indigo-500 text-indigo-600 font-semibold py-2.5 rounded-lg hover:bg-indigo-50 transition-colors text-sm">
+                        class="w-full flex items-center justify-center gap-2 border border-violet-500 text-violet-600 font-semibold py-2.5 rounded-lg hover:bg-violet-50 transition-colors text-sm">
                     <i data-lucide="camera" class="w-4 h-4"></i>
                     Lihat Foto Rumah
                 </button>
@@ -278,4 +306,68 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const canvas = document.getElementById('qr-detail-canvas');
+    const kode = '{{ $pelanggan->kode }}';
+    if (canvas && kode) {
+        QRCode.toCanvas(canvas, kode, { 
+            width: 150,
+            height: 150,
+            margin: 2,
+            color: {
+                dark: '#1a1a2e',
+                light: '#ffffff'
+            }
+        }, function (error) {
+            if (error) console.error(error);
+        });
+    }
+});
+
+function downloadQRDetail() {
+    const canvas = document.getElementById('qr-detail-canvas');
+    const kode = '{{ $pelanggan->kode }}';
+    const link = document.createElement('a');
+    link.download = 'QR-' + kode + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+}
+
+function printQRDetail() {
+    const canvas = document.getElementById('qr-detail-canvas');
+    const kode = '{{ $pelanggan->kode }}';
+    const dataUrl = canvas.toDataURL('image/png');
+    
+    const win = window.open('', '_blank');
+    win.document.write(`
+        <html>
+        <head>
+            <title>Cetak QR - ${kode}</title>
+            <style>
+                body { display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; font-family: Arial, sans-serif; background: #fff; }
+                .container { text-align: center; padding: 20px; }
+                img { width: 250px; height: 250px; }
+                h2 { margin: 15px 0 5px; color: #1a1a2e; }
+                p { color: #666; font-size: 14px; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <img src="${dataUrl}" alt="QR ${kode}">
+                <h2>WiFiPay</h2>
+                <p>Kode Pelanggan: <strong>${kode}</strong></p>
+            </div>
+            <script>window.onload = function() { window.print(); } <\/script>
+        </body>
+        </html>
+    `);
+    win.document.close();
+}
+</script>
+@endpush
+
 
