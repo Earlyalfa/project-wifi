@@ -36,7 +36,7 @@
             class="w-12 h-12 object-contain">
         <div>
             <h1 class="text-xl font-bold text-white">
-                WiFiPay
+                WiFi<span class="text-violet-300">Pay</span>
             </h1>
             <p class="text-xs text-[#B4AAD2]">
                 Pelanggan 

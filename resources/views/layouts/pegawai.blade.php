@@ -36,7 +36,7 @@
             class="w-12 h-12 object-contain">
         <div>
             <h1 class="text-xl font-bold text-white">
-                WiFiPay
+                WiFi<span class="text-violet-300">Pay</span>
             </h1>
             <p class="text-xs text-[#B4AAD2]">
                 Pegawai
@@ -51,7 +51,7 @@
                     ['route' => 'pegawai.dashboard', 'icon' => 'layout-dashboard', 'label' => 'Dashboard'],
                     ['route' => 'pegawai.scan-barcode', 'icon' => 'scan-qr-code', 'label' => 'Scan QR Code'],
                     ['route' => 'pegawai.pelanggan.index', 'icon' => 'users', 'label' => 'Data Pelanggan'],
-                    ['route' => null, 'icon' => 'credit-card', 'label' => 'Pembayaran'],
+                    ['route' => 'pegawai.pembayaran.index', 'icon' => 'credit-card', 'label' => 'Pembayaran'],
                     ['route' => 'pegawai.gangguan.index', 'icon' => 'message-square-warning', 'label' => 'Pengaduan Gangguan'],
                     ['route' => 'pegawai.kunjungan.index', 'icon' => 'map-pin', 'label' => 'Riwayat Kunjungan'],
                 ];

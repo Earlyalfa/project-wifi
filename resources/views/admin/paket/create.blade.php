@@ -6,8 +6,6 @@
 @section('content')
 <div class="max-w-lg mx-auto">
     <a href="{{ route('admin.paket.index') }}" class="flex items-center gap-2 text-slate-500 text-sm mb-4 hover:underline">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i>
-        Kembali
     </a>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">

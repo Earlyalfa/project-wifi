@@ -1,20 +1,25 @@
-# Theme Color Adjustment (Completed)
-- [x] All layout files (admin, pegawai, pelanggan, guest)
-- [x] All auth pages (login, register, pegawai login)
-- [x] All dashboard pages (admin, pegawai, pelanggan)
-- [x] All admin feature pages (paket, users, laporan, settings)
-- [x] All pegawai feature pages (pelanggan index, detail, create, scan-barcode, gangguan, settings)
-- [x] All pelanggan feature pages (pembayaran, profile, pengaduan)
+# TODO: Halaman Pembayaran WiFi untuk Pegawai - SELESAI ✅
 
-# QR Code ID Pelanggan Feature (Completed)
-- [x] `resources/views/pegawai/pelanggan/create.blade.php` - Added QR code panel on the right side with:
-  - Real-time QR code generation using `qrcodejs` library
-  - Download QR button
-  - Print QR button
-  - Info alert about QR usage
+## Step 1: Create Controller
+- [x] `app/Http/Controllers/Pegawai/PembayaranController.php`
+  - index() - daftar pembayaran dengan filter
+  - show() - detail pembayaran + bukti bayar
+  - verifikasi() - setujui/tolak pembayaran
 
-- [x] `resources/views/pegawai/pelanggan/detail.blade.php` - Added QR code section in right column with:
-  - QR code display (150x150px)
-  - Download QR button
-  - Print QR button
-  - JavaScript for QR generation, download, and print functions
+## Step 2: Create View - Index
+- [x] `resources/views/pegawai/pembayaran/index.blade.php`
+  - Statistik cards (Total, Menunggu, Lunas, Ditolak)
+  - Tabel dengan filter (search, status, periode/month)
+
+## Step 3: Create View - Show
+- [x] `resources/views/pegawai/pembayaran/show.blade.php`
+  - Detail pembayaran + pelanggan
+  - Bukti bayar (image preview / PDF link)
+  - Form verifikasi (setujui/tolak dengan konfirmasi SweetAlert2)
+
+## Step 4: Update Routes
+- [x] `routes/web.php` - Tambah route pembayaran pegawai (index, show, verifikasi)
+
+## Step 5: Update Sidebar
+- [x] `resources/views/layouts/pegawai.blade.php` - Update menu Pembayaran dari `#` ke route `pegawai.pembayaran.index`
+

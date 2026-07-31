@@ -36,7 +36,7 @@
             class="w-12 h-12 object-contain">
         <div>
             <h1 class="text-xl font-bold text-white">
-                WiFiPay
+                WiFi<span class="text-violet-300">Pay</span>
             </h1>
             <p class="text-xs text-[#B4AAD2]">
                 Admin 
@@ -51,8 +51,8 @@
                     ['route' => 'admin.dashboard',   'icon' => 'layout-dashboard',     'label' => 'Dashboard'],
                     ['route' => 'admin.users',        'icon' => 'users',                'label' => 'Data Pengguna'],
                     ['route' => 'admin.paket.index', 'icon' => 'signal',               'label' => 'Paket WiFi'],
-                    ['route' => null,                'icon' => 'credit-card',          'label' => 'Pembayaran'],
-                    ['route' => null,                'icon' => 'message-square-warning', 'label' => 'Pengaduan Gangguan'],
+                    ['route' => 'admin.pembayaran.index', 'icon' => 'credit-card',          'label' => 'Pembayaran'],
+                    ['route' => 'admin.pengaduan.index', 'icon' => 'message-square-warning', 'label' => 'Pengaduan Gangguan'],
                     ['route' => 'admin.laporan',     'icon' => 'file-text',            'label' => 'Laporan'],
                 ];
             @endphp

@@ -10,6 +10,7 @@ use App\Http\Controllers\Pegawai\GangguanController as PegawaiGangguanController
 use App\Http\Controllers\Pegawai\KunjunganController as PegawaiKunjunganController;
 use App\Http\Controllers\Pegawai\NotificationController as PegawaiNotificationController;
 use App\Http\Controllers\Pegawai\PelangganController as PegawaiPelangganController;
+use App\Http\Controllers\Pegawai\PembayaranController as PegawaiPembayaranController;
 use App\Http\Controllers\Pegawai\ProfileController as PegawaiProfileController;
 use App\Http\Controllers\Pegawai\ScanBarcodeController;
 use App\Http\Controllers\Pegawai\SettingsController as PegawaiSettingsController;
@@ -18,6 +19,8 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
 use App\Http\Controllers\Admin\PaketController as AdminPaketController;
+use App\Http\Controllers\Admin\PembayaranController as AdminPembayaranController;
+use App\Http\Controllers\Admin\PengaduanController as AdminPengaduanController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Pelanggan\DashboardController as PelangganDashboardController;
 use App\Http\Controllers\Pelanggan\PembayaranController as PelangganPembayaranController;
@@ -89,6 +92,16 @@ Route::get('/settings', function () { return view('admin.settings'); })->name('s
         Route::patch('/users/{user}/role', [AdminDashboardController::class, 'updateRole'])->name('users.role');
         Route::patch('/users/{user}/status', [AdminDashboardController::class, 'updateStatus'])->name('users.status');
 
+        // Pembayaran
+        Route::get('/pembayaran', [AdminPembayaranController::class, 'index'])->name('pembayaran.index');
+        Route::get('/pembayaran/{pembayaran}', [AdminPembayaranController::class, 'show'])->name('pembayaran.show');
+        Route::post('/pembayaran/{pembayaran}/verifikasi', [AdminPembayaranController::class, 'verifikasi'])->name('pembayaran.verifikasi');
+
+        // Pengaduan Gangguan
+        Route::get('/pengaduan', [AdminPengaduanController::class, 'index'])->name('pengaduan.index');
+        Route::get('/pengaduan/{pengaduan}', [AdminPengaduanController::class, 'show'])->name('pengaduan.show');
+        Route::patch('/pengaduan/{pengaduan}/status', [AdminPengaduanController::class, 'updateStatus'])->name('pengaduan.update-status');
+
         // Paket WiFi CRUD
         Route::get('/paket', [AdminPaketController::class, 'index'])->name('paket.index');
         Route::get('/paket/create', [AdminPaketController::class, 'create'])->name('paket.create');
@@ -158,6 +171,11 @@ Route::get('/settings', function () { return view('admin.settings'); })->name('s
             Route::get('/gangguan/{gangguan}', [PegawaiGangguanController::class, 'show'])->name('gangguan.show');
             Route::patch('/gangguan/{gangguan}/status', [PegawaiGangguanController::class, 'updateStatus'])->name('gangguan.update-status');
             Route::delete('/gangguan/{gangguan}', [PegawaiGangguanController::class, 'destroy'])->name('gangguan.destroy');
+
+            // Pembayaran
+            Route::get('/pembayaran', [PegawaiPembayaranController::class, 'index'])->name('pembayaran.index');
+            Route::get('/pembayaran/{pembayaran}', [PegawaiPembayaranController::class, 'show'])->name('pembayaran.show');
+            Route::post('/pembayaran/{pembayaran}/verifikasi', [PegawaiPembayaranController::class, 'verifikasi'])->name('pembayaran.verifikasi');
 
             // Kunjungan
             Route::get('/kunjungan', [PegawaiKunjunganController::class, 'index'])->name('kunjungan.index');
