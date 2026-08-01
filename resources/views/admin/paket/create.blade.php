@@ -58,7 +58,7 @@
                 </a>
                 <button type="submit"
                         class="flex-1 bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors">
-                    <i data-lucide="save" class="w-4 h-4 inline-block -mt-0.5"></i> Simpan
+                        Simpan
                 </button>
             </div>
         </form>

@@ -6,8 +6,6 @@
 @section('content')
 <div class="max-w-2xl mx-auto">
     <a href="{{ route('pegawai.gangguan.index') }}" class="flex items-center gap-2 text-slate-500 text-sm mb-4 hover:underline">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i>
-        Kembali
     </a>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
@@ -46,15 +44,15 @@
                 @error('keluhan') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
             </div>
 
-            <div class="flex items-center gap-3 pt-2">
-                <button type="submit"
-                        class="bg-violet-600 hover:bg-violet-700 text-white font-semibold px-6 py-2.5 rounded-lg text-sm transition-colors">
-                    Simpan Pengaduan
-                </button>
+            <div class="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 pt-8 mt-8">
                 <a href="{{ route('pegawai.gangguan.index') }}"
                    class="text-sm text-slate-500 hover:text-slate-700 font-medium">
                     Batal
                 </a>
+                <button type="submit"
+                        class="bg-violet-600 hover:bg-violet-700 text-white font-semibold px-6 py-2.5 rounded-lg text-sm transition-colors">
+                    Simpan Pengaduan
+                </button>
             </div>
         </form>
     </div>

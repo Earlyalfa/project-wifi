@@ -6,8 +6,6 @@
 @section('content')
 <div class="max-w-4xl mx-auto">
     <a href="{{ route('admin.users') }}" class="flex items-center gap-2 text-slate-500 text-sm mb-4 hover:underline">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i>
-        Kembali ke Data Pengguna
     </a>
 
     <div class="grid lg:grid-cols-3 gap-5">
@@ -122,16 +120,10 @@
 
             {{-- Tombol Aksi --}}
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 space-y-3">
-                <h3 class="font-semibold text-slate-800 mb-2">Aksi</h3>
                 <a href="{{ route('admin.users.edit', $user) }}"
                    class="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2.5 rounded-lg transition-colors text-sm">
                     <i data-lucide="pencil" class="w-4 h-4"></i>
-                    Edit Pengguna
-                </a>
-                <a href="{{ route('admin.users') }}"
-                   class="w-full flex items-center justify-center gap-2 border border-slate-200 text-slate-600 font-semibold py-2.5 rounded-lg hover:bg-slate-50 transition-colors text-sm">
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                    Kembali
+                    Edit 
                 </a>
             </div>
         </div>

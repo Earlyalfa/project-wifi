@@ -262,28 +262,28 @@
             <h3 class="font-semibold text-slate-800">Quick Action</h3>
         </div>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <a href="{{ route('admin.users') }}"
+            <a href="{{ route('admin.users.create') }}"
                class="flex flex-col items-center gap-2 p-5 rounded-xl border border-slate-100 hover:border-violet-200 hover:bg-violet-50/50 transition-all duration-200 group">
                 <div class="w-12 h-12 rounded-xl bg-violet-100 flex items-center justify-center group-hover:bg-violet-200 transition-colors">
                     <i data-lucide="user-plus" class="w-6 h-6 text-violet-600"></i>
                 </div>
                 <span class="text-sm font-semibold text-slate-700 group-hover:text-violet-700">Tambah Pengguna</span>
             </a>
-            <a href="#"
+            <a href="{{ route('admin.paket.create') }}"
                class="flex flex-col items-center gap-2 p-5 rounded-xl border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/50 transition-all duration-200 group">
                 <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
                     <i data-lucide="signal" class="w-6 h-6 text-emerald-600"></i>
                 </div>
                 <span class="text-sm font-semibold text-slate-700 group-hover:text-emerald-700">Tambah Paket WiFi</span>
             </a>
-            <a href="#"
+            <a href="{{ route('admin.laporan') }}"
                class="flex flex-col items-center gap-2 p-5 rounded-xl border border-slate-100 hover:border-amber-200 hover:bg-amber-50/50 transition-all duration-200 group">
                 <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center group-hover:bg-amber-200 transition-colors">
                     <i data-lucide="file-text" class="w-6 h-6 text-amber-600"></i>
                 </div>
                 <span class="text-sm font-semibold text-slate-700 group-hover:text-amber-700">Cetak Laporan</span>
             </a>
-            <a href="#"
+            <a href="{{ route('admin.pengaduan.index') }}"
                class="flex flex-col items-center gap-2 p-5 rounded-xl border border-slate-100 hover:border-rose-200 hover:bg-rose-50/50 transition-all duration-200 group">
                 <div class="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center group-hover:bg-rose-200 transition-colors">
                     <i data-lucide="message-square-warning" class="w-6 h-6 text-rose-600"></i>

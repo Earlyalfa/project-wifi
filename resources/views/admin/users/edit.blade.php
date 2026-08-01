@@ -6,8 +6,6 @@
 @section('content')
 <div class="max-w-2xl mx-auto">
     <a href="{{ route('admin.users') }}" class="flex items-center gap-2 text-slate-500 text-sm mb-4 hover:underline">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i>
-        Kembali ke Data Pengguna
     </a>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
@@ -95,7 +93,7 @@
                 </a>
                 <button type="submit"
                         class="flex-1 bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors">
-                    <i data-lucide="save" class="w-4 h-4 inline-block -mt-0.5"></i> Simpan Perubahan
+                        Simpan Perubahan
                 </button>
             </div>
         </form>

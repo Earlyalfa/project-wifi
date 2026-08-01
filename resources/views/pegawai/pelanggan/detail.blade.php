@@ -79,7 +79,7 @@
                 </div>
                 <div class="flex items-start gap-4">
                     <span class="text-sm text-slate-500 w-24 shrink-0">Paket WiFi</span>
-<span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">{{ $pelanggan->paket ?? '-' }}</span>
+                    <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">{{ $pelanggan->paket ?? '-' }}</span>
                 </div>
                 <div class="flex items-start gap-4">
                     <span class="text-sm text-slate-500 w-24 shrink-0">Status</span>
