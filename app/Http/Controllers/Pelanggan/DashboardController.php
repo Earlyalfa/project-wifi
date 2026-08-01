@@ -15,36 +15,43 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Cari data pelanggan berdasarkan user_id
+        // Cari data pelanggan berdasarkan user_id, fallback ke nama (jika user_id belum diisi)
         $pelanggan = Pelanggan::where('user_id', $user->id)->first();
+        if (!$pelanggan) {
+            $pelanggan = Pelanggan::where('nama', $user->name)->first();
+        }
 
-        // Jika tidak ada data pelanggan, tampilkan data default
+        // Jika tidak ada data pelanggan sama sekali, tampilkan data akun user sebagai fallback
         if (!$pelanggan) {
             return view('pelanggan.dashboard', [
                 'paket'              => '-',
                 'tagihanBulanIni'    => 0,
                 'jatuhTempo'         => null,
+                'jatuhTempoText'     => 'Setiap tanggal 10',
                 'statusPengaduan'    => '-',
                 'riwayatPembayaran'  => collect([]),
                 'pengaduanTerbaru'   => collect([]),
                 'namaPelanggan'      => $user->name,
-                'noHp'               => '-',
+                'idPelanggan'        => '-',
+                'noHp'               => $user->no_hp ?? '-',
                 'email'              => $user->email,
-                'alamat'             => '-',
+                'alamat'             => $user->alamat ?? '-',
                 'tanggalAktif'       => $user->created_at,
                 'totalTagihan'       => 0,
-                'statusAkun'         => 'aktif',
+                'statusAkun'         => $user->status ?? 'aktif',
                 'pelanggan'          => null,
             ]);
         }
 
-        // Data pelanggan
-        $paket       = $pelanggan->paket ?? '-';
-        $nama        = $pelanggan->nama;
-        $noHp        = $pelanggan->no_hp ?? '-';
-        $alamat      = $pelanggan->alamat ?? '-';
-        $tanggalAktif = $pelanggan->created_at;
-        $statusAkun  = $pelanggan->status ?? 'aktif';
+        // Data pelanggan (fallback ke data akun user jika field kosong/null)
+        $paket       = $pelanggan->paket ?: '-';
+        $nama        = $pelanggan->nama ?: $user->name;
+        $idPelanggan = $pelanggan->kode ?: '-';
+        $noHp        = $pelanggan->no_hp ?: ($user->no_hp ?: '-');
+        $alamat      = $pelanggan->alamat ?: ($user->alamat ?: '-');
+        $email       = $pelanggan->email ?: $user->email;
+        $tanggalAktif = $pelanggan->created_at ?? $user->created_at;
+        $statusAkun  = $pelanggan->status ?: ($user->status ?: 'aktif');
 
         // Tagihan bulan ini (belum bayar)
         $tagihanBulanIni = Pembayaran::where('pelanggan_id', $pelanggan->id)
@@ -57,6 +64,13 @@ class DashboardController extends Controller
             ->whereNotNull('jatuh_tempo')
             ->orderBy('jatuh_tempo', 'asc')
             ->value('jatuh_tempo');
+
+        // Teks jatuh tempo: "Setiap tanggal X" — ambil hari dari jatuh tempo terdekat
+        $jatuhTempoText = 'Setiap tanggal 10';
+        if ($jatuhTempo) {
+            $hari = \Carbon\Carbon::parse($jatuhTempo)->day;
+            $jatuhTempoText = 'Setiap tanggal ' . $hari;
+        }
 
         // Status pengaduan terbaru
         $pengaduanLatest = Gangguan::where('pelanggan_id', $pelanggan->id)
@@ -84,12 +98,14 @@ class DashboardController extends Controller
             'paket'             => $paket,
             'tagihanBulanIni'   => $tagihanBulanIni,
             'jatuhTempo'        => $jatuhTempo,
+            'jatuhTempoText'    => $jatuhTempoText,
             'statusPengaduan'   => $statusPengaduan,
             'riwayatPembayaran' => $riwayatPembayaran,
             'pengaduanTerbaru'  => $pengaduanTerbaru,
             'namaPelanggan'     => $nama,
+            'idPelanggan'       => $idPelanggan,
             'noHp'              => $noHp,
-            'email'             => $user->email,
+            'email'             => $email,
             'alamat'            => $alamat,
             'tanggalAktif'      => $tanggalAktif,
             'totalTagihan'      => $totalTagihan,

@@ -63,35 +63,39 @@
         </div>
         <div class="space-y-3">
             <div class="flex items-center gap-3 py-2 border-b border-slate-50 last:border-b-0">
-                <span class="w-32 text-sm text-slate-400 font-medium shrink-0">Nama</span>
+                <span class="w-36 text-sm text-slate-400 font-medium shrink-0">ID Pelanggan</span>
+                <span class="text-sm font-semibold font-mono text-slate-800">{{ $idPelanggan ?? '-' }}</span>
+            </div>
+            <div class="flex items-center gap-3 py-2 border-b border-slate-50 last:border-b-0">
+                <span class="w-36 text-sm text-slate-400 font-medium shrink-0">Nama Lengkap</span>
                 <span class="text-sm font-semibold text-slate-800">{{ $namaPelanggan ?? auth()->user()->name }}</span>
             </div>
             <div class="flex items-center gap-3 py-2 border-b border-slate-50 last:border-b-0">
-                <span class="w-32 text-sm text-slate-400 font-medium shrink-0">Nomor HP</span>
+                <span class="w-36 text-sm text-slate-400 font-medium shrink-0">Nomor HP</span>
                 <span class="text-sm font-semibold text-slate-800">{{ $noHp ?? '-' }}</span>
             </div>
             <div class="flex items-center gap-3 py-2 border-b border-slate-50 last:border-b-0">
-                <span class="w-32 text-sm text-slate-400 font-medium shrink-0">Email</span>
+                <span class="w-36 text-sm text-slate-400 font-medium shrink-0">Email</span>
                 <span class="text-sm font-semibold text-slate-800">{{ $email ?? auth()->user()->email }}</span>
             </div>
             <div class="flex items-center gap-3 py-2 border-b border-slate-50 last:border-b-0">
-                <span class="w-32 text-sm text-slate-400 font-medium shrink-0">Alamat</span>
+                <span class="w-36 text-sm text-slate-400 font-medium shrink-0">Alamat</span>
                 <span class="text-sm font-semibold text-slate-800">{{ $alamat ?? '-' }}</span>
             </div>
             <div class="flex items-center gap-3 py-2 border-b border-slate-50 last:border-b-0">
-                <span class="w-32 text-sm text-slate-400 font-medium shrink-0">Paket WiFi</span>
+                <span class="w-36 text-sm text-slate-400 font-medium shrink-0">Paket WiFi</span>
                 <span class="text-sm font-semibold text-slate-800">{{ $paket ?? '-' }}</span>
             </div>
             <div class="flex items-center gap-3 py-2 border-b border-slate-50 last:border-b-0">
-                <span class="w-32 text-sm text-slate-400 font-medium shrink-0">Tanggal Aktif</span>
+                <span class="w-36 text-sm text-slate-400 font-medium shrink-0">Tanggal Berlangganan</span>
                 <span class="text-sm font-semibold text-slate-800">{{ $tanggalAktif ? \Carbon\Carbon::parse($tanggalAktif)->format('d M Y') : '-' }}</span>
             </div>
             <div class="flex items-center gap-3 py-2 border-b border-slate-50 last:border-b-0">
-                <span class="w-32 text-sm text-slate-400 font-medium shrink-0">Jatuh Tempo</span>
-                <span class="text-sm font-semibold text-slate-800">{{ $jatuhTempo ? \Carbon\Carbon::parse($jatuhTempo)->format('d M Y') : '-' }}</span>
+                <span class="w-36 text-sm text-slate-400 font-medium shrink-0">Jatuh Tempo</span>
+                <span class="text-sm font-semibold text-slate-800">{{ $jatuhTempoText ?? 'Setiap tanggal 10' }}</span>
             </div>
             <div class="flex items-center gap-3 py-2">
-                <span class="w-32 text-sm text-slate-400 font-medium shrink-0">Status Akun</span>
+                <span class="w-36 text-sm text-slate-400 font-medium shrink-0">Status Akun</span>
                 <span class="text-sm font-semibold">
                     @if ($statusAkun === 'aktif')
                         <span class="inline-flex items-center gap-1 text-emerald-600">

@@ -1,7 +1,7 @@
 @extends('layouts.pegawai')
 
 @section('title', 'Dashboard Pegawai')
-@section('page-title', 'Dashboard')
+@section('page-title', 'Dashboard')ga
 
 @section('content')
     {{-- ===================== CARD RINGKASAN (4 Card) ===================== --}}

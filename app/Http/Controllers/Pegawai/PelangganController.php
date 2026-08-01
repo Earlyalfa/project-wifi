@@ -72,16 +72,28 @@ class PelangganController extends Controller
         ));
     }
 
-    public function create()
+public function create()
     {
+        // Hanya admin yang boleh menambah pelanggan
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Anda tidak memiliki izin untuk menambahkan pelanggan.');
+        }
+
         $kode = $this->generateKode();
-        return view('pegawai.pelanggan.create', compact('kode'));
+        $paketList = \App\Models\Paket::where('status', 'aktif')->get();
+        return view('pegawai.pelanggan.create', compact('kode', 'paketList'));
     }
 
-    public function store(Request $request)
+public function store(Request $request)
     {
+        // Hanya admin yang boleh menambah pelanggan
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Anda tidak memiliki izin untuk menambahkan pelanggan.');
+        }
+
         $validated = $request->validate([
             'nama'       => ['required', 'string', 'max:255'],
+            'email'      => ['nullable', 'email', 'max:255'],
             'paket'      => ['nullable', 'string', 'max:100'],
             'alamat'     => ['nullable', 'string', 'max:500'],
             'no_hp'      => ['nullable', 'string', 'max:20'],
@@ -99,7 +111,7 @@ class PelangganController extends Controller
 
         // Notifikasi untuk admin
         Notification::create([
-            'user_id' => 1, // admin (user_id=1)
+            'user_id' => 1,
             'type'    => 'pelanggan',
             'icon'    => 'user-plus',
             'color'   => 'emerald',
@@ -111,9 +123,21 @@ class PelangganController extends Controller
             ->with('status', 'Pelanggan berhasil ditambahkan.');
     }
 
+public function show(Pelanggan $pelanggan)
+    {
+        $pelanggan->load(['pembayarans' => function ($q) {
+            $q->latest();
+        }, 'kunjungans.pegawai', 'user']);
+
+        $tagihanTerbaru = $pelanggan->pembayarans->first();
+
+        return view('pegawai.pelanggan.detail', compact('pelanggan', 'tagihanTerbaru'));
+    }
+
     public function edit(Pelanggan $pelanggan)
     {
-        return view('pegawai.pelanggan.edit', compact('pelanggan'));
+        $paketList = \App\Models\Paket::where('status', 'aktif')->get();
+        return view('pegawai.pelanggan.edit', compact('pelanggan', 'paketList'));
     }
 
     public function update(Request $request, Pelanggan $pelanggan)
@@ -128,7 +152,6 @@ class PelangganController extends Controller
         ]);
 
         if ($request->hasFile('foto_rumah')) {
-            // Hapus foto lama jika ada
             if ($pelanggan->foto_rumah) {
                 Storage::disk('public')->delete($pelanggan->foto_rumah);
             }
@@ -137,7 +160,6 @@ class PelangganController extends Controller
 
         $pelanggan->update($validated);
 
-        // Notifikasi untuk admin
         Notification::create([
             'user_id' => 1,
             'type'    => 'pelanggan',
@@ -151,36 +173,6 @@ class PelangganController extends Controller
             ->with('status', 'Pelanggan berhasil diperbarui.');
     }
 
-    public function destroy(Pelanggan $pelanggan)
-    {
-        // Hapus foto jika ada
-        if ($pelanggan->foto_rumah) {
-            Storage::disk('public')->delete($pelanggan->foto_rumah);
-        }
-
-        $pelanggan->delete();
-
-        return redirect()->route('pegawai.pelanggan.index')
-            ->with('status', 'Pelanggan berhasil dihapus.');
-    }
-
-    public function show(Pelanggan $pelanggan)
-    {
-        $pelanggan->load(['pembayarans' => function ($q) {
-            $q->latest();
-        }, 'kunjungans.pegawai']);
-
-        $tagihanTerbaru = $pelanggan->pembayarans->first();
-
-        return view('pegawai.pelanggan.detail', compact('pelanggan', 'tagihanTerbaru'));
-    }
-
-    /**
-     * Endpoint JSON untuk lazy-load foto rumah.
-     * Foto TIDAK dikirim bersamaan dengan halaman detail — baru diambil
-     * lewat fetch() saat tombol "View Foto Rumah" ditekan. Ini bikin
-     * halaman detail lebih ringan & hemat kuota kalau foto tidak dibuka.
-     */
     public function foto(Pelanggan $pelanggan)
     {
         return response()->json([
@@ -189,9 +181,6 @@ class PelangganController extends Controller
         ]);
     }
 
-    /**
-     * Pegawai mencatat kunjungan ke rumah pelanggan.
-     */
     public function catatKunjungan(Request $request, Pelanggan $pelanggan)
     {
         $request->validate([
@@ -199,7 +188,7 @@ class PelangganController extends Controller
             'catatan' => ['nullable', 'string'],
         ]);
 
-Kunjungan::create([
+        Kunjungan::create([
             'pelanggan_id' => $pelanggan->id,
             'pegawai_id' => $request->user()->id,
             'status' => $request->status,
@@ -207,7 +196,6 @@ Kunjungan::create([
             'waktu_kunjungan' => now(),
         ]);
 
-        // Notifikasi untuk admin
         Notification::create([
             'user_id' => 1,
             'type'    => 'kunjungan',
@@ -220,9 +208,6 @@ Kunjungan::create([
         return back()->with('status', 'Kunjungan berhasil dicatat.');
     }
 
-    /**
-     * Pegawai mengonfirmasi pembayaran pelanggan lunas.
-     */
     public function konfirmasiPembayaran(Request $request, Pelanggan $pelanggan)
     {
         $tagihan = $pelanggan->pembayarans()->where('status', 'belum_bayar')->latest()->first();
@@ -233,7 +218,6 @@ Kunjungan::create([
                 'dibayar_at' => now(),
             ]);
 
-            // Notifikasi untuk admin
             Notification::create([
                 'user_id' => 1,
                 'type'    => 'pembayaran',

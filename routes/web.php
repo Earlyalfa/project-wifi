@@ -66,7 +66,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::post('/logout', [AdminAuthController::class, 'destroy'])->name('logout');
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-Route::get('/settings', function () { return view('admin.settings'); })->name('settings');
+        Route::get('/settings', function () { return view('admin.settings'); })->name('settings');
 
         // Admin Profile
         Route::get('/profile', [AdminProfileController::class, 'show'])->name('profile.show');
@@ -147,14 +147,13 @@ Route::get('/settings', function () { return view('admin.settings'); })->name('s
             Route::post('/scan-barcode/cari', [ScanBarcodeController::class, 'cariPelanggan'])->name('scan-barcode.cari');
             Route::post('/scan-barcode/konfirmasi', [ScanBarcodeController::class, 'konfirmasiBayar'])->name('scan-barcode.konfirmasi');
 
-            // CRUD Pelanggan
+            // CRUD Pelanggan (tanpa destroy)
             Route::get('/pelanggan', [PegawaiPelangganController::class, 'index'])->name('pelanggan.index');
             Route::get('/pelanggan/create', [PegawaiPelangganController::class, 'create'])->name('pelanggan.create');
             Route::post('/pelanggan', [PegawaiPelangganController::class, 'store'])->name('pelanggan.store');
             Route::get('/pelanggan/{pelanggan}', [PegawaiPelangganController::class, 'show'])->name('pelanggan.show');
             Route::get('/pelanggan/{pelanggan}/edit', [PegawaiPelangganController::class, 'edit'])->name('pelanggan.edit');
             Route::put('/pelanggan/{pelanggan}', [PegawaiPelangganController::class, 'update'])->name('pelanggan.update');
-            Route::delete('/pelanggan/{pelanggan}', [PegawaiPelangganController::class, 'destroy'])->name('pelanggan.destroy');
             Route::get('/pelanggan/{pelanggan}/foto-rumah', [PegawaiPelangganController::class, 'foto'])->name('pelanggan.foto');
             Route::post('/pelanggan/{pelanggan}/kunjungan', [PegawaiPelangganController::class, 'catatKunjungan'])->name('pelanggan.kunjungan');
             Route::post('/pelanggan/{pelanggan}/konfirmasi-pembayaran', [PegawaiPelangganController::class, 'konfirmasiPembayaran'])->name('pelanggan.konfirmasi-pembayaran');

@@ -9,8 +9,8 @@ class Pelanggan extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'user_id', 'kode', 'nama', 'paket', 'alamat', 'no_hp', 'foto_rumah', 'foto_profil', 'status',
+protected $fillable = [
+        'user_id', 'kode', 'nama', 'email', 'paket', 'alamat', 'no_hp', 'foto_rumah', 'foto_profil', 'status',
     ];
 
     public function user()

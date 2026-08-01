@@ -4,267 +4,200 @@
 @section('page-title', 'Detail Pelanggan')
 
 @section('content')
-<div class="max-w-4xl mx-auto"
-     x-data="{
-        showFoto: false,
-        fotoLoading: false,
-        fotoUrl: null,
-        fotoCaption: null,
-        openFoto() {
-            this.showFoto = true;
-            this.fotoLoading = true;
-            this.fotoUrl = null;
-            fetch('{{ route('pegawai.pelanggan.foto', $pelanggan) }}')
-                .then(res => res.json())
-                .then(data => {
-                    setTimeout(() => {
-                        this.fotoUrl = data.url;
-                        this.fotoCaption = data.diambil_saat;
-                        this.fotoLoading = false;
-                    }, 500);
-                })
-                .catch(() => { this.fotoLoading = false; });
-        }
-     }">
+<div class="max-w-5xl mx-auto" x-data="{ showFoto: false, fotoLoading: false, fotoUrl: null, fotoCaption: null, openFoto() { this.showFoto = true; this.fotoLoading = true; this.fotoUrl = null; fetch('{{ route('pegawai.pelanggan.foto', $pelanggan) }}').then(res => res.json()).then(data => { setTimeout(() => { this.fotoUrl = data.url; this.fotoCaption = data.diambil_saat; this.fotoLoading = false; }, 500); }).catch(() => { this.fotoLoading = false; }); } }">
 
-    <a href="{{ route('pegawai.pelanggan.index') }}" class="flex items-center gap-2 text-slate-500 text-sm mb-4 hover:underline">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i>
-        Kembali
-    </a>
+    {{-- Breadcrumb --}}
+    <nav class="flex items-center gap-2 text-sm text-slate-400 mb-6">
+        <a href="{{ route('pegawai.pelanggan.index') }}" class="hover:text-[#7C3AED] transition-colors">Data Pelanggan</a>
+        <span class="text-slate-300">/</span>
+        <span class="text-slate-700 font-medium">Detail Pelanggan</span>
+    </nav>
 
-    <div class="grid lg:grid-cols-3 gap-5">
-        {{-- KOLOM KIRI: Info Pelanggan --}}
-        <div class="lg:col-span-2 space-y-5">
-            {{-- CARD INFO PELANGGAN --}}
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
-                <div class="flex items-start gap-4 mb-5">
-                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shrink-0 shadow-sm">
-                        <i data-lucide="user" class="w-7 h-7 text-white"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h2 class="font-bold text-lg text-slate-800">{{ $pelanggan->nama }}</h2>
-                                <p class="text-sm text-slate-400">{{ $pelanggan->kode }}</p>
-                            </div>
-                            @if ($tagihanTerbaru && $tagihanTerbaru->status === 'belum_bayar')
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-600 ring-1 ring-rose-200">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-                                    Belum Bayar
-                                </span>
-                            @else
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-600 ring-1 ring-emerald-200">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                    Lunas
-                                </span>
-                            @endif
-                        </div>
-                    </div>
+    {{-- CARD ATAS: Header Profil --}}
+    <div class="bg-white rounded-2xl border border-slate-200/60 p-6 md:p-8 mb-6">
+        <div class="flex flex-col md:flex-row md:items-center gap-5">
+            {{-- Avatar --}}
+            <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#7C3AED]/10 flex items-center justify-center shrink-0">
+                <span class="text-xl md:text-2xl font-bold text-[#7C3AED]">{{ strtoupper(substr($pelanggan->nama, 0, 1)) }}</span>
+            </div>
+
+            {{-- Info Nama & Status --}}
+            <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2">
+                    <h2 class="text-xl md:text-2xl font-bold text-slate-800 truncate">{{ $pelanggan->nama }}</h2>
+                    @if ($pelanggan->status === 'aktif')
+                        <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            Aktif
+                        </span>
+                    @else
+                        <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Nonaktif
+                        </span>
+                    @endif
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="map-pin" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">Alamat</p>
-                            <p class="text-sm text-slate-800 font-medium">{{ $pelanggan->alamat ?? '-' }}</p>
-                        </div>
-                    </div>
-                    <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="wifi" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">Paket WiFi</p>
-                            <p class="text-sm text-slate-800 font-medium">{{ $pelanggan->paket ?? '-' }}</p>
-                        </div>
-                    </div>
-                    <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="phone" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">No. HP</p>
-                            <p class="text-sm text-slate-800 font-medium">{{ $pelanggan->no_hp ?? '-' }}</p>
-                        </div>
-                    </div>
-                    <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="calendar" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">Tanggal Daftar</p>
-                            <p class="text-sm text-slate-800 font-medium">{{ $pelanggan->created_at->format('d F Y') }}</p>
-                        </div>
-                    </div>
-                    <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="circle-dollar-sign" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">Status Pelanggan</p>
-                            <p class="text-sm">
-                                @if ($pelanggan->status === 'aktif')
-                                    <span class="inline-flex items-center gap-1 font-semibold text-emerald-700">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                        Aktif
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1 font-semibold text-slate-500">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                                        Nonaktif
-                                    </span>
-                                @endif
-                            </p>
-                        </div>
-                    </div>
-                    <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="receipt" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">Tagihan Bulan Ini</p>
-                            @if ($tagihanTerbaru)
-                                <p class="text-sm text-slate-800 font-medium">Rp {{ number_format($tagihanTerbaru->jumlah, 0, ',', '.') }}</p>
-                                <p class="text-xs text-slate-400">Jatuh tempo: {{ optional($tagihanTerbaru->jatuh_tempo)->format('d M Y') }}</p>
-                            @else
-                                <p class="text-sm text-slate-800 font-medium">-</p>
-                            @endif
-                        </div>
-                    </div>
+                <div class="flex flex-wrap items-center gap-2 mt-1.5">
+                    <span class="text-sm font-mono font-semibold text-slate-500">{{ $pelanggan->kode }}</span>
                 </div>
             </div>
 
-            {{-- RIWAYAT PEMBAYARAN --}}
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
-                            <i data-lucide="credit-card" class="w-4 h-4 text-emerald-600"></i>
-                        </div>
-                        <h3 class="font-semibold text-slate-800">Riwayat Pembayaran</h3>
-                    </div>
-                </div>
+            {{-- Aksi --}}
+            <div class="flex items-center gap-2 shrink-0">
+                <a href="{{ route('pegawai.pelanggan.edit', $pelanggan) }}"
+                   class="inline-flex items-center px-4 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-sm font-semibold rounded-xl transition-all gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    Edit
+                </a>
+            </div>
+        </div>
+    </div>
 
-                <div class="overflow-x-auto -mx-5">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="text-left border-b border-slate-100">
-                                <th class="px-5 py-2.5 font-semibold text-slate-400 text-xs uppercase">Periode</th>
-                                <th class="px-5 py-2.5 font-semibold text-slate-400 text-xs uppercase">Jatuh Tempo</th>
-                                <th class="px-5 py-2.5 font-semibold text-slate-400 text-xs uppercase">Jumlah</th>
-                                <th class="px-5 py-2.5 font-semibold text-slate-400 text-xs uppercase">Status</th>
-                                <th class="px-5 py-2.5 font-semibold text-slate-400 text-xs uppercase">Dibayar</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-50">
-                            @forelse ($pelanggan->pembayarans as $bayar)
-                                <tr class="hover:bg-slate-50 transition-colors">
-                                    <td class="px-5 py-3 font-medium text-slate-800">{{ $bayar->periode ?? '-' }}</td>
-                                    <td class="px-5 py-3 text-slate-500">{{ optional($bayar->jatuh_tempo)->format('d M Y') ?? '-' }}</td>
-                                    <td class="px-5 py-3 font-semibold text-slate-800">Rp {{ number_format($bayar->jumlah, 0, ',', '.') }}</td>
-                                    <td class="px-5 py-3">
-                                        @if ($bayar->status === 'lunas')
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">
-                                                Lunas
-                                            </span>
-                                        @else
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-600">
-                                                Belum Bayar
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td class="px-5 py-3 text-slate-500">{{ $bayar->dibayar_at ? $bayar->dibayar_at->format('d M Y H:i') : '-' }}</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="px-5 py-6 text-center text-slate-400">Belum ada riwayat pembayaran.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+    {{-- ROW 2 KOLOM: Informasi Pelanggan & QR Code --}}
+    <div class="grid lg:grid-cols-3 gap-6 mb-6">
+        {{-- KOLOM KIRI: Informasi Pelanggan --}}
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/60 p-6 md:p-8">
+            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-6">Informasi Pelanggan</h3>
+            <div class="space-y-5">
+                <div class="flex items-start gap-4">
+                    <span class="text-sm text-slate-500 w-24 shrink-0">Nama</span>
+                    <span class="text-sm font-medium text-slate-800">: {{ $pelanggan->nama ?? '-' }}</span>
+                </div>
+                <div class="flex items-start gap-4">
+                    <span class="text-sm text-slate-500 w-24 shrink-0">No. HP</span>
+                    <span class="text-sm font-medium text-slate-800">: {{ $pelanggan->no_hp ?? '-' }}</span>
+                </div>
+                <div class="flex items-start gap-4">
+                    <span class="text-sm text-slate-500 w-24 shrink-0">Alamat</span>
+                    <span class="text-sm font-medium text-slate-800">: {{ $pelanggan->alamat ?? '-' }}</span>
+                </div>
+                <div class="flex items-start gap-4">
+                    <span class="text-sm text-slate-500 w-24 shrink-0">Bergabung</span>
+                    <span class="text-sm font-medium text-slate-800">: {{ $pelanggan->created_at->format('d F Y') }}</span>
+                </div>
+                <div class="flex items-start gap-4">
+                    <span class="text-sm text-slate-500 w-24 shrink-0">Paket WiFi</span>
+<span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">{{ $pelanggan->paket ?? '-' }}</span>
+                </div>
+                <div class="flex items-start gap-4">
+                    <span class="text-sm text-slate-500 w-24 shrink-0">Status</span>
+                    <span class="text-sm font-medium text-slate-800">:
+                        @if ($pelanggan->status === 'aktif')
+                            <span class="inline-flex items-center gap-1.5 text-emerald-600">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                Aktif
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1.5 text-slate-400">
+                                <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+                                Nonaktif
+                            </span>
+                        @endif
+                    </span>
+                </div>
+                <div class="flex items-start gap-4">
+                    <span class="text-sm text-slate-500 w-24 shrink-0">Foto Rumah</span>
+                    <span class="text-sm font-medium text-slate-800">:
+                        <button type="button" @click="openFoto()"
+                                class="inline-flex items-center gap-1.5 text-[#7C3AED] hover:text-[#6D28D9] font-semibold transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                            Lihat Foto
+                        </button>
+                    </span>
                 </div>
             </div>
         </div>
 
-        {{-- KOLOM KANAN: Aksi --}}
-        <div class="space-y-4">
-            {{-- QR CODE --}}
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 text-center">
-                <div class="flex items-center gap-2 mb-3 justify-center">
-                    <div class="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
-                        <i data-lucide="qr-code" class="w-4 h-4 text-violet-600"></i>
-                    </div>
-                    <h3 class="font-semibold text-slate-800">QR Code Pelanggan</h3>
-                </div>
-                <div class="inline-block bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-                    <div id="qr-detail-container">
-                        <canvas id="qr-detail-canvas"></canvas>
-                    </div>
-                </div>
-                <p class="text-xs text-slate-400 mt-2 font-mono font-bold text-violet-600">{{ $pelanggan->kode }}</p>
-                <div class="mt-3 flex gap-2 justify-center">
-                    <button type="button" onclick="downloadQRDetail()"
-                            class="inline-flex items-center gap-1 px-3 py-1.5 bg-violet-600 hover:bg-violet-700 text-white text-xs font-semibold rounded-lg transition-colors">
-                        <i data-lucide="download" class="w-3 h-3"></i>
-                        Download
-                    </button>
-                    <button type="button" onclick="printQRDetail()"
-                            class="inline-flex items-center gap-1 px-3 py-1.5 border border-slate-200 text-slate-600 text-xs font-semibold rounded-lg hover:bg-slate-50 transition-colors">
-                        <i data-lucide="printer" class="w-3 h-3"></i>
-                        Cetak
-                    </button>
-                </div>
+        {{-- KOLOM KANAN: QR Code --}}
+        <div class="bg-white rounded-2xl border border-slate-200/60 p-6 md:p-8 text-center">
+            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-5 flex items-center gap-2 justify-center">
+                <svg class="w-4 h-4 text-[#7C3AED]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+                </svg>
+                QR Code
+            </h3>
+            <div class="inline-block p-3 rounded-xl border border-slate-100 mx-auto">
+                <canvas id="qr-detail-canvas"></canvas>
             </div>
-
-            {{-- Status Pembayaran --}}
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
-                <div class="flex items-center gap-2 mb-4">
-                    <div class="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
-                        <i data-lucide="circle-dollar-sign" class="w-4 h-4 text-violet-600"></i>
-                    </div>
-                    <h3 class="font-semibold text-slate-800">Status Pembayaran</h3>
-                </div>
-                @if ($tagihanTerbaru && $tagihanTerbaru->status === 'belum_bayar')
-                    <div class="bg-rose-50 rounded-xl p-4 text-center mb-3">
-                        <i data-lucide="alert-circle" class="w-8 h-8 text-rose-500 mx-auto mb-2"></i>
-                        <p class="text-sm font-semibold text-rose-700">Belum Bayar</p>
-                        <p class="text-xs text-rose-500 mt-1">Tagihan Rp {{ number_format($tagihanTerbaru->jumlah, 0, ',', '.') }}</p>
-                    </div>
-                @else
-                    <div class="bg-emerald-50 rounded-xl p-4 text-center mb-3">
-                        <i data-lucide="check-circle" class="w-8 h-8 text-emerald-500 mx-auto mb-2"></i>
-                        <p class="text-sm font-semibold text-emerald-700">Lunas</p>
-                        <p class="text-xs text-emerald-500 mt-1">Tidak ada tagihan tertunggak</p>
-                    </div>
-                @endif
-            </div>
-
-            {{-- Tombol Aksi --}}
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 space-y-3">
-                <h3 class="font-semibold text-slate-800 mb-2">Aksi</h3>
-
-                <button type="button" @click="openFoto()"
-                        class="w-full flex items-center justify-center gap-2 border border-violet-500 text-violet-600 font-semibold py-2.5 rounded-lg hover:bg-violet-50 transition-colors text-sm">
-                    <i data-lucide="camera" class="w-4 h-4"></i>
-                    Lihat Foto Rumah
+            <p class="text-xs text-slate-400 mt-2.5 font-mono font-bold text-[#7C3AED]">{{ $pelanggan->kode }}</p>
+            <div class="mt-5 flex gap-2 justify-center">
+                <button type="button" onclick="downloadQRDetail()"
+                        class="inline-flex items-center gap-1.5 px-4 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-xs font-semibold rounded-xl transition-all">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Download
                 </button>
-
-                <a href="{{ route('pegawai.pelanggan.show', $pelanggan) . '?scan=1' }}"
-                   class="w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2.5 rounded-lg transition-colors text-sm"
-                   onclick="event.preventDefault(); window.location.href='{{ route('pegawai.scan-barcode') }}?kode={{ $pelanggan->kode }}';">
-                    <i data-lucide="scan-qr-code" class="w-4 h-4"></i>
-                    Scan QR Code
-                </a>
-
-                @if ($tagihanTerbaru && $tagihanTerbaru->status === 'belum_bayar')
-                    <form action="{{ route('pegawai.pelanggan.konfirmasi-pembayaran', $pelanggan) }}" method="POST">
-                        @csrf
-                        <button type="submit"
-                                class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-lg transition-colors text-sm"
-                                onclick="return confirm('Konfirmasi pembayaran untuk {{ $pelanggan->nama }}?')">
-                            <i data-lucide="check-circle" class="w-4 h-4"></i>
-                            Konfirmasi Pembayaran
-                        </button>
-                    </form>
-                @endif
-
-                <a href="{{ route('pegawai.pelanggan.edit', $pelanggan) }}"
-                   class="w-full flex items-center justify-center gap-2 border border-slate-200 text-slate-600 font-semibold py-2.5 rounded-lg hover:bg-slate-50 transition-colors text-sm">
-                    <i data-lucide="pencil" class="w-4 h-4"></i>
-                    Edit Pelanggan
-                </a>
+                <button type="button" onclick="printQRDetail()"
+                        class="inline-flex items-center gap-1.5 px-4 py-2 border border-slate-200 text-slate-600 text-xs font-semibold rounded-xl hover:bg-slate-50 transition-all">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                    </svg>
+                    Cetak
+                </button>
             </div>
+        </div>
+    </div>
+
+    {{-- RIWAYAT PEMBAYARAN --}}
+    <div class="bg-white rounded-2xl border border-slate-200/60 overflow-hidden">
+        <div class="px-6 md:px-8 py-5 border-b border-slate-100 flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-slate-800">Riwayat Pembayaran</h3>
+            <a href="#" class="text-xs font-medium text-[#7C3AED] hover:text-[#6D28D9] transition-colors">Lihat Semua</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b border-slate-50">
+                        <th class="px-6 md:px-8 py-3.5 text-left font-medium text-slate-400 text-xs uppercase tracking-wider">Periode</th>
+                        <th class="px-6 md:px-8 py-3.5 text-left font-medium text-slate-400 text-xs uppercase tracking-wider">Jumlah</th>
+                        <th class="px-6 md:px-8 py-3.5 text-left font-medium text-slate-400 text-xs uppercase tracking-wider">Status</th>
+                        <th class="px-6 md:px-8 py-3.5 text-left font-medium text-slate-400 text-xs uppercase tracking-wider">Dibayar Pada</th>
+                        <th class="px-6 md:px-8 py-3.5 text-left font-medium text-slate-400 text-xs uppercase tracking-wider">Bukti</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    @forelse ($pelanggan->pembayarans as $bayar)
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="px-6 md:px-8 py-4 text-sm font-medium text-slate-800">{{ $bayar->periode ?? '-' }}</td>
+                            <td class="px-6 md:px-8 py-4 text-sm font-semibold text-slate-800">Rp {{ number_format($bayar->jumlah, 0, ',', '.') }}</td>
+                            <td class="px-6 md:px-8 py-4">
+                                @if ($bayar->status === 'lunas')
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                        Lunas
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-600">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                        Belum Bayar
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="px-6 md:px-8 py-4 text-sm text-slate-500">{{ $bayar->dibayar_at ? $bayar->dibayar_at->format('d M Y') : '-' }}</td>
+                            <td class="px-6 md:px-8 py-4">
+                                <a href="#" class="p-1.5 rounded-lg text-slate-400 hover:text-[#7C3AED] hover:bg-[#7C3AED]/5 inline-block transition-colors" title="Lihat Bukti">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-6 md:px-8 py-12 text-center">
+                                <p class="text-sm text-slate-400">Belum ada riwayat pembayaran.</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -272,34 +205,38 @@
     <div x-show="showFoto" x-cloak
          class="fixed inset-0 bg-black/50 flex items-center justify-center p-6 z-50"
          @click.self="showFoto = false">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg p-5">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="font-semibold text-slate-800">Foto Rumah</h3>
-                <button type="button" @click="showFoto = false" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+                <button type="button" @click="showFoto = false" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
                 </button>
             </div>
 
             {{-- LOADING --}}
             <div x-show="fotoLoading" class="flex flex-col items-center justify-center py-10 gap-3">
-                <div class="w-10 h-10 border-4 border-emerald-100 border-t-emerald-500 rounded-full animate-spin"></div>
+                <div class="w-10 h-10 border-4 border-violet-100 border-t-[#7C3AED] rounded-full animate-spin"></div>
                 <p class="text-sm text-slate-400">Memuat foto...</p>
             </div>
 
             {{-- FOTO SIAP --}}
             <div x-show="!fotoLoading && fotoUrl" x-cloak>
-                <img :src="fotoUrl" class="w-full h-64 object-cover rounded-lg mb-3">
+                <img :src="fotoUrl" class="w-full h-64 object-cover rounded-xl mb-3">
                 <p class="text-xs text-slate-400 mb-4" x-text="fotoCaption"></p>
             </div>
 
             {{-- TIDAK ADA FOTO --}}
             <div x-show="!fotoLoading && !fotoUrl" x-cloak class="py-10 text-center">
-                <i data-lucide="image-off" class="w-10 h-10 text-slate-300 mx-auto mb-3"></i>
+                <svg class="w-12 h-12 text-slate-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
                 <p class="text-sm text-slate-400">Belum ada foto rumah untuk pelanggan ini.</p>
             </div>
 
             <button type="button" @click="showFoto = false"
-                    class="w-full border border-emerald-500 text-emerald-600 font-semibold py-2.5 rounded-lg hover:bg-emerald-50 transition-colors mt-2">
+                    class="w-full border border-slate-200 text-slate-600 font-semibold py-2.5 rounded-xl hover:bg-slate-50 transition-all mt-2">
                 Tutup
             </button>
         </div>
@@ -369,5 +306,4 @@ function printQRDetail() {
 }
 </script>
 @endpush
-
 

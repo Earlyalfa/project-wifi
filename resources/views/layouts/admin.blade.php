@@ -21,12 +21,12 @@
 
     {{-- SIDEBAR OVERLAY MOBILE --}}
     <template x-teleport="body">
-        <div x-show="sidebarOpen" x-cloak @click="sidebarOpen = false" class="fixed inset-0 bg-black/40 z-20 md:hidden"></div>
+        <div x-show="sidebarOpen" x-cloak x-on:click="sidebarOpen = false" class="fixed inset-0 bg-black/40 z-20 md:hidden"></div>
     </template>
 
     {{-- SIDEBAR --}}
 <aside class="fixed md:sticky inset-y-0 left-0 z-30 w-64 bg-[#1a1a2e] text-violet-50 flex flex-col shrink-0 min-h-screen transition-all duration-300 ease-in-out -translate-x-full md:translate-x-0"
-           :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+           x-bind:class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
            x-cloak>
 
     {{-- Logo --}}
@@ -93,23 +93,17 @@
         {{-- NAVBAR --}}
         <header class="bg-white/80 backdrop-blur-md border-b border-slate-200/60 px-4 md:px-6 py-3 flex items-center justify-between sticky top-0 z-10">
             <div class="flex items-center gap-3">
-                <button @click="sidebarOpen = !sidebarOpen" class="md:hidden p-2 rounded-lg hover:bg-slate-100 text-slate-500">
+                <button x-on:click="sidebarOpen = !sidebarOpen" class="md:hidden p-2 rounded-lg hover:bg-slate-100 text-slate-500">
                     <i data-lucide="menu" class="w-5 h-5"></i>
                 </button>
-
-                {{-- Search --}}
-                <div class="relative hidden sm:block">
-                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-<input type="text" placeholder="Cari sesuatu..."
-                           class="w-56 rounded-lg border border-slate-200 pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 bg-slate-50">
-                </div>
+                <h1 class="font-semibold text-slate-800 text-base md:text-lg">@yield('page-title', 'Dashboard')</h1>
             </div>
 
             <div class="flex items-center gap-3 md:gap-5">
 
                 {{-- Notifikasi --}}
-                <div class="relative" x-data="notifDropdown()" x-init="init()" @click.outside="notifOpen = false">
-<button @click="toggle()" class="relative p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-all">
+                <div class="relative" x-data="notifDropdown()" x-init="init()" x-on:click.outside="notifOpen = false">
+<button x-on:click="toggle()" class="relative p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-all">
                         <i data-lucide="bell" class="w-5 h-5"></i>
                         <span x-show="unread > 0"
                               x-text="unread"
@@ -120,8 +114,8 @@
                          class="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-slate-100 z-50 max-h-[500px] flex flex-col">
                         <div class="flex items-center justify-between px-4 py-3 border-b border-slate-100 shrink-0">
                             <h3 class="font-semibold text-slate-800 text-sm">Notifikasi</h3>
-                            <button x-show="unread > 0" @click="markAllRead()"
-class="text-xs text-violet-600 font-medium hover:underline">Tandai sudah dibaca
+                            <button x-show="unread > 0" x-on:click="markAllRead()"
+                                    class="text-xs text-violet-600 font-medium hover:underline">Tandai sudah dibaca</button>
                         </div>
                         <div class="overflow-y-auto flex-1 max-h-[350px]">
                             <template x-if="items.length === 0">
@@ -131,13 +125,13 @@ class="text-xs text-violet-600 font-medium hover:underline">Tandai sudah dibaca
                                 </div>
                             </template>
                             <template x-for="n in items" :key="n.id">
-                                <div @click="markRead(n)"
-                                     :class="{'bg-violet-50/50': !n.is_read}"
+                                <div x-on:click="markRead(n)"
+                                     x-bind:class="{'bg-violet-50/50': !n.is_read}"
                                      class="flex items-start gap-3 px-4 py-3 border-b border-slate-50 cursor-pointer transition-colors hover:bg-slate-50">
                                     <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-                                         :class="n.color === 'rose' ? 'bg-rose-100' : n.color === 'amber' ? 'bg-amber-100' : n.color === 'emerald' ? 'bg-emerald-100' : 'bg-violet-100'">
-                                        <i :data-lucide="n.icon" class="w-4 h-4"
-                                           :class="n.color === 'rose' ? 'text-rose-600' : n.color === 'amber' ? 'text-amber-600' : n.color === 'emerald' ? 'text-emerald-600' : 'text-violet-600'"></i>
+                                         x-bind:class="n.color === 'rose' ? 'bg-rose-100' : n.color === 'amber' ? 'bg-amber-100' : n.color === 'emerald' ? 'bg-emerald-100' : 'bg-violet-100'">
+                                        <i x-bind:data-lucide="n.icon" class="w-4 h-4"
+                                           x-bind:class="n.color === 'rose' ? 'text-rose-600' : n.color === 'amber' ? 'text-amber-600' : n.color === 'emerald' ? 'text-emerald-600' : 'text-violet-600'"></i>
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm text-slate-700" x-text="n.message"></p>
@@ -154,8 +148,8 @@ class="text-xs text-violet-600 font-medium hover:underline">Tandai sudah dibaca
                 </div>
 
 {{-- Profile Dropdown --}}
-                <div class="relative" x-data="{ open: false }" @click.outside="open = false">
-                    <button @click="open = !open" class="flex items-center gap-2 md:gap-3 p-1.5 rounded-xl hover:bg-slate-100 transition-all">
+                <div class="relative" x-data="{ open: false }" x-on:click.outside="open = false">
+                    <button x-on:click="open = !open" class="flex items-center gap-2 md:gap-3 p-1.5 rounded-xl hover:bg-slate-100 transition-all">
                         <div class="w-9 h-9 rounded-full bg-gradient-to-br from-violet-400 to-violet-600 flex items-center justify-center shadow-sm">
                             <span class="text-sm font-bold text-white">{{ substr(auth()->user()->name, 0, 1) }}</span>
                         </div>
@@ -163,7 +157,7 @@ class="text-xs text-violet-600 font-medium hover:underline">Tandai sudah dibaca
                             <p class="text-sm font-semibold text-slate-800 leading-tight">{{ auth()->user()->name }}</p>
                             <p class="text-[11px] text-slate-400 font-medium">Admin</p>
                         </div>
-                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 hidden md:block" :class="open ? 'rotate-180' : ''"></i>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 hidden md:block" x-bind:class="open ? 'rotate-180' : ''"></i>
                     </button>
 
                     {{-- Dropdown --}}
