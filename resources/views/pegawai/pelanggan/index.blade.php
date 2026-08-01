@@ -73,9 +73,10 @@
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="text-left border-b border-slate-100">
-                            <th class="px-5 py-3 font-semibold text-slate-400 text-xs uppercase">Pelanggan</th>
+<th class="px-5 py-3 font-semibold text-slate-400 text-xs uppercase">Pelanggan</th>
                             <th class="px-5 py-3 font-semibold text-slate-400 text-xs uppercase">Alamat</th>
                             <th class="px-5 py-3 font-semibold text-slate-400 text-xs uppercase">Paket</th>
+                            <th class="px-5 py-3 font-semibold text-slate-400 text-xs uppercase">Jatuh Tempo</th>
                             <th class="px-5 py-3 font-semibold text-slate-400 text-xs uppercase">Status</th>
                             <th class="px-5 py-3 font-semibold text-slate-400 text-xs uppercase">Pembayaran</th>
                             <th class="px-5 py-3 font-semibold text-slate-400 text-xs uppercase">Aksi</th>
@@ -114,6 +115,16 @@
                                         </span>
                                     @else
                                         <span class="text-slate-400 text-xs">-</span>
+                                    @endif
+                                </td>
+                                <td class="px-5 py-3">
+                                    @if ($p->tagihan_jatuh_tempo)
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 whitespace-nowrap">
+                                            <i data-lucide="calendar-clock" class="w-3 h-3"></i>
+                                            Tanggal {{ (int) $p->tagihan_jatuh_tempo }}
+                                        </span>
+                                    @else
+                                        <span class="text-xs text-slate-400">-</span>
                                     @endif
                                 </td>
                                 <td class="px-5 py-3">

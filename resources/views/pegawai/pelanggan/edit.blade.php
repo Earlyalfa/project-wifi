@@ -90,6 +90,20 @@
                             <option value="nonaktif" {{ old('status', $pelanggan->status) === 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
                         </select>
                     </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-2">Tanggal Jatuh Tempo Tagihan <span class="text-rose-500">*</span></label>
+                        <select name="tagihan_jatuh_tempo" required
+                                class="w-full h-11 rounded-xl border border-slate-200 bg-slate-50/50 px-4 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED] focus:bg-white transition-all appearance-none cursor-pointer @error('tagihan_jatuh_tempo') border-rose-300 bg-rose-50/30 @enderror"
+                                style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2394a3b8%22 stroke-width=%222%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M19 9l-7 7-7-7%22/></svg>'); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1rem;">
+                            <option value="">Pilih Tanggal</option>
+                            @for ($i = 1; $i <= 31; $i++)
+                                <option value="{{ $i }}" {{ old('tagihan_jatuh_tempo', $pelanggan->tagihan_jatuh_tempo) == $i ? 'selected' : '' }}>
+                                    Setiap tanggal {{ $i }}
+                                </option>
+                            @endfor
+                        </select>
+                        @error('tagihan_jatuh_tempo') <p class="text-xs text-rose-500 mt-1.5">{{ $message }}</p> @enderror
+                    </div>
                 </div>
 
                 {{-- Foto Rumah --}}

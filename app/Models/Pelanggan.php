@@ -10,7 +10,7 @@ class Pelanggan extends Model
     use HasFactory;
 
 protected $fillable = [
-        'user_id', 'kode', 'nama', 'email', 'paket', 'alamat', 'no_hp', 'foto_rumah', 'foto_profil', 'status',
+        'user_id', 'kode', 'nama', 'email', 'paket', 'tagihan_jatuh_tempo', 'alamat', 'no_hp', 'foto_rumah', 'foto_profil', 'status',
     ];
 
     public function user()

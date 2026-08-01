@@ -65,9 +65,12 @@ class DashboardController extends Controller
             ->orderBy('jatuh_tempo', 'asc')
             ->value('jatuh_tempo');
 
-        // Teks jatuh tempo: "Setiap tanggal X" — ambil hari dari jatuh tempo terdekat
+        // Teks jatuh tempo: "Setiap tanggal X" — utamakan dari setting pelanggan (tagihan_jatuh_tempo),
+        // fallback ke hari dari jatuh tempo terdekat, fallback terakhir tanggal 10.
         $jatuhTempoText = 'Setiap tanggal 10';
-        if ($jatuhTempo) {
+        if ($pelanggan->tagihan_jatuh_tempo) {
+            $jatuhTempoText = 'Setiap tanggal ' . (int) $pelanggan->tagihan_jatuh_tempo;
+        } elseif ($jatuhTempo) {
             $hari = \Carbon\Carbon::parse($jatuhTempo)->day;
             $jatuhTempoText = 'Setiap tanggal ' . $hari;
         }

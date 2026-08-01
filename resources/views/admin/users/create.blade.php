@@ -83,6 +83,19 @@
                     @error('foto_rumah') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                 </div>
 
+                {{-- Tanggal Jatuh Tempo Tagihan --}}
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Tanggal Jatuh Tempo Tagihan</label>
+                    <select name="tagihan_jatuh_tempo"
+                            class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 @error('tagihan_jatuh_tempo') border-rose-300 @enderror">
+                        <option value="">-- Pilih Tanggal --</option>
+                        @for ($i = 1; $i <= 31; $i++)
+                            <option value="{{ $i }}" {{ old('tagihan_jatuh_tempo') == $i ? 'selected' : '' }}>Setiap tanggal {{ $i }}</option>
+                        @endfor
+                    </select>
+                    @error('tagihan_jatuh_tempo') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
+                </div>
+
                 {{-- Role --}}
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Role <span class="text-rose-500">*</span></label>

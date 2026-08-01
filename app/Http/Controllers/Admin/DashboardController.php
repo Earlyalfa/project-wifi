@@ -127,13 +127,14 @@ class DashboardController extends Controller
     public function updateUser(Request $request, User $user)
     {
         $validated = $request->validate([
-            'name'        => ['required', 'string', 'max:255'],
-            'status'      => ['required', 'in:aktif,nonaktif'],
-            'no_hp'       => ['nullable', 'string', 'max:20'],
-            'alamat'      => ['nullable', 'string', 'max:500'],
-            'paket'       => ['nullable', 'string', 'max:100'],
-            'paket_custom'=> ['nullable', 'string', 'max:100'],
-            'foto_rumah'  => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'name'                 => ['required', 'string', 'max:255'],
+            'status'               => ['required', 'in:aktif,nonaktif'],
+            'no_hp'                => ['nullable', 'string', 'max:20'],
+            'alamat'               => ['nullable', 'string', 'max:500'],
+            'paket'                => ['nullable', 'string', 'max:100'],
+            'paket_custom'         => ['nullable', 'string', 'max:100'],
+            'tagihan_jatuh_tempo'  => ['nullable', 'integer', 'between:1,31'],
+            'foto_rumah'           => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ]);
 
         // Update User
@@ -155,11 +156,12 @@ class DashboardController extends Controller
             $pelanggan->kode = $this->generatePelangganKode();
         }
 
-        $pelanggan->nama   = $validated['name'];
-        $pelanggan->alamat = $validated['alamat'] ?? $pelanggan->alamat;
-        $pelanggan->no_hp  = $validated['no_hp'] ?? $pelanggan->no_hp;
-        $pelanggan->paket  = $validated['paket'] ?? $pelanggan->paket;
-        $pelanggan->status = $validated['status'];
+        $pelanggan->nama                 = $validated['name'];
+        $pelanggan->alamat               = $validated['alamat'] ?? $pelanggan->alamat;
+        $pelanggan->no_hp                = $validated['no_hp'] ?? $pelanggan->no_hp;
+        $pelanggan->paket                = $validated['paket'] ?? $pelanggan->paket;
+        $pelanggan->tagihan_jatuh_tempo  = $validated['tagihan_jatuh_tempo'] ?? $pelanggan->tagihan_jatuh_tempo;
+        $pelanggan->status               = $validated['status'];
 
         if ($request->hasFile('foto_rumah')) {
             // Hapus foto lama jika ada
@@ -184,16 +186,17 @@ class DashboardController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'        => ['required', 'string', 'max:255'],
-            'email'       => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'password'    => ['required', Rules\Password::defaults()],
-            'no_hp'       => ['nullable', 'string', 'max:20'],
-            'alamat'      => ['nullable', 'string', 'max:500'],
-            'paket'       => ['nullable', 'string', 'max:100'],
-            'paket_custom'=> ['nullable', 'string', 'max:100'],
-            'foto_rumah'  => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
-            'role'        => ['required', 'in:admin,pegawai,pelanggan'],
-            'status'      => ['required', 'in:aktif,nonaktif'],
+            'name'                 => ['required', 'string', 'max:255'],
+            'email'                => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'password'             => ['required', Rules\Password::defaults()],
+            'no_hp'                => ['nullable', 'string', 'max:20'],
+            'alamat'               => ['nullable', 'string', 'max:500'],
+            'paket'                => ['nullable', 'string', 'max:100'],
+            'paket_custom'         => ['nullable', 'string', 'max:100'],
+            'tagihan_jatuh_tempo'  => ['nullable', 'integer', 'between:1,31'],
+            'foto_rumah'           => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'role'                 => ['required', 'in:admin,pegawai,pelanggan'],
+            'status'               => ['required', 'in:aktif,nonaktif'],
         ]);
 
         // Determine final paket
@@ -219,13 +222,14 @@ class DashboardController extends Controller
         }
 
         $pelanggan = Pelanggan::create([
-            'kode'       => $this->generatePelangganKode(),
-            'nama'       => $validated['name'],
-            'paket'      => $validated['paket'] ?? null,
-            'alamat'     => $validated['alamat'] ?? null,
-            'no_hp'      => $validated['no_hp'] ?? null,
-            'foto_rumah' => $fotoPath,
-            'status'     => $validated['status'],
+            'kode'                 => $this->generatePelangganKode(),
+            'nama'                 => $validated['name'],
+            'paket'                => $validated['paket'] ?? null,
+            'tagihan_jatuh_tempo'  => $validated['tagihan_jatuh_tempo'] ?? null,
+            'alamat'               => $validated['alamat'] ?? null,
+            'no_hp'                => $validated['no_hp'] ?? null,
+            'foto_rumah'           => $fotoPath,
+            'status'               => $validated['status'],
         ]);
 
         // Notifikasi untuk admin

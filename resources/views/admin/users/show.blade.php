@@ -62,11 +62,18 @@
                             <p class="text-sm text-slate-800 font-medium">{{ $pelanggan->no_hp ?? '-' }}</p>
                         </div>
                     </div>
-                    <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
+<div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
                         <i data-lucide="calendar" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
                         <div>
                             <p class="text-xs text-slate-400 font-medium">Tanggal Daftar</p>
                             <p class="text-sm text-slate-800 font-medium">{{ $user->created_at->format('d F Y') }}</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
+                        <i data-lucide="clock" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
+                        <div>
+                            <p class="text-xs text-slate-400 font-medium">Jatuh Tempo Tagihan</p>
+                            <p class="text-sm text-slate-800 font-medium">{{ $pelanggan->tagihan_jatuh_tempo ? 'Setiap tanggal ' . (int) $pelanggan->tagihan_jatuh_tempo : 'Belum diatur' }}</p>
                         </div>
                     </div>
                     <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">

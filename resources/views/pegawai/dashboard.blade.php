@@ -295,8 +295,8 @@
                 <span class="text-sm font-semibold text-slate-700 group-hover:text-emerald-700">Lihat Pelanggan</span>
             </a>
 
-            {{-- Lihat Gangguan --}}
-            <a href="#"
+{{-- Lihat Gangguan --}}
+            <a href="{{ route('pegawai.gangguan.index') }}"
                class="flex flex-col items-center gap-2 p-5 rounded-xl border border-slate-100 hover:border-amber-200 hover:bg-amber-50/50 transition-all duration-200 group">
                 <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center group-hover:bg-amber-200 transition-colors">
                     <i data-lucide="message-square-warning" class="w-6 h-6 text-amber-600"></i>
@@ -305,7 +305,7 @@
             </a>
 
             {{-- Riwayat Kunjungan --}}
-            <a href="#"
+            <a href="{{ route('pegawai.kunjungan.index') }}"
                class="flex flex-col items-center gap-2 p-5 rounded-xl border border-slate-100 hover:border-violet-200 hover:bg-violet-50/50 transition-all duration-200 group">
                 <div class="w-12 h-12 rounded-xl bg-violet-100 flex items-center justify-center group-hover:bg-violet-200 transition-colors">
                     <i data-lucide="map-pin" class="w-6 h-6 text-violet-600"></i>

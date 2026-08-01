@@ -92,13 +92,14 @@ public function store(Request $request)
         }
 
         $validated = $request->validate([
-            'nama'       => ['required', 'string', 'max:255'],
-            'email'      => ['nullable', 'email', 'max:255'],
-            'paket'      => ['nullable', 'string', 'max:100'],
-            'alamat'     => ['nullable', 'string', 'max:500'],
-            'no_hp'      => ['nullable', 'string', 'max:20'],
-            'status'     => ['required', 'in:aktif,nonaktif'],
-            'foto_rumah' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'nama'                 => ['required', 'string', 'max:255'],
+            'email'                => ['nullable', 'email', 'max:255'],
+            'paket'                => ['nullable', 'string', 'max:100'],
+            'tagihan_jatuh_tempo'  => ['nullable', 'integer', 'between:1,31'],
+            'alamat'               => ['nullable', 'string', 'max:500'],
+            'no_hp'                => ['nullable', 'string', 'max:20'],
+            'status'               => ['required', 'in:aktif,nonaktif'],
+            'foto_rumah'           => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ]);
 
         $validated['kode'] = $this->generateKode();
@@ -143,12 +144,13 @@ public function show(Pelanggan $pelanggan)
     public function update(Request $request, Pelanggan $pelanggan)
     {
         $validated = $request->validate([
-            'nama'       => ['required', 'string', 'max:255'],
-            'paket'      => ['nullable', 'string', 'max:100'],
-            'alamat'     => ['nullable', 'string', 'max:500'],
-            'no_hp'      => ['nullable', 'string', 'max:20'],
-            'status'     => ['required', 'in:aktif,nonaktif'],
-            'foto_rumah' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'nama'                 => ['required', 'string', 'max:255'],
+            'paket'                => ['nullable', 'string', 'max:100'],
+            'tagihan_jatuh_tempo'  => ['nullable', 'integer', 'between:1,31'],
+            'alamat'               => ['nullable', 'string', 'max:500'],
+            'no_hp'                => ['nullable', 'string', 'max:20'],
+            'status'               => ['required', 'in:aktif,nonaktif'],
+            'foto_rumah'           => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ]);
 
         if ($request->hasFile('foto_rumah')) {

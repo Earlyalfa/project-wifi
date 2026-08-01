@@ -90,6 +90,27 @@
                         </select>
                         @error('paket') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
                     </div>
+                </div>
+
+                {{-- Jatuh Tempo Tagihan --}}
+                <div>
+                    <h3 class="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                        <i data-lucide="calendar-clock" class="w-4 h-4 text-violet-500"></i>
+                        Jatuh Tempo Tagihan
+                    </h3>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-1.5">Tanggal Jatuh Tempo <span class="text-rose-500">*</span></label>
+                        <select name="tagihan_jatuh_tempo" required
+                                class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400/30 focus:border-violet-400 transition-all @error('tagihan_jatuh_tempo') border-rose-300 @enderror">
+                            <option value="">Pilih Tanggal</option>
+                            @for ($i = 1; $i <= 31; $i++)
+                                <option value="{{ $i }}" {{ old('tagihan_jatuh_tempo') == $i ? 'selected' : '' }}>
+                                    Setiap tanggal {{ $i }}
+                                </option>
+                            @endfor
+                        </select>
+                        @error('tagihan_jatuh_tempo') <p class="text-xs text-rose-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
             </div>
 
             {{-- Tombol Aksi --}}

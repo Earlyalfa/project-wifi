@@ -77,9 +77,13 @@
                     <span class="text-sm text-slate-500 w-24 shrink-0">Bergabung</span>
                     <span class="text-sm font-medium text-slate-800">: {{ $pelanggan->created_at->format('d F Y') }}</span>
                 </div>
-                <div class="flex items-start gap-4">
+<div class="flex items-start gap-4">
                     <span class="text-sm text-slate-500 w-24 shrink-0">Paket WiFi</span>
                     <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">{{ $pelanggan->paket ?? '-' }}</span>
+                </div>
+                <div class="flex items-start gap-4">
+                    <span class="text-sm text-slate-500 w-24 shrink-0">Jatuh Tempo</span>
+                    <span class="text-sm font-medium text-slate-800">: {{ $pelanggan->tagihan_jatuh_tempo ? 'Setiap tanggal ' . (int) $pelanggan->tagihan_jatuh_tempo : 'Belum diatur' }}</span>
                 </div>
                 <div class="flex items-start gap-4">
                     <span class="text-sm text-slate-500 w-24 shrink-0">Status</span>
@@ -245,7 +249,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const canvas = document.getElementById('qr-detail-canvas');
