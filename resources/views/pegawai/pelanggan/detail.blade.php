@@ -125,8 +125,12 @@
                 </svg>
                 QR Code
             </h3>
-            <div class="inline-block p-3 rounded-xl border border-slate-100 mx-auto">
-                <canvas id="qr-detail-canvas"></canvas>
+<div class="inline-block p-3 rounded-xl border border-slate-100 mx-auto">
+<img src="{{ $qrCodeBase64 }}"
+                     alt="QR Code {{ $pelanggan->kode }}"
+                     id="qr-detail-img"
+                     class="w-[150px] h-[150px]"
+                     crossorigin="anonymous">
             </div>
             <p class="text-xs text-slate-400 mt-2.5 font-mono font-bold text-[#7C3AED]">{{ $pelanggan->kode }}</p>
             <div class="mt-5 flex gap-2 justify-center">
@@ -249,63 +253,45 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const canvas = document.getElementById('qr-detail-canvas');
-    const kode = '{{ $pelanggan->kode }}';
-    if (canvas && kode) {
-        QRCode.toCanvas(canvas, kode, { 
-            width: 150,
-            height: 150,
-            margin: 2,
-            color: {
-                dark: '#1a1a2e',
-                light: '#ffffff'
-            }
-        }, function (error) {
-            if (error) console.error(error);
-        });
-    }
-});
-
 function downloadQRDetail() {
-    const canvas = document.getElementById('qr-detail-canvas');
-    const kode = '{{ $pelanggan->kode }}';
-    const link = document.createElement('a');
+    var img = document.getElementById('qr-detail-img');
+    var kode = '{{ $pelanggan->kode }}';
+    var canvas = document.createElement('canvas');
+    canvas.width = 150;
+    canvas.height = 150;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, 150, 150);
+    var link = document.createElement('a');
     link.download = 'QR-' + kode + '.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
 }
 
 function printQRDetail() {
-    const canvas = document.getElementById('qr-detail-canvas');
-    const kode = '{{ $pelanggan->kode }}';
-    const dataUrl = canvas.toDataURL('image/png');
+    var img = document.getElementById('qr-detail-img');
+    var kode = '{{ $pelanggan->kode }}';
+    var src = img.src;
     
-    const win = window.open('', '_blank');
-    win.document.write(`
-        <html>
-        <head>
-            <title>Cetak QR - ${kode}</title>
-            <style>
-                body { display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; font-family: Arial, sans-serif; background: #fff; }
-                .container { text-align: center; padding: 20px; }
-                img { width: 250px; height: 250px; }
-                h2 { margin: 15px 0 5px; color: #1a1a2e; }
-                p { color: #666; font-size: 14px; }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <img src="${dataUrl}" alt="QR ${kode}">
-                <h2>WiFiPay</h2>
-                <p>Kode Pelanggan: <strong>${kode}</strong></p>
-            </div>
-            <script>window.onload = function() { window.print(); } <\/script>
-        </body>
-        </html>
-    `);
+    var win = window.open('', '_blank');
+    win.document.write([
+        '<html><head>',
+        '<title>Cetak QR - ' + kode + '</title>',
+        '<style>',
+        'body { display:flex; justify-content:center; align-items:center; min-height:100vh; margin:0; font-family:Arial,sans-serif; background:#fff; }',
+        '.container { text-align:center; padding:20px; }',
+        'img { width:250px; height:250px; }',
+        'h2 { margin:15px 0 5px; color:#1a1a2e; }',
+        'p { color:#666; font-size:14px; }',
+        '</style></head><body>',
+        '<div class="container">',
+        '<img src="' + src + '" alt="QR ' + kode + '">',
+        '<h2>WiFiPay</h2>',
+        '<p>Kode Pelanggan: <strong>' + kode + '</strong></p>',
+        '</div>',
+        '<script>window.onload=function(){window.print();}<\/script>',
+        '</body></html>'
+    ].join(''));
     win.document.close();
 }
 </script>

@@ -8,6 +8,7 @@ use App\Models\Notification;
 use App\Models\Pelanggan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PelangganController extends Controller
 {
@@ -132,7 +133,15 @@ public function show(Pelanggan $pelanggan)
 
         $tagihanTerbaru = $pelanggan->pembayarans->first();
 
-        return view('pegawai.pelanggan.detail', compact('pelanggan', 'tagihanTerbaru'));
+// Generate QR Code sebagai SVG base64
+        $qrCodeSvg = (string) QrCode::format('svg')
+            ->size(150)
+            ->margin(2)
+            ->color(26, 26, 46)
+            ->generate($pelanggan->kode);
+        $qrCodeBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrCodeSvg);
+
+        return view('pegawai.pelanggan.detail', compact('pelanggan', 'tagihanTerbaru', 'qrCodeBase64'));
     }
 
     public function edit(Pelanggan $pelanggan)

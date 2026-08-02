@@ -124,7 +124,7 @@
                     </div>
                     <h3 class="font-semibold text-slate-800">Riwayat Pembayaran</h3>
                 </div>
-                <a href="#" class="text-xs text-blue-600 font-medium hover:underline">Lihat Semua</a>
+                <a href="{{ route('pelanggan.pembayaran') }}" class="text-xs text-blue-600 font-medium hover:underline">Lihat Semua</a>
             </div>
             <div class="overflow-x-auto -mx-5">
                 <table class="w-full text-sm">
@@ -228,7 +228,7 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {{-- Lihat Tagihan Saya --}}
-            <a href="#"
+            <a href="{{ route('pelanggan.pembayaran') }}"
                class="flex items-center gap-4 p-5 rounded-xl border border-slate-100 hover:border-violet-200 hover:bg-violet-50/50 transition-all duration-200 group">
                 <div class="w-12 h-12 rounded-xl bg-violet-100 flex items-center justify-center group-hover:bg-violet-200 transition-colors shrink-0">
                     <i data-lucide="credit-card" class="w-6 h-6 text-violet-600"></i>
