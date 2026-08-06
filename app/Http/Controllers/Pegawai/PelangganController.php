@@ -125,13 +125,19 @@ public function store(Request $request)
             ->with('status', 'Pelanggan berhasil ditambahkan.');
     }
 
-public function show(Pelanggan $pelanggan)
+    public function show(Pelanggan $pelanggan)
     {
         $pelanggan->load(['pembayarans' => function ($q) {
             $q->latest();
         }, 'kunjungans.pegawai', 'user']);
 
         $tagihanTerbaru = $pelanggan->pembayarans->first();
+
+        // Tagihan yang belum dibayar / menunggu verifikasi (untuk konfirmasi tunai)
+        $tagihanBelumBayar = $pelanggan->pembayarans()
+            ->whereIn('status', ['belum_bayar', 'menunggu_verifikasi'])
+            ->latest()
+            ->get();
 
 // Generate QR Code sebagai SVG base64
         $qrCodeSvg = (string) QrCode::format('svg')
@@ -141,7 +147,7 @@ public function show(Pelanggan $pelanggan)
             ->generate($pelanggan->kode);
         $qrCodeBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrCodeSvg);
 
-        return view('pegawai.pelanggan.detail', compact('pelanggan', 'tagihanTerbaru', 'qrCodeBase64'));
+        return view('pegawai.pelanggan.detail', compact('pelanggan', 'tagihanTerbaru', 'qrCodeBase64', 'tagihanBelumBayar'));
     }
 
     public function edit(Pelanggan $pelanggan)
@@ -221,24 +227,67 @@ public function show(Pelanggan $pelanggan)
 
     public function konfirmasiPembayaran(Request $request, Pelanggan $pelanggan)
     {
-        $tagihan = $pelanggan->pembayarans()->where('status', 'belum_bayar')->latest()->first();
+        $request->validate([
+            'tagihan_id'       => ['required', 'exists:pembayarans,id'],
+            'nominal_diterima' => ['required', 'numeric', 'min:0'],
+            'catatan'          => ['nullable', 'string', 'max:500'],
+        ]);
 
-        if ($tagihan) {
-            $tagihan->update([
-                'status' => 'lunas',
-                'dibayar_at' => now(),
-            ]);
+        $tagihan = $pelanggan->pembayarans()
+            ->where('id', $request->tagihan_id)
+            ->whereIn('status', ['belum_bayar', 'menunggu_verifikasi'])
+            ->first();
 
+        if (! $tagihan) {
+            return back()->with('error', 'Tagihan tidak ditemukan atau statusnya sudah tidak valid.');
+        }
+
+        if ((float) $request->nominal_diterima < (float) $tagihan->jumlah) {
+            return back()->with('error', 'Nominal yang diterima kurang dari jumlah tagihan (Rp ' . number_format($tagihan->jumlah, 0, ',', '.') . ').');
+        }
+
+        // Update status tagihan menjadi lunas
+        $tagihan->update([
+            'status'            => 'lunas',
+            'metode_pembayaran' => 'Tunai',
+            'tanggal_bayar'     => now(),
+            'dibayar_at'        => now(),
+            'catatan'           => $request->catatan
+                ? ($tagihan->catatan ? $tagihan->catatan . ' | ' . $request->catatan : $request->catatan)
+                : $tagihan->catatan,
+        ]);
+
+        // Catat kunjungan pegawai
+        Kunjungan::create([
+            'pelanggan_id'    => $pelanggan->id,
+            'pegawai_id'      => $request->user()->id,
+            'status'          => 'tagihan_dibayar',
+            'catatan'         => 'Pembayaran tunai dikonfirmasi dari halaman detail. Nominal diterima: Rp ' . number_format($request->nominal_diterima, 0, ',', '.') . ($request->catatan ? ' - ' . $request->catatan : ''),
+            'waktu_kunjungan' => now(),
+        ]);
+
+        // Notifikasi ke admin
+        Notification::create([
+            'user_id' => 1,
+            'type'    => 'pembayaran',
+            'icon'    => 'credit-card',
+            'color'   => 'emerald',
+            'message' => 'Pembayaran tunai dikonfirmasi: ' . $pelanggan->nama . ' - Rp ' . number_format($tagihan->jumlah, 0, ',', '.'),
+            'url'     => route('pegawai.pelanggan.show', $pelanggan),
+        ]);
+
+        // Notifikasi ke pelanggan jika punya akun
+        if ($pelanggan->user_id) {
             Notification::create([
-                'user_id' => 1,
+                'user_id' => $pelanggan->user_id,
                 'type'    => 'pembayaran',
-                'icon'    => 'credit-card',
+                'icon'    => 'check-circle',
                 'color'   => 'emerald',
-                'message' => 'Pembayaran dikonfirmasi: ' . $pelanggan->nama . ' - Rp ' . number_format($tagihan->jumlah, 0, ',', '.'),
-                'url'     => route('pegawai.pelanggan.show', $pelanggan),
+                'message' => 'Pembayaran tunai periode ' . $tagihan->periode . ' telah dikonfirmasi. Status tagihan: LUNAS.',
+                'url'     => route('pelanggan.pembayaran'),
             ]);
         }
 
-        return back()->with('status', 'Pembayaran berhasil dikonfirmasi.');
+        return back()->with('status', 'Pembayaran tunai berhasil dikonfirmasi. Status tagihan sekarang LUNAS.');
     }
 }

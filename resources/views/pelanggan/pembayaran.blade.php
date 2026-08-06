@@ -54,25 +54,28 @@
                     <p class="text-xs text-slate-400 font-medium">Nominal Tagihan</p>
                     <p class="text-sm font-semibold text-slate-800 mt-1">Rp {{ number_format($tagihan->jumlah, 0, ',', '.') }}</p>
                 </div>
-                <div class="bg-slate-50 rounded-xl p-4">
-                    <p class="text-xs text-slate-400 font-medium">Kode Unik</p>
-                    <p class="text-sm font-semibold text-violet-600 mt-1">{{ $kodeUnik }}</p>
-                </div>
                 <div class="bg-violet-50 rounded-xl p-4 border border-violet-100">
-                    <p class="text-xs text-indigo-400 font-medium">Total Pembayaran</p>
+                    <p class="text-xs text-indigo-400 font-medium">Total yang Harus Dibayar</p>
                     <p class="text-lg font-bold text-violet-700 mt-1">Rp {{ number_format($totalPembayaran, 0, ',', '.') }}</p>
                 </div>
                 <div class="bg-slate-50 rounded-xl p-4">
                     <p class="text-xs text-slate-400 font-medium">Jatuh Tempo</p>
-                    <p class="text-sm font-semibold text-slate-800 mt-1">{{ $tagihan->jatuh_tempo ? \Carbon\Carbon::parse($tagihan->jatuh_tempo)->format('d M Y') : '-' }}</p>
+                    <p class="text-sm font-semibold text-slate-800 mt-1">{{ $tagihan->jatuh_tempo ? \Carbon\Carbon::parse($tagihan->jatuh_tempo)->format('d M Y') : 'Belum diatur' }}</p>
                 </div>
                 <div class="bg-slate-50 rounded-xl p-4">
                     <p class="text-xs text-slate-400 font-medium">Status Pembayaran</p>
                     <p class="text-sm font-semibold mt-1">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-600">
-                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-                            Belum Dibayar
-                        </span>
+                        @if ($tagihan->status === 'menunggu_penagihan')
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-sky-100 text-sky-700">
+                                <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
+                                Menunggu Penagihan
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-600">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                Belum Dibayar
+                            </span>
+                        @endif
                     </p>
                 </div>
                 <div class="bg-slate-50 rounded-xl p-4">
@@ -87,12 +90,31 @@
                     <i data-lucide="info" class="w-4 h-4 text-amber-600 mt-0.5 shrink-0"></i>
                     <div class="text-sm text-amber-800">
                         <span class="font-semibold">Catatan Pembayaran:</span><br>
-                        - Lakukan pembayaran sebelum tanggal <strong>{{ $tagihan->jatuh_tempo ? \Carbon\Carbon::parse($tagihan->jatuh_tempo)->format('d M Y') : '-' }}</strong> untuk menghindari denda.<br>
-                        - Gunakan kode unik <strong>{{ $kodeUnik }}</strong> sebagai referensi pembayaran.<br>
-                        - Total yang harus dibayarkan adalah <strong>Rp {{ number_format($totalPembayaran, 0, ',', '.') }}</strong>.
+                        - Lakukan pembayaran sebelum tanggal <strong>{{ $tagihan->jatuh_tempo ? \Carbon\Carbon::parse($tagihan->jatuh_tempo)->format('d M Y') : 'Belum diatur' }}</strong> untuk menghindari denda.<br>
+                        - Total yang harus dibayarkan adalah <strong>Rp {{ number_format($totalPembayaran, 0, ',', '.') }}</strong>.<br>
+                        - Bayar sesuai nominal tagihan (tanpa kode unik). QRIS akan mengirim detail transaksi otomatis.
                     </div>
                 </div>
             </div>
+
+            {{-- Pembayaran Tunai ke Petugas (Otomatis Lunas) --}}
+            @if ($tagihan->status === 'menunggu_penagihan')
+                <div class="bg-sky-50 border border-sky-200 rounded-xl p-4 mt-3">
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <i data-lucide="clock" class="w-5 h-5 text-sky-600"></i>
+                        <h4 class="text-sm font-semibold text-sky-800">Menunggu Penagihan Petugas</h4>
+                    </div>
+                    <p class="text-xs text-sky-600/80">Anda telah memilih pembayaran tunai. Petugas akan datang ke rumah Anda untuk menerima pembayaran. Setelah petugas mencatat pembayaran, status tagihan otomatis menjadi <strong>LUNAS</strong> tanpa perlu konfirmasi apa pun dari Anda.</p>
+                </div>
+            @else
+                <div class="bg-sky-50 border border-sky-200 rounded-xl p-4 mt-3">
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <i data-lucide="hand-coins" class="w-5 h-5 text-sky-600"></i>
+                        <h4 class="text-sm font-semibold text-sky-800">Pembayaran Tunai ke Petugas</h4>
+                    </div>
+                    <p class="text-xs text-sky-600/80">Tidak punya aplikasi pembayaran? Anda bisa membayar <strong>langsung tunai ke petugas</strong> yang datang ke rumah Anda. Setelah membayar, petugas akan mencatatnya dan tagihan Anda otomatis menjadi <strong>LUNAS</strong> — Anda <strong>tidak perlu konfirmasi atau menekan tombol apa pun</strong>.</p>
+                </div>
+            @endif
         @else
             <div class="text-center py-8 text-slate-400">
                 <i data-lucide="check-circle" class="w-12 h-12 mx-auto mb-3 text-emerald-400"></i>
@@ -103,7 +125,8 @@
     </div>
 
     {{-- ===================== PEMBAYARAN QRIS + FORM KONFIRMASI ===================== --}}
-    @if ($tagihan)
+    {{-- QRIS hanya untuk tagihan belum bayar; tagihan 'menunggu_penagihan' menunggu petugas --}}
+    @if ($tagihan && $tagihan->status !== 'menunggu_penagihan')
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         {{-- Card QRIS --}}
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
@@ -116,7 +139,7 @@
 
             <div class="flex flex-col items-center justify-center py-4">
                 {{-- QR Code --}}
-                <div class="w-48 h-48 bg-white border-2 border-slate-200 rounded-2xl flex items-center justify-center mb-4 overflow-hidden">
+                <div class="w-100 h-72 bg-white border-2 border-slate-200 rounded-2xl flex items-center justify-center mb-4 overflow-hidden">
                     @if ($qrisImage && file_exists(public_path('storage/' . $qrisImage)))
                         <img src="{{ asset('storage/' . $qrisImage) }}"
                              alt="QRIS {{ $qrisMerchant }}"
@@ -282,6 +305,7 @@
                                     $statusBadge = match($p->status) {
                                         'lunas' => ['bg-emerald-100', 'text-emerald-600', 'bg-emerald-500', 'Lunas'],
                                         'menunggu_verifikasi' => ['bg-amber-100', 'text-amber-600', 'bg-amber-500', 'Menunggu Verifikasi'],
+                                        'menunggu_penagihan' => ['bg-sky-100', 'text-sky-600', 'bg-sky-500', 'Menunggu Penagihan'],
                                         'ditolak' => ['bg-rose-100', 'text-rose-600', 'bg-rose-500', 'Ditolak'],
                                         default => ['bg-rose-100', 'text-rose-600', 'bg-rose-500', 'Belum Bayar'],
                                     };
@@ -296,6 +320,8 @@
                                     Pembayaran lunas
                                 @elseif ($p->status === 'menunggu_verifikasi')
                                     Menunggu verifikasi admin
+                                @elseif ($p->status === 'menunggu_penagihan')
+                                    Menunggu penagihan petugas
                                 @elseif ($p->status === 'ditolak')
                                     Pembayaran ditolak
                                 @else

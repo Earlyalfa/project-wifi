@@ -77,6 +77,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/laporan', [AdminLaporanController::class, 'index'])->name('laporan');
         Route::get('/laporan/export-pdf', [AdminLaporanController::class, 'exportPdf'])->name('laporan.export-pdf');
         Route::get('/laporan/export-excel', [AdminLaporanController::class, 'exportExcel'])->name('laporan.export-excel');
+        Route::get('/laporan/{pembayaran}', [AdminLaporanController::class, 'show'])->name('laporan.show');
 
         // Admin Notifications
         Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('notifications.index');

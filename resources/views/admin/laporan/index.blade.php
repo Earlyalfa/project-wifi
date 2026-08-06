@@ -194,7 +194,7 @@
                         </td>
                         <td class="px-5 py-3 text-slate-600">{{ $bayar->catatan ?? '-' }}</td>
                         <td class="px-5 py-3 text-center">
-                            <a href="{{ route('admin.users.show', $bayar->pelanggan_id ?? 0) }}"
+                            <a href="{{ route('admin.laporan.show', $bayar) }}"
                                class="inline-flex items-center gap-1 text-xs font-semibold text-violet-600 hover:text-violet-800 hover:underline">
                                 <i data-lucide="eye" class="w-3.5 h-3.5"></i>
                                 Detail

@@ -1,7 +1,7 @@
 @extends('layouts.pegawai')
 
 @section('title', 'Dashboard Pegawai')
-@section('page-title', 'Dashboard')ga
+@section('page-title', 'Dashboard')
 
 @section('content')
     {{-- ===================== CARD RINGKASAN (4 Card) ===================== --}}
@@ -105,7 +105,7 @@
                     </div>
                     <h3 class="font-semibold text-slate-800">Pengaduan Gangguan Terbaru</h3>
                 </div>
-                <a href="#" class="text-xs text-blue-600 font-medium hover:underline">Lihat Semua</a>
+                <a href="{{ route('pegawai.gangguan.index') }}" class="text-xs text-blue-600 font-medium hover:underline">Lihat Semua</a>
             </div>
             <div class="overflow-x-auto -mx-5">
                 <table class="w-full text-sm">
@@ -144,7 +144,7 @@
                                     </span>
                                 </td>
                                 <td class="px-5 py-3">
-                                    <a href="#"
+                                    <a href="{{ route('pegawai.gangguan.show', $g->id) }}"
                                        class="inline-flex items-center gap-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors">
                                         <i data-lucide="eye" class="w-3.5 h-3.5"></i>
                                         Detail
@@ -166,14 +166,14 @@
     <div class="grid lg:grid-cols-2 gap-6 mb-6">
 
         {{-- === SECTION 3: AKTIVITAS HARI INI === --}}
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 h-full flex flex-col">
             <div class="flex items-center gap-2 mb-5">
                 <div class="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
                     <i data-lucide="activity" class="w-4 h-4 text-violet-600"></i>
                 </div>
                 <h3 class="font-semibold text-slate-800">Aktivitas Hari Ini</h3>
             </div>
-            <div class="relative pl-6 border-l-2 border-slate-100 space-y-5">
+            <div class="relative pl-6 border-l-2 border-slate-100 space-y-5 flex-1">
                 @forelse ($aktivitasHariIni as $aktivitas)
                     @php
                         $dotColor = match($aktivitas->color) {
@@ -295,7 +295,7 @@
                 <span class="text-sm font-semibold text-slate-700 group-hover:text-emerald-700">Lihat Pelanggan</span>
             </a>
 
-{{-- Lihat Gangguan --}}
+            {{-- Lihat Gangguan --}}
             <a href="{{ route('pegawai.gangguan.index') }}"
                class="flex flex-col items-center gap-2 p-5 rounded-xl border border-slate-100 hover:border-amber-200 hover:bg-amber-50/50 transition-all duration-200 group">
                 <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center group-hover:bg-amber-200 transition-colors">
@@ -315,4 +315,3 @@
         </div>
     </div>
 @endsection
-

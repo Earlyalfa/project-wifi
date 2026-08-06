@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Gangguan;
 use App\Models\Notification;
 use App\Models\Pengaduan;
 use Illuminate\Http\Request;
@@ -75,10 +76,19 @@ class PengaduanController extends Controller
             'keterangan' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $pengaduan->update([
+$pengaduan->update([
             'status'     => $request->status,
             'keterangan' => $request->keterangan ?? $pengaduan->keterangan,
         ]);
+
+        // Sinkronkan status ke tabel gangguans (halaman pegawai)
+        $statusMap = [
+            'Menunggu' => 'menunggu',
+            'Diproses' => 'diproses',
+            'Selesai'  => 'selesai',
+        ];
+        Gangguan::where('pengaduan_id', $pengaduan->id)
+            ->update(['status' => $statusMap[$request->status]]);
 
         // Notifikasi ke pelanggan
         Notification::create([

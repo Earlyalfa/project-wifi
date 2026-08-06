@@ -6,12 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Models\Gangguan;
 use App\Models\Notification;
 use App\Models\Pelanggan;
+use App\Models\Pengaduan;
 use Illuminate\Http\Request;
 
 class GangguanController extends Controller
 {
-    public function index(Request $request)
+public function index(Request $request)
     {
+        // Sinkronkan pengaduan lama dari tabel pengaduans yang belum punya record di gangguans,
+        // agar pengaduan pelanggan (lama & baru) selalu muncul di halaman pegawai.
+        $this->syncPengaduanKeGangguan();
+
         $query = Gangguan::with('pelanggan');
 
         // Filter search
@@ -43,6 +48,74 @@ class GangguanController extends Controller
         return view('pegawai.gangguan.index', compact(
             'gangguans', 'totalMenunggu', 'totalDiproses', 'totalSelesai', 'totalSemua'
         ));
+    }
+
+    /**
+     * Sinkronisasi pengaduan dari tabel pengaduans ke gangguans.
+     * Pengaduan yang belum punya record gangguans akan dibuatkan record baru.
+     */
+private function syncPengaduanKeGangguan()
+    {
+        // Ambil pengaduan yang belum memiliki record gangguans
+        $sudahDisinkron = Gangguan::whereNotNull('pengaduan_id')->pluck('pengaduan_id');
+
+        $pengaduans = Pengaduan::with('user')
+            ->whereNotIn('id', $sudahDisinkron)
+            ->orderBy('created_at')
+            ->get();
+
+        foreach ($pengaduans as $pengaduan) {
+            // Cari pelanggan terkait pengaduan (via user yang mengirim)
+            $pelanggan = Pelanggan::where('user_id', $pengaduan->user_id)->first();
+            if (! $pelanggan) {
+                $pelanggan = Pelanggan::where('nama', $pengaduan->user->name ?? '')->first();
+            }
+
+            // Jika tidak ada pelanggan, buat otomatis dari user pengaduan
+            if (! $pelanggan && $pengaduan->user) {
+                $last = Pelanggan::latest()->first();
+                $lastNumber = $last ? (int) substr($last->kode, 3) : 0;
+                $kode = 'CS-' . str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+
+                $pelanggan = Pelanggan::create([
+                    'user_id'  => $pengaduan->user_id,
+                    'kode'     => $kode,
+                    'nama'     => $pengaduan->user->name,
+                    'email'    => $pengaduan->user->email,
+                    'alamat'   => $pengaduan->user->alamat ?? null,
+                    'no_hp'    => $pengaduan->user->no_hp ?? null,
+                    'status'   => 'aktif',
+                ]);
+            }
+
+            if (! $pelanggan) {
+                continue; // skip jika tidak dapat pelanggan
+            }
+
+            $statusGangguan = $this->mapStatus($pengaduan->status);
+
+            Gangguan::create([
+                'no_tiket'      => Gangguan::generateNoTiket(),
+                'pelanggan_id'  => $pelanggan->id,
+                'pengaduan_id'  => $pengaduan->id,
+                'keluhan'       => $pengaduan->judul_keluhan . ' — ' . $pengaduan->deskripsi,
+                'tanggal_lapor' => $pengaduan->created_at,
+                'status'        => $statusGangguan,
+            ]);
+        }
+    }
+
+    /**
+     * Map status pengaduan (kapital) ke status gangguan (lowercase).
+     */
+    private function mapStatus(string $status): string
+    {
+        return match (strtolower($status)) {
+            'menunggu' => 'menunggu',
+            'diproses' => 'diproses',
+            'selesai'  => 'selesai',
+            default    => 'menunggu',
+        };
     }
 
     public function create()
@@ -91,7 +164,18 @@ public function updateStatus(Request $request, Gangguan $gangguan)
             'status' => ['required', 'in:menunggu,diproses,selesai'],
         ]);
 
-        $gangguan->update(['status' => $request->status]);
+$gangguan->update(['status' => $request->status]);
+
+        // Sinkronkan status ke tabel pengaduans (halaman admin)
+        if ($gangguan->pengaduan_id) {
+            $statusMap = [
+                'menunggu' => 'Menunggu',
+                'diproses' => 'Diproses',
+                'selesai'  => 'Selesai',
+            ];
+            Pengaduan::where('id', $gangguan->pengaduan_id)
+                ->update(['status' => $statusMap[$request->status]]);
+        }
 
         // Notifikasi untuk admin
         $pelanggan = $gangguan->pelanggan;

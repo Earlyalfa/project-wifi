@@ -152,6 +152,164 @@
         </div>
     </div>
 
+    {{-- TAGIHAN BELUM DIBAYAR --}}
+    <div class="bg-white rounded-2xl border border-slate-200/60 overflow-hidden mb-6"
+         x-data="{
+             showKonfirmasi: false,
+             tagihanId: null,
+             tagihanPeriode: null,
+             tagihanJumlah: 0,
+             nominalDiterima: 0,
+             catatan: '',
+             openKonfirmasi(id, periode, jumlah) {
+                 this.tagihanId = id;
+                 this.tagihanPeriode = periode;
+                 this.tagihanJumlah = jumlah;
+                 this.nominalDiterima = jumlah;
+                 this.catatan = '';
+                 this.showKonfirmasi = true;
+             }
+         }">
+        <div class="px-6 md:px-8 py-5 border-b border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-rose-100 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                    </svg>
+                </div>
+                <h3 class="text-sm font-semibold text-slate-800">Tagihan Belum Dibayar</h3>
+                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-600">{{ $tagihanBelumBayar->count() }} tagihan</span>
+            </div>
+        </div>
+
+        @if ($tagihanBelumBayar->count() > 0)
+            <div class="divide-y divide-slate-50">
+                @foreach ($tagihanBelumBayar as $tagihan)
+                    <div class="px-6 md:px-8 py-4 flex flex-col sm:flex-row sm:items-center gap-4">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <p class="text-sm font-semibold text-slate-800">{{ $tagihan->periode }}</p>
+                                @if ($tagihan->status === 'menunggu_verifikasi')
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                        Menunggu Verifikasi
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-600">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                        Belum Dibayar
+                                    </span>
+                                @endif
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">
+                                Jatuh tempo: {{ $tagihan->jatuh_tempo ? $tagihan->jatuh_tempo->format('d M Y') : '-' }}
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <p class="text-sm font-bold text-slate-800">Rp {{ number_format($tagihan->jumlah, 0, ',', '.') }}</p>
+                            <button type="button"
+                                    @click="openKonfirmasi('{{ $tagihan->id }}', '{{ $tagihan->periode }}', {{ $tagihan->jumlah }})"
+                                    class="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl transition-all shadow-sm active:scale-[0.98]">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                Konfirmasi Pembayaran Tunai
+                            </button>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <div class="px-6 md:px-8 py-10 text-center">
+                <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <p class="text-sm font-semibold text-emerald-700">Tidak ada tagihan yang belum dibayar</p>
+                <p class="text-xs text-slate-400 mt-1">Semua tagihan pelanggan ini sudah lunas.</p>
+            </div>
+        @endif
+
+        {{-- MODAL KONFIRMASI PEMBAYARAN TUNAI --}}
+        <div x-show="showKonfirmasi" x-cloak
+             class="fixed inset-0 bg-black/50 flex items-center justify-center p-6 z-50"
+             @click.self="showKonfirmasi = false">
+            <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <h3 class="font-semibold text-slate-800">Konfirmasi Pembayaran Tunai</h3>
+                    <button type="button" @click="showKonfirmasi = false" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <form action="{{ route('pegawai.pelanggan.konfirmasi-pembayaran', $pelanggan) }}" method="POST" class="space-y-4">
+                    @csrf
+                    <input type="hidden" name="tagihan_id" :value="tagihanId">
+
+                    <div class="bg-slate-50 rounded-xl p-4 space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Pelanggan</span>
+                            <span class="font-semibold text-slate-800">{{ $pelanggan->nama }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Periode</span>
+                            <span class="font-semibold text-slate-800" x-text="tagihanPeriode"></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Tagihan</span>
+                            <span class="font-bold text-slate-800" x-text="'Rp ' + new Intl.NumberFormat('id-ID').format(tagihanJumlah)"></span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1.5">Metode Pembayaran</label>
+                        <div class="flex items-center gap-2.5 px-3.5 py-2.5 bg-emerald-50 rounded-lg border border-emerald-200">
+                            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                            <span class="text-sm font-medium text-emerald-700">Tunai (Cash)</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1.5">Nominal Diterima <span class="text-rose-500">*</span></label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                <span class="text-sm font-bold text-slate-400">Rp</span>
+                            </div>
+                            <input type="number" name="nominal_diterima" x-model.number="nominalDiterima" min="0" required
+                                   class="w-full pl-12 pr-4 py-2.5 text-sm font-semibold text-slate-800 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition">
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1">Jumlah tagihan: <span class="font-semibold text-slate-600" x-text="'Rp ' + new Intl.NumberFormat('id-ID').format(tagihanJumlah)"></span></p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1.5">Catatan <span class="text-slate-400 font-normal">(opsional)</span></label>
+                        <textarea name="catatan" rows="2" x-model="catatan" placeholder="Tambahkan catatan..."
+                                  class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition"></textarea>
+                    </div>
+
+                    <div class="flex gap-2 pt-1">
+                        <button type="button" @click="showKonfirmasi = false"
+                                class="flex-1 border border-slate-200 text-slate-600 text-sm font-semibold py-2.5 rounded-xl hover:bg-slate-50 transition-all">
+                            Batal
+                        </button>
+                        <button type="submit"
+                                class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition-all shadow-sm active:scale-[0.98]">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Konfirmasi Pembayaran
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     {{-- RIWAYAT PEMBAYARAN --}}
     <div class="bg-white rounded-2xl border border-slate-200/60 overflow-hidden">
         <div class="px-6 md:px-8 py-5 border-b border-slate-100 flex items-center justify-between">

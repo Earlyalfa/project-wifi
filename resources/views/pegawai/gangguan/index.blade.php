@@ -108,44 +108,36 @@
                                     {{ ucfirst($g->status) }}
                                 </span>
                             </td>
-                            <td class="px-5 py-3">
-                                <div class="flex items-center gap-1.5">
+<td class="px-5 py-3">
+                                <div class="flex flex-wrap items-center gap-1.5">
                                     <a href="{{ route('pegawai.gangguan.show', $g) }}"
-                                       class="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 transition-colors"
-                                       title="Detail">
-                                        <i data-lucide="eye" class="w-4 h-4"></i>
+                                       class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-violet-50 text-violet-700 hover:bg-violet-100 transition-colors">
+                                        <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                                        Detail
                                     </a>
-                                    @if ($g->status !== 'selesai')
+                                    @if ($g->status === 'menunggu')
                                         <form action="{{ route('pegawai.gangguan.update-status', $g) }}" method="POST" class="inline">
                                             @csrf
                                             @method('PATCH')
-                                            @if ($g->status === 'menunggu')
-                                                <input type="hidden" name="status" value="diproses">
-                                                <button type="submit"
-                                                        class="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                                                        title="Proses">
-                                                    <i data-lucide="play" class="w-4 h-4"></i>
-                                                </button>
-                                            @else
-                                                <input type="hidden" name="status" value="selesai">
-                                                <button type="submit"
-                                                        class="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
-                                                        title="Selesaikan">
-                                                    <i data-lucide="check" class="w-4 h-4"></i>
-                                                </button>
-                                            @endif
+                                            <input type="hidden" name="status" value="diproses">
+                                            <button type="submit"
+                                                    class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors">
+                                                <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                                                Proses
+                                            </button>
                                         </form>
-                                    @endif
-                                    <form action="{{ route('pegawai.gangguan.destroy', $g) }}" method="POST"
-                                          onsubmit="return confirm('Hapus tiket {{ $g->no_tiket }}?')" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                                class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                                                title="Hapus">
-                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                        </button>
-                                    </form>
+                                    @elseif ($g->status === 'diproses')
+                                        <form action="{{ route('pegawai.gangguan.update-status', $g) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="status" value="selesai">
+                                            <button type="submit"
+                                                    class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors">
+                                                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                                                Selesai
+                                            </button>
+                                        </form>
+@endif
                                 </div>
                             </td>
                         </tr>

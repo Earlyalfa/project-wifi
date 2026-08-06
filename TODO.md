@@ -1,22 +1,21 @@
-# TODO: Fitur Jatuh Tempo Tagihan Per Pelanggan
+# TODO - Perbaikan Pengaduan Gangguan Pelanggan
 
-## Langkah (Selesai)
-- [x] Migrasi: kolom `tagihan_jatuh_tempo` (tinyInteger, 1-31) di tabel `pelanggans`
-- [x] Model: `$fillable` + cast di Pelanggan
-- [x] **Pegawai:**
-  - [x] Form create pelanggan — dropdown tanggal jatuh tempo
-  - [x] Controller `store` — validasi & simpan
-  - [x] Form edit pelanggan — dropdown tanggal jatuh tempo
-  - [x] Controller `update` — validasi & simpan
-  - [x] Detail pelanggan — tampilkan tanggal jatuh tempo
-  - [x] Index pelanggan — kolom "Jatuh Tempo" dengan data per baris
-- [x] **Admin:**
-  - [x] Form create pengguna — dropdown tanggal jatuh tempo
-  - [x] Controller `store` — validasi & simpan
-  - [x] Form edit pengguna — dropdown tanggal jatuh tempo
-  - [x] Controller `updateUser` — validasi & simpan
-  - [x] Detail pengguna — card "Jatuh Tempo Tagihan"
-- [x] **Pelanggan Dashboard:**
-  - [x] Tampilkan `tagihan_jatuh_tempo` dari model pelanggan (fallback: tanggal 10)
-- [x] Migrasi dijalankan ke database ✅
+## Masalah
+Pengaduan gangguan dari pelanggan tidak masuk ke:
+- Halaman pengaduan gangguan pegawai (tabel `gangguans`)
+- Notifikasi pegawai dan admin
+
+## Penyebab
+Terdapat 2 tabel terpisah: `pengaduans` (dibaca admin) dan `gangguans` (dibaca pegawai). Saat pelanggan mengirim pengaduan, hanya record di `pengaduans` yang dibuat, tanpa membuat record di `gangguans` dan tanpa notifikasi.
+
+## Langkah Perbaikan
+- [x] 1. Buat migration `add_pengaduan_id_to_gangguans_table` (kolom `pengaduan_id` nullable FK ke `pengaduans`)
+- [x] 2. Update `app/Models/Gangguan.php` - tambah `pengaduan_id` ke `$fillable` + relasi `pengaduan()`
+- [x] 3. Update `app/Http/Controllers/Pelanggan/PengaduanController.php`:
+  - [x] Buat record `Gangguan` saat pelanggan mengirim pengaduan
+  - [x] Kirim notifikasi ke semua pegawai & admin via `Notification::notifyPegawai()`
+- [x] 4. Update `app/Http/Controllers/Admin/PengaduanController.php` - sinkronkan status ke `Gangguan` terkait
+- [x] 5. Update `app/Http/Controllers/Pegawai/GangguanController.php` - sinkronkan status ke `Pengaduan` terkait
+- [x] 6. Jalankan migration `php artisan migrate`
+- [x] 7. Verifikasi hasil (cek sintaks semua file yang diubah)
 

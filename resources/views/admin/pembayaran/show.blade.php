@@ -73,13 +73,6 @@
                             <p class="text-sm font-bold text-slate-800">Rp {{ number_format($pembayaran->jumlah, 0, ',', '.') }}</p>
                         </div>
                     </div>
-                    <div class="bg-slate-50 rounded-xl p-3.5 flex items-start gap-3">
-                        <i data-lucide="hash" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">Kode Unik</p>
-                            <p class="text-sm font-bold text-violet-600">{{ $pembayaran->kode_unik ?? '-' }}</p>
-                        </div>
-                    </div>
                     <div class="bg-violet-50 rounded-xl p-3.5 border border-violet-100 flex items-start gap-3">
                         <i data-lucide="wallet" class="w-4 h-4 text-violet-500 mt-0.5 shrink-0"></i>
                         <div>

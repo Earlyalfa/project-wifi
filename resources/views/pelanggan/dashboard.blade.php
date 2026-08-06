@@ -92,7 +92,7 @@
             </div>
             <div class="flex items-center gap-3 py-2 border-b border-slate-50 last:border-b-0">
                 <span class="w-36 text-sm text-slate-400 font-medium shrink-0">Jatuh Tempo</span>
-                <span class="text-sm font-semibold text-slate-800">{{ $jatuhTempoText ?? 'Setiap tanggal 10' }}</span>
+                <span class="text-sm font-semibold text-slate-800">{{ $jatuhTempoText ?? 'Belum diatur' }}</span>
             </div>
             <div class="flex items-center gap-3 py-2">
                 <span class="w-36 text-sm text-slate-400 font-medium shrink-0">Status Akun</span>

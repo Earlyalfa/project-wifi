@@ -12,6 +12,7 @@ class Pembayaran extends Model
     protected $fillable = [
         'pelanggan_id', 'periode', 'jumlah', 'kode_unik', 'total_bayar', 'status',
         'jatuh_tempo', 'metode_pembayaran', 'bukti_bayar', 'catatan', 'tanggal_bayar', 'dibayar_at',
+        'diterima_oleh', 'diterima_oleh_id',
     ];
 
     protected $casts = [
@@ -23,5 +24,10 @@ class Pembayaran extends Model
     public function pelanggan()
     {
         return $this->belongsTo(Pelanggan::class);
+    }
+
+    public function penerima()
+    {
+        return $this->belongsTo(User::class, 'diterima_oleh_id');
     }
 }

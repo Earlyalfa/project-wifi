@@ -27,7 +27,7 @@ class DashboardController extends Controller
                 'paket'              => '-',
                 'tagihanBulanIni'    => 0,
                 'jatuhTempo'         => null,
-                'jatuhTempoText'     => 'Setiap tanggal 10',
+                'jatuhTempoText'     => 'Belum diatur',
                 'statusPengaduan'    => '-',
                 'riwayatPembayaran'  => collect([]),
                 'pengaduanTerbaru'   => collect([]),
@@ -66,8 +66,8 @@ class DashboardController extends Controller
             ->value('jatuh_tempo');
 
         // Teks jatuh tempo: "Setiap tanggal X" — utamakan dari setting pelanggan (tagihan_jatuh_tempo),
-        // fallback ke hari dari jatuh tempo terdekat, fallback terakhir tanggal 10.
-        $jatuhTempoText = 'Setiap tanggal 10';
+        // fallback ke hari dari jatuh tempo terdekat, fallback terakhir "Belum diatur".
+        $jatuhTempoText = 'Belum diatur';
         if ($pelanggan->tagihan_jatuh_tempo) {
             $jatuhTempoText = 'Setiap tanggal ' . (int) $pelanggan->tagihan_jatuh_tempo;
         } elseif ($jatuhTempo) {

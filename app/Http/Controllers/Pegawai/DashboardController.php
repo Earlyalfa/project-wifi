@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Pegawai;
 
 use App\Http\Controllers\Controller;
+use App\Models\Gangguan;
 use App\Models\Kunjungan;
 use App\Models\Pembayaran;
 use App\Models\Pelanggan;
@@ -15,12 +16,14 @@ class DashboardController extends Controller
         $today = today();
 
         // --- Kartu statistik (4 card) ---
-        $totalPelanggan    = Pelanggan::count();
+$totalPelanggan    = Pelanggan::count();
         $belumBayarCount   = Pembayaran::where('status', 'belum_bayar')->count();
         $pembayaranHariIni = Pembayaran::where('status', 'lunas')
             ->whereDate('dibayar_at', $today)
             ->count();
-        $gangguanHariIni   = 0; // placeholder
+        $gangguanHariIni   = Gangguan::whereDate('tanggal_lapor', $today)
+            ->where('status', 'menunggu')
+            ->count();
 
         // --- Section 1: Daftar Pelanggan Belum Bayar ---
         $daftarBelumBayar = Pembayaran::with('pelanggan')
@@ -29,30 +32,21 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // --- Section 2: Pengaduan Gangguan Terbaru (placeholder) ---
-        $gangguanTerbaru = collect([
-            (object) [
-                'pelanggan_nama' => 'Budi Santoso',
-                'pelanggan_kode' => 'CS-0012',
-                'keluhan'        => 'Jaringan sering putus nyambung sejak 2 hari lalu',
-                'waktu_laporan'  => now()->subHours(2),
-                'status'         => 'menunggu',
-            ],
-            (object) [
-                'pelanggan_nama' => 'Siti Rahmawati',
-                'pelanggan_kode' => 'CS-0045',
-                'keluhan'        => 'Kecepatan internet tidak sesuai paket 20 Mbps',
-                'waktu_laporan'  => now()->subHours(5),
-                'status'         => 'diproses',
-            ],
-            (object) [
-                'pelanggan_nama' => 'Ahmad Hidayat',
-                'pelanggan_kode' => 'CS-0023',
-                'keluhan'        => 'Tidak bisa konek internet sejak pagi',
-                'waktu_laporan'  => now()->subDay(),
-                'status'         => 'selesai',
-            ],
-        ]);
+        // --- Section 2: Pengaduan Gangguan Terbaru (data riil) ---
+        $gangguanTerbaru = Gangguan::with('pelanggan')
+            ->latest('tanggal_lapor')
+            ->take(5)
+            ->get()
+            ->map(function ($item) {
+                return (object) [
+                    'id'            => $item->id,
+                    'pelanggan_nama' => $item->pelanggan->nama ?? '-',
+                    'pelanggan_kode' => $item->pelanggan->kode ?? '-',
+                    'keluhan'        => $item->keluhan,
+                    'waktu_laporan'  => $item->tanggal_lapor,
+                    'status'         => $item->status,
+                ];
+            });
 
         // --- Section 3: Aktivitas Hari Ini ---
         $aktivitasHariIni = collect();
@@ -108,11 +102,13 @@ class DashboardController extends Controller
         }
 
         // --- Section 4: Ringkasan Hari Ini ---
-        $totalKunjungan = Kunjungan::whereDate('waktu_kunjungan', $today)->count();
+$totalKunjungan = Kunjungan::whereDate('waktu_kunjungan', $today)->count();
         $totalPembayaranNominal = Pembayaran::where('status', 'lunas')
             ->whereDate('dibayar_at', $today)
             ->sum('jumlah');
-        $gangguanSelesai = 0; // placeholder
+        $gangguanSelesai = Gangguan::whereDate('tanggal_lapor', $today)
+            ->where('status', 'selesai')
+            ->count();
 
         return view('pegawai.dashboard', compact(
             'totalPelanggan',

@@ -24,7 +24,6 @@ class PembayaranController extends Controller
             return view('pelanggan.pembayaran', [
                 'tagihan'           => null,
                 'riwayatPembayaran' => collect([]),
-                'kodeUnik'          => rand(100, 999),
                 'totalPembayaran'   => 0,
                 'pelanggan'         => null,
                 'qrisMerchant'      => '-',
@@ -33,16 +32,14 @@ class PembayaranController extends Controller
         }
 
         // Ambil tagihan yang belum dibayar (terbaru)
+        // Termasuk status 'menunggu_penagihan' untuk kompatibilitas data lama
         $tagihan = Pembayaran::where('pelanggan_id', $pelanggan->id)
-            ->where('status', 'belum_bayar')
+            ->whereIn('status', ['belum_bayar', 'menunggu_penagihan'])
             ->latest()
             ->first();
 
-        // Generate kode unik (acak 3 digit)
-        $kodeUnik = rand(100, 999);
-
-        // Total pembayaran = nominal tagihan + kode unik
-        $totalPembayaran = $tagihan ? ($tagihan->jumlah + $kodeUnik) : 0;
+        // Total pembayaran = nominal tagihan (QRIS tidak menggunakan kode unik)
+        $totalPembayaran = $tagihan ? $tagihan->jumlah : 0;
 
         // Riwayat pembayaran (semua data) - termasuk yang menunggu verifikasi
         $riwayatPembayaran = Pembayaran::where('pelanggan_id', $pelanggan->id)
@@ -56,7 +53,6 @@ class PembayaranController extends Controller
         return view('pelanggan.pembayaran', [
             'tagihan'           => $tagihan,
             'riwayatPembayaran' => $riwayatPembayaran,
-            'kodeUnik'          => $kodeUnik,
             'totalPembayaran'   => $totalPembayaran,
             'pelanggan'         => $pelanggan,
             'qrisMerchant'      => $qrisMerchant,
@@ -90,16 +86,12 @@ class PembayaranController extends Controller
             ->where('status', 'belum_bayar')
             ->firstOrFail();
 
-        // Generate kode unik untuk konfirmasi ini
-        $kodeUnik = rand(100, 999);
-
         // Upload file bukti pembayaran
         $path = $request->file('bukti_bayar')->store('bukti-pembayaran', 'public');
 
-        // Update tagihan
+        // Update tagihan — QRIS tanpa kode unik, total bayar = nominal tagihan
         $tagihan->update([
-            'kode_unik'         => $kodeUnik,
-            'total_bayar'       => $tagihan->jumlah + $kodeUnik,
+            'total_bayar'       => $tagihan->jumlah,
             'status'            => 'menunggu_verifikasi',
             'metode_pembayaran' => $validated['metode_pembayaran'],
             'bukti_bayar'       => $path,

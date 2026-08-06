@@ -87,7 +87,6 @@ class ScanBarcodeController extends Controller
                 'id' => $tagihan->id,
                 'periode' => $tagihan->periode,
                 'jumlah' => $tagihan->jumlah,
-                'kode_unik' => $tagihan->kode_unik,
                 'total_bayar' => $tagihan->total_bayar ?? $tagihan->jumlah,
                 'jatuh_tempo' => $tagihan->jatuh_tempo ? \Carbon\Carbon::parse($tagihan->jatuh_tempo)->format('d M Y') : '-',
                 'status' => $tagihan->status,
@@ -130,7 +129,7 @@ class ScanBarcodeController extends Controller
         // Update status tagihan menjadi lunas
         $tagihan->update([
             'status' => 'lunas',
-            'metode_pembayaran' => 'Tunai (Pegawai)',
+            'metode_pembayaran' => 'Tunai',
             'tanggal_bayar' => now(),
             'dibayar_at' => now(),
             'catatan' => $request->catatan ? ($tagihan->catatan ? $tagihan->catatan . ' | ' . $request->catatan : $request->catatan) : $tagihan->catatan,

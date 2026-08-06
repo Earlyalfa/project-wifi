@@ -9,9 +9,10 @@ class Gangguan extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+protected $fillable = [
         'no_tiket',
         'pelanggan_id',
+        'pengaduan_id',
         'keluhan',
         'tanggal_lapor',
         'status',
@@ -21,9 +22,14 @@ class Gangguan extends Model
         'tanggal_lapor' => 'datetime',
     ];
 
-    public function pelanggan()
+public function pelanggan()
     {
         return $this->belongsTo(Pelanggan::class);
+    }
+
+    public function pengaduan()
+    {
+        return $this->belongsTo(Pengaduan::class);
     }
 
     /**
