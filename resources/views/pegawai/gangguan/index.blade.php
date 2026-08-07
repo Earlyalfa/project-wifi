@@ -113,7 +113,6 @@
                                     <a href="{{ route('pegawai.gangguan.show', $g) }}"
                                        class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-violet-50 text-violet-700 hover:bg-violet-100 transition-colors">
                                         <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-                                        Detail
                                     </a>
                                     @if ($g->status === 'menunggu')
                                         <form action="{{ route('pegawai.gangguan.update-status', $g) }}" method="POST" class="inline">

@@ -147,7 +147,6 @@
                                     <a href="{{ route('pegawai.gangguan.show', $g->id) }}"
                                        class="inline-flex items-center gap-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors">
                                         <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-                                        Detail
                                     </a>
                                 </td>
                             </tr>

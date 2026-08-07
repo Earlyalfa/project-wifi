@@ -16,8 +16,6 @@
                 </div>
                 <a href="{{ route('pelanggan.pengaduan') }}"
                    class="text-xs font-medium text-violet-600 hover:underline inline-flex items-center gap-1">
-                    <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
-                    Kembali
                 </a>
             </div>
 

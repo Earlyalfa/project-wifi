@@ -236,7 +236,7 @@
                             <td class="px-5 py-3 text-slate-500 text-xs max-w-[120px] truncate">{{ $p->keterangan ?? '-' }}</td>
                             <td class="px-5 py-3">
                                 <a href="{{ route('pelanggan.pengaduan.show', $p) }}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-violet-100 text-violet-700 hover:bg-indigo-200 transition-all">
-                                    <i data-lucide="eye" class="w-3 h-3"></i> Detail
+                                    <i data-lucide="eye" class="w-3 h-3"></i> 
                                 </a>
                             </td>
                         </tr>

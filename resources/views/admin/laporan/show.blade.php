@@ -25,8 +25,6 @@
         </div>
         <a href="{{ route('admin.laporan') }}"
            class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-violet-600 transition-colors">
-            <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            Kembali ke Laporan
         </a>
     </div>
 
