@@ -18,24 +18,31 @@ class PelangganController extends Controller
     private function generateKode()
     {
         $last = Pelanggan::latest()->first();
+
         if (! $last) {
             return 'CS-0001';
         }
+
         $lastNumber = (int) substr($last->kode, 3);
+
         return 'CS-' . str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
     }
 
     public function index(Request $request)
     {
-        $query = Pelanggan::query();
+        // Hanya menampilkan pelanggan yang memiliki akun dengan role "pelanggan"
+        $query = Pelanggan::whereHas('user', function ($q) {
+            $q->where('role', 'pelanggan');
+        });
 
         // Search
         if ($request->search) {
             $search = $request->search;
+
             $query->where(function ($q) use ($search) {
                 $q->where('nama', 'like', "%{$search}%")
-                  ->orWhere('kode', 'like', "%{$search}%")
-                  ->orWhere('alamat', 'like', "%{$search}%");
+                    ->orWhere('kode', 'like', "%{$search}%")
+                    ->orWhere('alamat', 'like', "%{$search}%");
             });
         }
 
@@ -46,34 +53,72 @@ class PelangganController extends Controller
 
         $pelanggans = $query->latest()->paginate(10);
 
-        // Load payment status & gangguan status for each
-        $pelanggans->load(['pembayarans' => function ($q) {
-            $q->latest()->limit(1);
-        }]);
+        // Load payment status dan user
+        $pelanggans->load([
+            'pembayarans' => function ($q) {
+                $q->latest()->limit(1);
+            },
+            'user'
+        ]);
 
-        // Get gangguan status for all displayed pelanggan
-        $gangguanStatuses = \App\Models\Gangguan::whereIn('pelanggan_id', $pelanggans->pluck('id'))
+        // Get gangguan status untuk pelanggan yang ditampilkan
+        $gangguanStatuses = \App\Models\Gangguan::whereIn(
+            'pelanggan_id',
+            $pelanggans->pluck('id')
+        )
             ->select('pelanggan_id', 'status')
             ->latest('tanggal_lapor')
             ->get()
             ->keyBy('pelanggan_id');
 
-        // Statistik
-        $totalAktif    = Pelanggan::where('status', 'aktif')->count();
-        $totalNonaktif = Pelanggan::where('status', 'nonaktif')->count();
-        $totalPelanggan = Pelanggan::count();
-        $totalGangguan  = \App\Models\Gangguan::whereIn('status', ['menunggu', 'diproses'])->count();
+        // Statistik hanya untuk user dengan role "pelanggan"
+        $totalAktif = Pelanggan::whereHas('user', function ($q) {
+            $q->where('role', 'pelanggan');
+        })
+            ->where('status', 'aktif')
+            ->count();
 
-        // Daftar paket untuk filter dropdown
-        $paketList = Pelanggan::select('paket')->whereNotNull('paket')->distinct()->orderBy('paket')->pluck('paket');
+        $totalNonaktif = Pelanggan::whereHas('user', function ($q) {
+            $q->where('role', 'pelanggan');
+        })
+            ->where('status', 'nonaktif')
+            ->count();
+
+        $totalPelanggan = Pelanggan::whereHas('user', function ($q) {
+            $q->where('role', 'pelanggan');
+        })
+            ->count();
+
+        $totalGangguan = \App\Models\Gangguan::whereIn(
+            'status',
+            ['menunggu', 'diproses']
+        )
+            ->whereHas('pelanggan.user', function ($q) {
+                $q->where('role', 'pelanggan');
+            })
+            ->count();
+
+        // Daftar paket hanya dari pelanggan
+        $paketList = Pelanggan::whereHas('user', function ($q) {
+            $q->where('role', 'pelanggan');
+        })
+            ->whereNotNull('paket')
+            ->distinct()
+            ->orderBy('paket')
+            ->pluck('paket');
 
         return view('pegawai.pelanggan.index', compact(
-            'pelanggans', 'totalAktif', 'totalNonaktif', 'totalPelanggan', 'totalGangguan',
-            'gangguanStatuses', 'paketList'
+            'pelanggans',
+            'totalAktif',
+            'totalNonaktif',
+            'totalPelanggan',
+            'totalGangguan',
+            'gangguanStatuses',
+            'paketList'
         ));
     }
 
-public function create()
+    public function create()
     {
         // Hanya admin yang boleh menambah pelanggan
         if (auth()->user()->role !== 'admin') {
@@ -82,10 +127,11 @@ public function create()
 
         $kode = $this->generateKode();
         $paketList = \App\Models\Paket::where('status', 'aktif')->get();
+
         return view('pegawai.pelanggan.create', compact('kode', 'paketList'));
     }
 
-public function store(Request $request)
+    public function store(Request $request)
     {
         // Hanya admin yang boleh menambah pelanggan
         if (auth()->user()->role !== 'admin') {
@@ -93,20 +139,21 @@ public function store(Request $request)
         }
 
         $validated = $request->validate([
-            'nama'                 => ['required', 'string', 'max:255'],
-            'email'                => ['nullable', 'email', 'max:255'],
-            'paket'                => ['nullable', 'string', 'max:100'],
-            'tagihan_jatuh_tempo'  => ['nullable', 'integer', 'between:1,31'],
-            'alamat'               => ['nullable', 'string', 'max:500'],
-            'no_hp'                => ['nullable', 'string', 'max:20'],
-            'status'               => ['required', 'in:aktif,nonaktif'],
-            'foto_rumah'           => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'nama'                => ['required', 'string', 'max:255'],
+            'email'               => ['nullable', 'email', 'max:255'],
+            'paket'               => ['nullable', 'string', 'max:100'],
+            'tagihan_jatuh_tempo' => ['nullable', 'integer', 'between:1,31'],
+            'alamat'              => ['nullable', 'string', 'max:500'],
+            'no_hp'               => ['nullable', 'string', 'max:20'],
+            'status'              => ['required', 'in:aktif,nonaktif'],
+            'foto_rumah'          => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ]);
 
         $validated['kode'] = $this->generateKode();
 
         if ($request->hasFile('foto_rumah')) {
-            $validated['foto_rumah'] = $request->file('foto_rumah')->store('foto-rumah', 'public');
+            $validated['foto_rumah'] = $request->file('foto_rumah')
+                ->store('foto-rumah', 'public');
         }
 
         $pelanggan = Pelanggan::create($validated);
@@ -127,52 +174,71 @@ public function store(Request $request)
 
     public function show(Pelanggan $pelanggan)
     {
-        $pelanggan->load(['pembayarans' => function ($q) {
-            $q->latest();
-        }, 'kunjungans.pegawai', 'user']);
+        $pelanggan->load([
+            'pembayarans' => function ($q) {
+                $q->latest();
+            },
+            'kunjungans.pegawai',
+            'user'
+        ]);
 
         $tagihanTerbaru = $pelanggan->pembayarans->first();
 
-        // Tagihan yang belum dibayar / menunggu verifikasi (untuk konfirmasi tunai)
+        // Tagihan yang belum dibayar / menunggu verifikasi
         $tagihanBelumBayar = $pelanggan->pembayarans()
             ->whereIn('status', ['belum_bayar', 'menunggu_verifikasi'])
             ->latest()
             ->get();
 
-// Generate QR Code sebagai SVG base64
+        // Generate QR Code sebagai SVG base64
         $qrCodeSvg = (string) QrCode::format('svg')
             ->size(150)
             ->margin(2)
             ->color(26, 26, 46)
             ->generate($pelanggan->kode);
+
         $qrCodeBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrCodeSvg);
 
-        return view('pegawai.pelanggan.detail', compact('pelanggan', 'tagihanTerbaru', 'qrCodeBase64', 'tagihanBelumBayar'));
+        return view(
+            'pegawai.pelanggan.detail',
+            compact(
+                'pelanggan',
+                'tagihanTerbaru',
+                'qrCodeBase64',
+                'tagihanBelumBayar'
+            )
+        );
     }
 
     public function edit(Pelanggan $pelanggan)
     {
         $paketList = \App\Models\Paket::where('status', 'aktif')->get();
-        return view('pegawai.pelanggan.edit', compact('pelanggan', 'paketList'));
+
+        return view(
+            'pegawai.pelanggan.edit',
+            compact('pelanggan', 'paketList')
+        );
     }
 
     public function update(Request $request, Pelanggan $pelanggan)
     {
         $validated = $request->validate([
-            'nama'                 => ['required', 'string', 'max:255'],
-            'paket'                => ['nullable', 'string', 'max:100'],
-            'tagihan_jatuh_tempo'  => ['nullable', 'integer', 'between:1,31'],
-            'alamat'               => ['nullable', 'string', 'max:500'],
-            'no_hp'                => ['nullable', 'string', 'max:20'],
-            'status'               => ['required', 'in:aktif,nonaktif'],
-            'foto_rumah'           => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'nama'                => ['required', 'string', 'max:255'],
+            'paket'               => ['nullable', 'string', 'max:100'],
+            'tagihan_jatuh_tempo' => ['nullable', 'integer', 'between:1,31'],
+            'alamat'              => ['nullable', 'string', 'max:500'],
+            'no_hp'               => ['nullable', 'string', 'max:20'],
+            'status'              => ['required', 'in:aktif,nonaktif'],
+            'foto_rumah'          => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ]);
 
         if ($request->hasFile('foto_rumah')) {
             if ($pelanggan->foto_rumah) {
                 Storage::disk('public')->delete($pelanggan->foto_rumah);
             }
-            $validated['foto_rumah'] = $request->file('foto_rumah')->store('foto-rumah', 'public');
+
+            $validated['foto_rumah'] = $request->file('foto_rumah')
+                ->store('foto-rumah', 'public');
         }
 
         $pelanggan->update($validated);
@@ -193,7 +259,9 @@ public function store(Request $request)
     public function foto(Pelanggan $pelanggan)
     {
         return response()->json([
-            'url' => $pelanggan->foto_rumah ? asset('storage/'.$pelanggan->foto_rumah) : null,
+            'url' => $pelanggan->foto_rumah
+                ? asset('storage/' . $pelanggan->foto_rumah)
+                : null,
             'diambil_saat' => 'Foto ini diambil saat pendaftaran pelanggan.',
         ]);
     }
@@ -201,15 +269,15 @@ public function store(Request $request)
     public function catatKunjungan(Request $request, Pelanggan $pelanggan)
     {
         $request->validate([
-            'status' => ['required', 'in:tagihan_dibayar,belum_bayar'],
+            'status'  => ['required', 'in:tagihan_dibayar,belum_bayar'],
             'catatan' => ['nullable', 'string'],
         ]);
 
         Kunjungan::create([
-            'pelanggan_id' => $pelanggan->id,
-            'pegawai_id' => $request->user()->id,
-            'status' => $request->status,
-            'catatan' => $request->catatan,
+            'pelanggan_id'    => $pelanggan->id,
+            'pegawai_id'      => $request->user()->id,
+            'status'          => $request->status,
+            'catatan'         => $request->catatan,
             'waktu_kunjungan' => now(),
         ]);
 
@@ -218,8 +286,9 @@ public function store(Request $request)
             'type'    => 'kunjungan',
             'icon'    => 'user-check',
             'color'   => 'blue',
-            'message' => 'Kunjungan ke ' . $pelanggan->nama . ' (' . ($request->status === 'tagihan_dibayar' ? 'Lunas' : 'Belum bayar') . ')',
-            'url'     => route('pegawai.pelanggan.show', $pelanggan),
+            'message' => 'Kunjungan ke ' . $pelanggan->nama . ' (' .
+                ($request->status === 'tagihan_dibayar' ? 'Lunas' : 'Belum bayar') . ')',
+            'url' => route('pegawai.pelanggan.show', $pelanggan),
         ]);
 
         return back()->with('status', 'Kunjungan berhasil dicatat.');
@@ -239,11 +308,18 @@ public function store(Request $request)
             ->first();
 
         if (! $tagihan) {
-            return back()->with('error', 'Tagihan tidak ditemukan atau statusnya sudah tidak valid.');
+            return back()->with(
+                'error',
+                'Tagihan tidak ditemukan atau statusnya sudah tidak valid.'
+            );
         }
 
         if ((float) $request->nominal_diterima < (float) $tagihan->jumlah) {
-            return back()->with('error', 'Nominal yang diterima kurang dari jumlah tagihan (Rp ' . number_format($tagihan->jumlah, 0, ',', '.') . ').');
+            return back()->with(
+                'error',
+                'Nominal yang diterima kurang dari jumlah tagihan (Rp ' .
+                number_format($tagihan->jumlah, 0, ',', '.') . ').'
+            );
         }
 
         // Update status tagihan menjadi lunas
@@ -253,7 +329,9 @@ public function store(Request $request)
             'tanggal_bayar'     => now(),
             'dibayar_at'        => now(),
             'catatan'           => $request->catatan
-                ? ($tagihan->catatan ? $tagihan->catatan . ' | ' . $request->catatan : $request->catatan)
+                ? ($tagihan->catatan
+                    ? $tagihan->catatan . ' | ' . $request->catatan
+                    : $request->catatan)
                 : $tagihan->catatan,
         ]);
 
@@ -262,7 +340,9 @@ public function store(Request $request)
             'pelanggan_id'    => $pelanggan->id,
             'pegawai_id'      => $request->user()->id,
             'status'          => 'tagihan_dibayar',
-            'catatan'         => 'Pembayaran tunai dikonfirmasi dari halaman detail. Nominal diterima: Rp ' . number_format($request->nominal_diterima, 0, ',', '.') . ($request->catatan ? ' - ' . $request->catatan : ''),
+            'catatan'         => 'Pembayaran tunai dikonfirmasi dari halaman detail. Nominal diterima: Rp ' .
+                number_format($request->nominal_diterima, 0, ',', '.') .
+                ($request->catatan ? ' - ' . $request->catatan : ''),
             'waktu_kunjungan' => now(),
         ]);
 
@@ -272,8 +352,10 @@ public function store(Request $request)
             'type'    => 'pembayaran',
             'icon'    => 'credit-card',
             'color'   => 'emerald',
-            'message' => 'Pembayaran tunai dikonfirmasi: ' . $pelanggan->nama . ' - Rp ' . number_format($tagihan->jumlah, 0, ',', '.'),
-            'url'     => route('pegawai.pelanggan.show', $pelanggan),
+            'message' => 'Pembayaran tunai dikonfirmasi: ' .
+                $pelanggan->nama . ' - Rp ' .
+                number_format($tagihan->jumlah, 0, ',', '.'),
+            'url' => route('pegawai.pelanggan.show', $pelanggan),
         ]);
 
         // Notifikasi ke pelanggan jika punya akun
@@ -283,11 +365,16 @@ public function store(Request $request)
                 'type'    => 'pembayaran',
                 'icon'    => 'check-circle',
                 'color'   => 'emerald',
-                'message' => 'Pembayaran tunai periode ' . $tagihan->periode . ' telah dikonfirmasi. Status tagihan: LUNAS.',
-                'url'     => route('pelanggan.pembayaran'),
+                'message' => 'Pembayaran tunai periode ' .
+                    $tagihan->periode .
+                    ' telah dikonfirmasi. Status tagihan: LUNAS.',
+                'url' => route('pelanggan.pembayaran'),
             ]);
         }
 
-        return back()->with('status', 'Pembayaran tunai berhasil dikonfirmasi. Status tagihan sekarang LUNAS.');
+        return back()->with(
+            'status',
+            'Pembayaran tunai berhasil dikonfirmasi. Status tagihan sekarang LUNAS.'
+        );
     }
 }
