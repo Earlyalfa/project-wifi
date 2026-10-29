@@ -157,15 +157,11 @@
 
                 {{-- Profile Dropdown --}}
                 <div class="relative" x-data="{ open: false }" x-on:click.outside="open = false">
-                    <button x-on:click="open = !open" class="flex items-center gap-2 md:gap-3 p-1.5 rounded-xl hover:bg-slate-100 transition-all">
+                    <button x-on:click="open = !open" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-slate-100 transition-all">
                         <div class="w-9 h-9 rounded-full bg-gradient-to-br from-violet-400 to-violet-600 flex items-center justify-center shadow-sm">
                             <span class="text-sm font-bold text-white">{{ substr(auth()->user()->name, 0, 1) }}</span>
                         </div>
-                        <div class="hidden md:block text-left">
-                            <p class="text-sm font-semibold text-slate-800 leading-tight">{{ auth()->user()->name }}</p>
-                            <p class="text-[11px] text-slate-400 font-medium">Pelanggan</p>
-                        </div>
-                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 hidden md:block" x-bind:class="open ? 'rotate-180' : ''"></i>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400" x-bind:class="open ? 'rotate-180' : ''"></i>
                     </button>
 
                     {{-- Dropdown --}}
@@ -233,7 +229,7 @@
                 },
 
                 fetchNotifications() {
-                    fetch('/pelanggan/notifications')
+                    fetch('{{ rtrim(request()->getBaseUrl(), '/') . route('pelanggan.notifications', [], false) }}')
                         .then(res => res.json())
                         .then(data => {
                             this.unreadCount = data.unread_count;
@@ -248,7 +244,7 @@
 
                 markRead(notif) {
                     if (!notif.is_read) {
-                        fetch('/pelanggan/notifications/' + notif.id + '/read', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
+                        fetch('{{ rtrim(request()->getBaseUrl(), '/') . route('pelanggan.notifications.read', ['id' => '__ID__'], false) }}'.replace('__ID__', notif.id), { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
                             .then(res => res.json())
                             .then(() => {
                                 notif.is_read = true;
@@ -267,7 +263,7 @@
                 },
 
                 markAllRead() {
-                    fetch('/pelanggan/notifications/read-all', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
+                    fetch('{{ rtrim(request()->getBaseUrl(), '/') . route('pelanggan.notifications.read-all', [], false) }}', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
                         .then(res => res.json())
                         .then(() => {
                             this.notifications.forEach(n => n.is_read = true);

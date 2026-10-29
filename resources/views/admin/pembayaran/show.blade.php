@@ -32,8 +32,6 @@
 
 <div x-data="verifikasiHandler()">
     <a href="{{ route('admin.pembayaran.index') }}" class="flex items-center gap-2 text-slate-500 text-sm mb-4 hover:underline">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i>
-        Kembali ke Data Pembayaran
     </a>
 
     <div class="grid lg:grid-cols-3 gap-5">

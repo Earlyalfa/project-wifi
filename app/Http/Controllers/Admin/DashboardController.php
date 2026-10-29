@@ -9,11 +9,14 @@ use App\Models\Pelanggan;
 use App\Models\Pembayaran;
 use App\Models\User;
 use App\Models\Gangguan;
+use App\Models\Kunjungan;
+use App\Models\Pengaduan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class DashboardController extends Controller
 {
@@ -110,16 +113,57 @@ class DashboardController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
+    private function findPelangganForUser(User $user): ?Pelanggan
+    {
+        return Pelanggan::where('user_id', $user->id)->first()
+            ?? Pelanggan::where('email', $user->email)->first()
+            ?? Pelanggan::where('nama', $user->name)
+                ->whereNotNull('foto_rumah')
+                ->latest()
+                ->first()
+            ?? Pelanggan::where('nama', $user->name)->latest()->first();
+    }
+
     public function show(User $user)
     {
-        // Cari data pelanggan berdasarkan nama (fallback)
-        $pelanggan = Pelanggan::where('nama', $user->name)->first();
-        return view('admin.users.show', compact('user', 'pelanggan'));
+        $pelanggan = null;
+        $tagihanBelumBayar = collect();
+        $qrCodeBase64 = null;
+
+        if ($user->role === 'pelanggan') {
+            $pelanggan = $this->findPelangganForUser($user);
+
+            if ($pelanggan) {
+                $pelanggan->load(['pembayarans' => fn ($query) => $query->latest()]);
+                $tagihanBelumBayar = $pelanggan->pembayarans
+                    ->whereIn('status', ['belum_bayar', 'menunggu_verifikasi']);
+
+                $qrCodeSvg = (string) QrCode::format('svg')
+                    ->size(150)
+                    ->margin(2)
+                    ->color(26, 26, 46)
+                    ->generate($pelanggan->kode);
+                $qrCodeBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrCodeSvg);
+            }
+        }
+
+        $view = $user->role === 'pelanggan'
+            ? 'admin.users.show-customer-layout'
+            : 'admin.users.show';
+
+        return view($view, compact('user', 'pelanggan', 'tagihanBelumBayar', 'qrCodeBase64'));
     }
 
     public function edit(User $user)
     {
-        $pelanggan = Pelanggan::where('nama', $user->name)->first();
+        $pelanggan = $this->findPelangganForUser($user);
+
+        if ($user->role === 'pelanggan') {
+            $paketList = Paket::where('status', 'aktif')->orderBy('nama')->get();
+
+            return view('admin.users.edit-customer', compact('user', 'pelanggan', 'paketList'));
+        }
+
         $paketList = Paket::select('nama')->where('status', 'aktif')->orderBy('nama')->pluck('nama');
         return view('admin.users.edit', compact('user', 'pelanggan', 'paketList'));
     }
@@ -137,29 +181,38 @@ class DashboardController extends Controller
             'foto_rumah'           => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ]);
 
-        // Update User
+        $pelanggan = $this->findPelangganForUser($user);
+
         $user->update([
             'name'   => $validated['name'],
             'status' => $validated['status'],
+            'no_hp'  => $validated['no_hp'] ?? $user->no_hp,
+            'alamat' => $validated['alamat'] ?? $user->alamat,
         ]);
 
         // Determine final paket
-        if (($validated['paket'] ?? '') === 'custom' && !empty($validated['paket_custom'])) {
-            $validated['paket'] = $validated['paket_custom'];
+        if (($validated['paket'] ?? '') === 'custom') {
+            $validated['paket'] = $validated['paket_custom'] ?: ($pelanggan?->paket);
         }
         unset($validated['paket_custom']);
+        $paket = ! empty($validated['paket'])
+            ? Paket::where('nama', $validated['paket'])->orderBy('id')->first()
+            : null;
 
-        // Update or create Pelanggan record
-        $pelanggan = Pelanggan::where('nama', $user->getOriginal('name'))->first();
+        // Update or create the customer's linked record.
         if (! $pelanggan) {
             $pelanggan = new Pelanggan();
             $pelanggan->kode = $this->generatePelangganKode();
+            $pelanggan->user_id = $user->id;
         }
 
         $pelanggan->nama                 = $validated['name'];
         $pelanggan->alamat               = $validated['alamat'] ?? $pelanggan->alamat;
         $pelanggan->no_hp                = $validated['no_hp'] ?? $pelanggan->no_hp;
         $pelanggan->paket                = $validated['paket'] ?? $pelanggan->paket;
+        if (($validated['paket'] ?? null) !== null) {
+            $pelanggan->paket_id = $paket?->id;
+        }
         $pelanggan->tagihan_jatuh_tempo  = $validated['tagihan_jatuh_tempo'] ?? $pelanggan->tagihan_jatuh_tempo;
         $pelanggan->status               = $validated['status'];
 
@@ -202,8 +255,13 @@ class DashboardController extends Controller
         // Determine final paket
         if ($validated['paket'] === 'custom' && !empty($validated['paket_custom'])) {
             $validated['paket'] = $validated['paket_custom'];
+        } elseif (($validated['paket'] ?? null) === 'custom') {
+            $validated['paket'] = null;
         }
         unset($validated['paket_custom']);
+        $paket = ! empty($validated['paket'])
+            ? Paket::where('nama', $validated['paket'])->orderBy('id')->first()
+            : null;
 
         // Create User
         $user = User::create([
@@ -222,6 +280,8 @@ class DashboardController extends Controller
         }
 
         $pelanggan = Pelanggan::create([
+            'user_id'              => $user->id,
+            'paket_id'             => $paket?->id,
             'kode'                 => $this->generatePelangganKode(),
             'nama'                 => $validated['name'],
             'paket'                => $validated['paket'] ?? null,
@@ -257,6 +317,46 @@ class DashboardController extends Controller
         }
         $lastNumber = (int) substr($last->kode, 3);
         return 'CS-' . str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+    }
+
+    public function destroyUser(Request $request, User $user)
+    {
+        if ($user->is($request->user())) {
+            return redirect()->route('admin.users')
+                ->with('error', 'Akun admin yang sedang digunakan tidak dapat dihapus.');
+        }
+
+        $deleted = DB::transaction(function () use ($user) {
+            $user = User::query()->lockForUpdate()->findOrFail($user->id);
+
+            $hasCustomerData = Pelanggan::query()
+                ->where(function ($query) use ($user) {
+                    $query->where('user_id', $user->id)
+                        ->orWhere('nama', $user->name);
+                })
+                ->exists();
+            $hasComplaintHistory = Pengaduan::where('user_id', $user->id)->exists();
+            $hasVisitHistory = Kunjungan::where('pegawai_id', $user->id)->exists();
+            $hasPaymentHistory = Pembayaran::where('diterima_oleh_id', $user->id)->exists();
+            $hasNotifications = Notification::where('user_id', $user->id)->exists();
+
+            if ($hasCustomerData || $hasComplaintHistory || $hasVisitHistory || $hasPaymentHistory || $hasNotifications) {
+                $user->update(['status' => 'nonaktif']);
+
+                return false;
+            }
+
+            $user->delete();
+
+            return true;
+        });
+
+        return redirect()->route('admin.users')->with(
+            'status',
+            $deleted
+                ? 'Pengguna berhasil dihapus.'
+                : 'Pengguna memiliki data pelanggan atau riwayat terkait. Akun dinonaktifkan agar data tetap tersimpan.'
+        );
     }
 
     public function updateRole(Request $request, User $user)

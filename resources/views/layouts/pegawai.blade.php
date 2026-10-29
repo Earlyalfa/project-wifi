@@ -163,10 +163,6 @@
                         <div class="w-9 h-9 rounded-full bg-gradient-to-br from-violet-400 to-violet-600 flex items-center justify-center shadow-sm">
                             <span class="text-sm font-bold text-white">{{ substr(auth()->user()->name, 0, 1) }}</span>
                         </div>
-                        <div class="hidden md:block text-left">
-                            <p class="text-sm font-semibold text-slate-800 leading-tight">{{ auth()->user()->name }}</p>
-                            <p class="text-[11px] text-slate-400 font-medium">Pegawai</p>
-                        </div>
                         <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 hidden md:block" x-bind:class="open ? 'rotate-180' : ''"></i>
                     </button>
 
@@ -245,7 +241,7 @@
                 },
 
                 fetchNotifications() {
-                    fetch('/pegawai/notifications')
+                    fetch('{{ rtrim(request()->getBaseUrl(), '/') . route('pegawai.notifications.index', [], false) }}')
                         .then(res => res.json())
                         .then(data => {
                             this.unreadCount = data.unread_count;
@@ -260,7 +256,7 @@
 
                 markRead(notif) {
                     if (!notif.is_read) {
-                        fetch('/pegawai/notifications/' + notif.id + '/read', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
+                        fetch('{{ rtrim(request()->getBaseUrl(), '/') . route('pegawai.notifications.read', ['notification' => '__ID__'], false) }}'.replace('__ID__', notif.id), { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
                             .then(res => res.json())
                             .then(() => {
                                 notif.is_read = true;
@@ -279,7 +275,7 @@
                 },
 
                 markAllRead() {
-                    fetch('/pegawai/notifications/read-all', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
+                    fetch('{{ rtrim(request()->getBaseUrl(), '/') . route('pegawai.notifications.read-all', [], false) }}', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
                         .then(res => res.json())
                         .then(() => {
                             this.notifications.forEach(n => n.is_read = true);

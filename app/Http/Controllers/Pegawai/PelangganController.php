@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Pegawai;
 use App\Http\Controllers\Controller;
 use App\Models\Kunjungan;
 use App\Models\Notification;
+use App\Models\Paket;
 use App\Models\Pelanggan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -126,7 +127,7 @@ class PelangganController extends Controller
         }
 
         $kode = $this->generateKode();
-        $paketList = \App\Models\Paket::where('status', 'aktif')->get();
+        $paketList = Paket::where('status', 'aktif')->get();
 
         return view('pegawai.pelanggan.create', compact('kode', 'paketList'));
     }
@@ -141,7 +142,7 @@ class PelangganController extends Controller
         $validated = $request->validate([
             'nama'                => ['required', 'string', 'max:255'],
             'email'               => ['nullable', 'email', 'max:255'],
-            'paket'               => ['nullable', 'string', 'max:100'],
+            'paket'               => ['nullable', 'string', 'max:100', 'exists:pakets,nama'],
             'tagihan_jatuh_tempo' => ['nullable', 'integer', 'between:1,31'],
             'alamat'              => ['nullable', 'string', 'max:500'],
             'no_hp'               => ['nullable', 'string', 'max:20'],
@@ -150,6 +151,9 @@ class PelangganController extends Controller
         ]);
 
         $validated['kode'] = $this->generateKode();
+        $validated['paket_id'] = $validated['paket']
+            ? Paket::where('nama', $validated['paket'])->orderBy('id')->value('id')
+            : null;
 
         if ($request->hasFile('foto_rumah')) {
             $validated['foto_rumah'] = $request->file('foto_rumah')
@@ -212,7 +216,7 @@ class PelangganController extends Controller
 
     public function edit(Pelanggan $pelanggan)
     {
-        $paketList = \App\Models\Paket::where('status', 'aktif')->get();
+        $paketList = Paket::where('status', 'aktif')->get();
 
         return view(
             'pegawai.pelanggan.edit',
@@ -224,7 +228,7 @@ class PelangganController extends Controller
     {
         $validated = $request->validate([
             'nama'                => ['required', 'string', 'max:255'],
-            'paket'               => ['nullable', 'string', 'max:100'],
+            'paket'               => ['nullable', 'string', 'max:100', 'exists:pakets,nama'],
             'tagihan_jatuh_tempo' => ['nullable', 'integer', 'between:1,31'],
             'alamat'              => ['nullable', 'string', 'max:500'],
             'no_hp'               => ['nullable', 'string', 'max:20'],
@@ -240,6 +244,10 @@ class PelangganController extends Controller
             $validated['foto_rumah'] = $request->file('foto_rumah')
                 ->store('foto-rumah', 'public');
         }
+
+        $validated['paket_id'] = $validated['paket']
+            ? Paket::where('nama', $validated['paket'])->orderBy('id')->value('id')
+            : null;
 
         $pelanggan->update($validated);
 

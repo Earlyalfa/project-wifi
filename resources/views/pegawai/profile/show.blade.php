@@ -7,61 +7,37 @@
 <div class="max-w-2xl mx-auto">
     {{-- Card: Informasi Profile --}}
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-5">
-        <div class="flex items-center gap-4 mb-5">
-            {{-- Foto Profil --}}
-            <div class="relative w-16 h-16 shrink-0">
-                @if ($user->foto_profil)
-                    <img src="{{ asset('storage/' . $user->foto_profil) }}"
-                         alt="Foto Profil"
-                         class="w-16 h-16 rounded-full object-cover border-2 border-violet-100">
-                @else
-                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-violet-400 to-violet-600 flex items-center justify-center shadow-sm">
-                        <span class="text-2xl font-bold text-white">{{ substr(auth()->user()->name, 0, 1) }}</span>
-                    </div>
-                @endif
-            </div>
-            <div>
-                <h2 class="font-bold text-lg text-slate-800">{{ $user->name }}</h2>
-                <p class="text-sm text-slate-400">{{ $user->email }}</p>
-                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 mt-1">
-                    {{ ucfirst($user->role) }}
-                </span>
-            </div>
-        </div>
-
-        <hr class="border-slate-100 mb-5">
-
-        {{-- Form Update Profil --}}
         <form action="{{ route('pegawai.profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
             @method('PATCH')
 
-            <h3 class="font-semibold text-slate-800 text-sm">Ubah Profil</h3>
-
-            {{-- Foto Profil --}}
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Foto Profil</label>
-                <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden shrink-0">
-                        @if ($user->foto_profil)
-                            <img src="{{ asset('storage/' . $user->foto_profil) }}"
-                                 alt="Preview"
-                                 class="w-full h-full object-cover"
-                                 id="preview-foto">
-                        @else
-                            <i data-lucide="camera" class="w-5 h-5 text-slate-400" id="preview-icon"></i>
-                            <img src="" alt="Preview" class="w-full h-full object-cover hidden" id="preview-foto">
-                        @endif
-                    </div>
-                    <input type="file" name="foto_profil" id="foto_profil"
-                           class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-600 hover:file:bg-violet-100 transition-colors"
-                           accept="image/*"
-                           onchange="previewFoto(event)">
+            <div class="flex flex-col items-center text-center mb-5">
+                <div class="relative w-24 h-24 mb-3">
+                    @if ($user->foto_profil)
+                        <div id="profile-fallback" class="hidden w-24 h-24 rounded-full bg-gradient-to-br from-violet-400 to-violet-600 items-center justify-center shadow-sm">
+                            <span class="text-3xl font-bold text-white">{{ strtoupper(substr($user->name, 0, 1)) }}</span>
+                        </div>
+                        <img src="{{ asset('storage/' . $user->foto_profil) }}" alt="Foto profil {{ $user->name }}" id="preview-foto" class="w-24 h-24 rounded-full object-cover border-2 border-violet-100 shadow-sm">
+                    @else
+                        <div id="profile-fallback" class="w-24 h-24 rounded-full bg-gradient-to-br from-violet-400 to-violet-600 flex items-center justify-center shadow-sm">
+                            <span class="text-3xl font-bold text-white">{{ strtoupper(substr($user->name, 0, 1)) }}</span>
+                        </div>
+                        <img src="" alt="Preview foto profil" id="preview-foto" class="hidden w-24 h-24 rounded-full object-cover border-2 border-violet-100 shadow-sm">
+                    @endif
+                    <button type="button" onclick="document.getElementById('foto_profil').click()" title="Ubah foto profil" aria-label="Ubah foto profil" class="absolute -right-1 -bottom-1 w-9 h-9 rounded-full bg-violet-600 hover:bg-violet-700 border-2 border-white shadow-md flex items-center justify-center text-white transition-colors focus:outline-none focus:ring-2 focus:ring-violet-400">
+                        <i data-lucide="camera" class="w-4 h-4"></i>
+                    </button>
+                    <input type="file" name="foto_profil" id="foto_profil" class="sr-only" accept="image/*" onchange="previewFoto(event)">
                 </div>
+                <h2 class="font-bold text-lg text-slate-800">{{ $user->name }}</h2>
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 mt-2">{{ ucfirst($user->role) }}</span>
                 @error('foto_profil')
-                    <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
+                    <p class="text-xs text-rose-500 mt-2">{{ $message }}</p>
                 @enderror
             </div>
+
+            <hr class="border-slate-100 mb-5">
+            <h3 class="font-semibold text-slate-800 text-sm">Ubah Profil</h3>
 
             {{-- Nama Lengkap --}}
             <div>
@@ -166,14 +142,14 @@
     function previewFoto(event) {
         const input = event.target;
         const preview = document.getElementById('preview-foto');
-        const icon = document.getElementById('preview-icon');
+        const fallback = document.getElementById('profile-fallback');
 
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 preview.src = e.target.result;
                 preview.classList.remove('hidden');
-                if (icon) icon.classList.add('hidden');
+                if (fallback) fallback.classList.add('hidden');
             };
             reader.readAsDataURL(input.files[0]);
         }

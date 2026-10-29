@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Paket;
 use App\Models\Pelanggan;
 use App\Models\Pembayaran;
 use Carbon\Carbon;
@@ -22,10 +21,13 @@ class GenerateTagihan extends Command
         $bulan   = (int) Carbon::now()->format('m');
         $tahun   = (int) Carbon::now()->format('Y');
 
-        $pelanggans = Pelanggan::where('status', 'aktif')->get();
+        $pelanggans = Pelanggan::with('paketWifi')
+            ->where('status', 'aktif')
+            ->get();
 
         $dibuat   = 0;
         $dilewati = 0;
+        $tanpaPaket = 0;
 
         foreach ($pelanggans as $pelanggan) {
             // Lewati jika sudah ada tagihan untuk periode berjalan
@@ -38,9 +40,14 @@ class GenerateTagihan extends Command
                 continue;
             }
 
-            // Ambil nominal dari paket WiFi pelanggan
-            $paket  = Paket::where('nama', $pelanggan->paket)->first();
-            $jumlah = $paket ? (int) $paket->harga : 0;
+            $paket = $pelanggan->paketWifi;
+            if (! $paket) {
+                $tanpaPaket++;
+                $this->warn("Pelanggan {$pelanggan->kode} dilewati: paket WiFi belum terhubung.");
+                continue;
+            }
+
+            $jumlah = (int) round((float) $paket->harga);
 
             // Jatuh tempo mengikuti tanggal tagihan_jatuh_tempo pelanggan.
             // Jika tagihan_jatuh_tempo belum diatur (NULL), jatuh_tempo dibiarkan NULL
@@ -64,7 +71,7 @@ class GenerateTagihan extends Command
             $dibuat++;
         }
 
-        $this->info("Tagihan periode {$periode}: {$dibuat} dibuat, {$dilewati} sudah ada.");
+        $this->info("Tagihan periode {$periode}: {$dibuat} dibuat, {$dilewati} sudah ada, {$tanpaPaket} dilewati karena belum memiliki paket.");
 
         return Command::SUCCESS;
     }

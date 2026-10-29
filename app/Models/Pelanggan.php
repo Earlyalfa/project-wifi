@@ -10,12 +10,17 @@ class Pelanggan extends Model
     use HasFactory;
 
 protected $fillable = [
-        'user_id', 'kode', 'nama', 'email', 'paket', 'tagihan_jatuh_tempo', 'alamat', 'no_hp', 'foto_rumah', 'foto_profil', 'status',
+    'user_id', 'paket_id', 'kode', 'nama', 'email', 'paket', 'tagihan_jatuh_tempo', 'alamat', 'no_hp', 'foto_rumah', 'foto_profil', 'status',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function paketWifi()
+    {
+        return $this->belongsTo(Paket::class, 'paket_id');
     }
 
     public function pembayarans()

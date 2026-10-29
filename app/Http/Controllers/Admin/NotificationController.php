@@ -36,8 +36,12 @@ class NotificationController extends Controller
         ]);
     }
 
-    public function markRead(Notification $notification)
+    public function markRead(Request $request, Notification $notification)
     {
+        if ($notification->user_id !== $request->user()->id) {
+            abort(403);
+        }
+
         $notification->update(['is_read' => true]);
         return response()->json(['success' => true]);
     }

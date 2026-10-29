@@ -82,6 +82,19 @@
                                    title="Edit">
                                     <i data-lucide="pencil" class="w-4 h-4"></i>
                                 </a>
+                                @if ($user->id !== auth()->id())
+                                    <form id="delete-user-form-{{ $user->id }}" action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button"
+                                                class="delete-user-button p-1.5 rounded-lg text-rose-500 hover:text-rose-700 hover:bg-rose-50 transition-colors"
+                                                data-form-id="delete-user-form-{{ $user->id }}"
+                                                title="Hapus"
+                                                aria-label="Hapus pengguna {{ $user->name }}">
+                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </td>
                     </tr>
@@ -96,3 +109,49 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.querySelectorAll('.delete-user-button').forEach((button) => {
+        button.addEventListener('click', () => {
+            Swal.fire({
+                title: 'Hapus pengguna?',
+                text: 'Apakah Anda yakin ingin menghapus pengguna ini? Data yang dihapus tidak dapat dikembalikan.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#e11d48',
+                cancelButtonColor: '#64748b',
+                reverseButtons: true,
+                focusCancel: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(button.dataset.formId).submit();
+                }
+            });
+        });
+    });
+
+    @if (session('status'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: @json(session('status')),
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#4f46e5',
+        });
+    @endif
+
+    @if (session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Tidak dapat menghapus',
+            text: @json(session('error')),
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#e11d48',
+        });
+    @endif
+</script>
+@endpush

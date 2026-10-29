@@ -153,10 +153,6 @@
                         <div class="w-9 h-9 rounded-full bg-gradient-to-br from-violet-400 to-violet-600 flex items-center justify-center shadow-sm">
                             <span class="text-sm font-bold text-white">{{ substr(auth()->user()->name, 0, 1) }}</span>
                         </div>
-                        <div class="hidden md:block text-left">
-                            <p class="text-sm font-semibold text-slate-800 leading-tight">{{ auth()->user()->name }}</p>
-                            <p class="text-[11px] text-slate-400 font-medium">Admin</p>
-                        </div>
                         <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 hidden md:block" x-bind:class="open ? 'rotate-180' : ''"></i>
                     </button>
 
@@ -223,7 +219,7 @@
                 },
 
                 fetch() {
-                    fetch('/admin/notifications')
+                    fetch('{{ rtrim(request()->getBaseUrl(), '/') . route('admin.notifications.index', [], false) }}')
                         .then(r => r.json())
                         .then(d => {
                             this.unread = d.unread_count;
@@ -234,7 +230,7 @@
 
                 markRead(n) {
                     if (!n.is_read) {
-                        fetch('/admin/notifications/' + n.id + '/read', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
+                        fetch('{{ rtrim(request()->getBaseUrl(), '/') . route('admin.notifications.read', ['notification' => '__ID__'], false) }}'.replace('__ID__', n.id), { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
                             .then(() => {
                                 n.is_read = true;
                                 this.unread = Math.max(0, this.unread - 1);
@@ -245,7 +241,7 @@
                 },
 
                 markAllRead() {
-                    fetch('/admin/notifications/read-all', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
+                    fetch('{{ rtrim(request()->getBaseUrl(), '/') . route('admin.notifications.read-all', [], false) }}', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
                         .then(() => {
                             this.items.forEach(i => i.is_read = true);
                             this.unread = 0;

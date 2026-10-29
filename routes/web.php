@@ -90,6 +90,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/kelola-pengguna/{user}', [AdminDashboardController::class, 'show'])->name('users.show');
         Route::get('/kelola-pengguna/{user}/edit', [AdminDashboardController::class, 'edit'])->name('users.edit');
         Route::put('/kelola-pengguna/{user}', [AdminDashboardController::class, 'updateUser'])->name('users.update');
+        Route::delete('/kelola-pengguna/{user}', [AdminDashboardController::class, 'destroyUser'])->name('users.destroy');
         Route::patch('/users/{user}/role', [AdminDashboardController::class, 'updateRole'])->name('users.role');
         Route::patch('/users/{user}/status', [AdminDashboardController::class, 'updateStatus'])->name('users.status');
 
@@ -112,7 +113,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/paket/{paket}', [AdminPaketController::class, 'destroy'])->name('paket.destroy');
     });
 
-    // Area Pelanggan
+   // Area Pelanggan
     Route::prefix('pelanggan')->name('pelanggan.')->middleware('auth')->group(function () {
         Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
@@ -148,7 +149,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/scan-barcode/cari', [ScanBarcodeController::class, 'cariPelanggan'])->name('scan-barcode.cari');
             Route::post('/scan-barcode/konfirmasi', [ScanBarcodeController::class, 'konfirmasiBayar'])->name('scan-barcode.konfirmasi');
 
-            // CRUD Pelanggan (tanpa destroy)
+            // CRUD Pelanggan
             Route::get('/pelanggan', [PegawaiPelangganController::class, 'index'])->name('pelanggan.index');
             Route::get('/pelanggan/create', [PegawaiPelangganController::class, 'create'])->name('pelanggan.create');
             Route::post('/pelanggan', [PegawaiPelangganController::class, 'store'])->name('pelanggan.store');
@@ -159,8 +160,9 @@ Route::middleware('auth')->group(function () {
             Route::post('/pelanggan/{pelanggan}/kunjungan', [PegawaiPelangganController::class, 'catatKunjungan'])->name('pelanggan.kunjungan');
             Route::post('/pelanggan/{pelanggan}/konfirmasi-pembayaran', [PegawaiPelangganController::class, 'konfirmasiPembayaran'])->name('pelanggan.konfirmasi-pembayaran');
 
-            // Notifications (AJAX)
+            // Notifications 
             Route::get('/notifications', [PegawaiNotificationController::class, 'index'])->name('notifications.index');
+            Route::get('/notifikasi', [PegawaiNotificationController::class, 'index'])->name('notifications.legacy');
             Route::post('/notifications/{notification}/read', [PegawaiNotificationController::class, 'markRead'])->name('notifications.read');
             Route::post('/notifications/read-all', [PegawaiNotificationController::class, 'markAllRead'])->name('notifications.read-all');
 
